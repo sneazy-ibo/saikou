@@ -264,7 +264,7 @@ open class MangaReadFragment : Fragment() {
         super.onDestroy()
     }
 
-    var state: Parcelable? = null
+    private var state: Parcelable? = null
     override fun onResume() {
         super.onResume()
         binding.mediaInfoProgressBar.visibility = progress

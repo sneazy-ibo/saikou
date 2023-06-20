@@ -40,11 +40,9 @@ import ani.saikou.BuildConfig.APPLICATION_ID
 import ani.saikou.anilist.Anilist
 import ani.saikou.anilist.Genre
 import ani.saikou.anilist.api.FuzzyDate
-import ani.saikou.anime.Episode
 import ani.saikou.databinding.ItemCountDownBinding
 import ani.saikou.mal.MAL
 import ani.saikou.media.Media
-import ani.saikou.others.Download.download
 import ani.saikou.parsers.ShowResponse
 import ani.saikou.settings.UserInterfaceSettings
 import com.bumptech.glide.Glide
@@ -530,12 +528,6 @@ fun openLinkInBrowser(link: String?) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
         currContext()?.startActivity(intent)
     }
-}
-
-fun download(activity:Context, episode: Episode, animeTitle: String) {
-    toast("Downloading...")
-    val downloader = loadData<Int>("settings_download_manager", activity, false) ?: 0
-    download(activity, episode, animeTitle, downloader)
 }
 
 fun saveImageToDownloads(title: String, bitmap: Bitmap, context: Context) {

@@ -57,6 +57,12 @@ abstract class MangaReadSources : BaseSources() {
     }
 }
 
+abstract class NovelReadSources : BaseSources(){
+        override operator fun get(i: Int): NovelParser {
+            return (list.getOrNull(i)?:list[0]).get.value as NovelParser
+        }
+}
+
 abstract class BaseSources {
     abstract val list: List<Lazier<BaseParser>>
 

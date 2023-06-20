@@ -14,6 +14,7 @@ import ani.saikou.FileUrl
 import ani.saikou.anime.Episode
 import ani.saikou.defaultHeaders
 import ani.saikou.loadData
+import ani.saikou.parsers.Book
 import ani.saikou.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,6 +59,19 @@ object Download {
         val folder = "/Anime/${aTitle}/"
         val fileName = "$title${if (video.size != null) "(${video.size}p)" else ""}.mp4"
         val file = video.file
+        download(context, file, fileName, folder, notif)
+    }
+
+    fun download(context: Context, book:Book, pos:Int, novelTitle:String){
+        toast("Downloading...")
+        val regex = "[\\\\/:*?\"<>|]".toRegex()
+        val nTitle = novelTitle.replace(regex, "")
+        val title = book.name.replace(regex, "")
+
+        val notif = "$title : $nTitle"
+        val folder = "/Novel/${nTitle}/"
+        val fileName = "$title.epub"
+        val file = book.links[pos]
         download(context, file, fileName, folder, notif)
     }
 

@@ -96,6 +96,7 @@ data class Media(
             nextAiringEpisode = apiMedia.nextAiringEpisode?.episode?.minus(1)
         ) else null,
         manga = if (apiMedia.type == MediaType.MANGA) Manga(totalChapters = apiMedia.chapters) else null,
+        format = apiMedia.format?.toString(),
     )
 
     constructor(mediaList: MediaList) : this(mediaList.media!!) {

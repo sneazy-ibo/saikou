@@ -7,15 +7,25 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ani.saikou.*
 import ani.saikou.anilist.Anilist
 import ani.saikou.anime.Episode
 import ani.saikou.anime.SelectorDialogFragment
+import ani.saikou.loadData
+import ani.saikou.logger
 import ani.saikou.manga.MangaChapter
 import ani.saikou.others.AniSkip
 import ani.saikou.others.Jikan
 import ani.saikou.others.Kitsu
-import ani.saikou.parsers.*
+import ani.saikou.parsers.Book
+import ani.saikou.parsers.MangaImage
+import ani.saikou.parsers.MangaReadSources
+import ani.saikou.parsers.NovelSources
+import ani.saikou.parsers.ShowResponse
+import ani.saikou.parsers.VideoExtractor
+import ani.saikou.parsers.WatchSources
+import ani.saikou.saveData
+import ani.saikou.snackString
+import ani.saikou.tryWithSuspend
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -216,7 +226,7 @@ class MediaDetailsViewModel : ViewModel() {
         mangaChapters.postValue(mangaLoaded)
     }
 
-    val mangaChapter = MutableLiveData<MangaChapter?>(null)
+    private val mangaChapter = MutableLiveData<MangaChapter?>(null)
     fun getMangaChapter(): LiveData<MangaChapter?> = mangaChapter
     suspend fun loadMangaChapterImages(chapter: MangaChapter, selected: Selected, post: Boolean = true): Boolean {
         return tryWithSuspend(true) {
@@ -231,4 +241,21 @@ class MediaDetailsViewModel : ViewModel() {
     fun loadTransformation(mangaImage: MangaImage, source: Int): BitmapTransformation? {
         return if (mangaImage.useTransformation) mangaReadSources?.get(source)?.getTransformation() else null
     }
+
+    val novelSources = NovelSources
+    val novelResponses = MutableLiveData<List<ShowResponse>>(null)
+    suspend fun searchNovels(query: String, i: Int) {
+        val source = novelSources[i]
+        tryWithSuspend(post = true) {
+            novelResponses.postValue(source.search(query))
+        }
+    }
+
+    val book: MutableLiveData<Book> = MutableLiveData(null)
+    suspend fun loadBook(novel: ShowResponse, i: Int) {
+        tryWithSuspend {
+            book.postValue(novelSources[i].loadBook(novel.link, novel.extra))
+        }
+    }
+
 }

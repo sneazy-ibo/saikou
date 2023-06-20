@@ -39,6 +39,7 @@ import ani.saikou.loadData
 import ani.saikou.loadImage
 import ani.saikou.manga.MangaReadFragment
 import ani.saikou.navBarHeight
+import ani.saikou.novel.NovelReadFragment
 import ani.saikou.openLinkInBrowser
 import ani.saikou.others.ImageViewDialog
 import ani.saikou.others.getSerialized
@@ -253,10 +254,10 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
 
         tabLayout.menu.clear()
         if (media.anime != null) {
-            viewPager.adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, true)
+            viewPager.adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, SupportedMedia.ANIME)
             tabLayout.inflateMenu(R.menu.anime_menu_detail)
         } else if (media.manga != null) {
-            viewPager.adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, false)
+            viewPager.adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, if(media.format=="NOVEL") SupportedMedia.NOVEL else SupportedMedia.MANGA)
             tabLayout.inflateMenu(R.menu.manga_menu_detail)
             anime = false
         }
@@ -324,29 +325,27 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
         super.onResume()
     }
 
+    private enum class SupportedMedia{
+        ANIME, MANGA, NOVEL
+    }
     //ViewPager
     private class ViewPagerAdapter(
         fragmentManager: FragmentManager,
         lifecycle: Lifecycle,
-        private val anime: Boolean
+        private val media: SupportedMedia
     ) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
 
         override fun getItemCount(): Int = 2
 
-        override fun createFragment(position: Int): Fragment {
-            if (anime) {
-                when (position) {
-                    0 -> return MediaInfoFragment()
-                    1 -> return AnimeWatchFragment()
-                }
-            } else {
-                when (position) {
-                    0 -> return MediaInfoFragment()
-                    1 -> return MangaReadFragment()
-                }
+        override fun createFragment(position: Int): Fragment = when (position){
+            0 -> MediaInfoFragment()
+            1 -> when(media){
+                SupportedMedia.ANIME -> AnimeWatchFragment()
+                SupportedMedia.MANGA -> MangaReadFragment()
+                SupportedMedia.NOVEL -> NovelReadFragment()
             }
-            return MediaInfoFragment()
+            else -> MediaInfoFragment()
         }
     }
 

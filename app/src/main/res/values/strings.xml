@@ -107,7 +107,7 @@
         Couldn\'t find anything X( \n
         Try another source.
     </string>
-    <string name="not_supported">%1$s is not supported yet!</string>
+    <string name="not_supported">%1$s is not supported!</string>
     <string name="server_selector">Select Server</string>
     <string name="auto_select_server">Auto Selecting Server</string>
     <string name="make_default">Make Default</string>
