@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,9 +7,15 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/imageContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.cardview.widget.CardView
             android:layout_width="32dp"
@@ -31,6 +37,18 @@
             android:textStyle="bold"
             tools:text="@string/app_name" />
 
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/imageContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,7 +61,6 @@
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:focusable="false"
-                android:minHeight="360dp"
                 android:scaleType="fitCenter"
                 tools:ignore="ContentDescription,ImageContrastCheck"
                 tools:src="@tools:sample/backgrounds/scenic[0]" />
@@ -65,66 +82,71 @@
                 android:layout_gravity="center" />
 
         </FrameLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp">
+    <LinearLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageContainer">
 
-            <Button
-                android:id="@+id/bottomImageReload"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/poppins_bold"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:padding="8dp"
-                android:text="@string/reload"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:cornerRadius="16dp"
-                tools:ignore="SpeakableTextPresentCheck"
-                tools:visibility="visible" />
+        <Button
+            android:id="@+id/bottomImageReload"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins_bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="8dp"
+            android:text="@string/reload"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:cornerRadius="16dp"
+            tools:ignore="SpeakableTextPresentCheck"
+            tools:visibility="visible" />
 
-            <Button
-                android:id="@+id/bottomImageSave"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:enabled="false"
-                android:fontFamily="@font/poppins_bold"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:padding="8dp"
-                android:text="@string/save"
-                android:textSize="16sp"
-                app:cornerRadius="16dp"
-                tools:ignore="SpeakableTextPresentCheck" />
+        <Button
+            android:id="@+id/bottomImageSave"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:fontFamily="@font/poppins_bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="8dp"
+            android:text="@string/save"
+            android:textSize="16sp"
+            app:cornerRadius="16dp"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-            <Button
-                android:id="@+id/bottomImageShare"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:enabled="false"
-                android:fontFamily="@font/poppins_bold"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:padding="8dp"
-                android:text="@string/share"
-                android:textSize="16sp"
-                app:cornerRadius="16dp"
-                tools:ignore="SpeakableTextPresentCheck" />
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/bottomImageShare"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:fontFamily="@font/poppins_bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="8dp"
+            android:text="@string/share"
+            android:textSize="16sp"
+            app:cornerRadius="16dp"
+            tools:ignore="SpeakableTextPresentCheck" />
 
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
