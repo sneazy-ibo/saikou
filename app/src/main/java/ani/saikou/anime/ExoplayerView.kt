@@ -64,6 +64,7 @@ import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
 import ani.saikou.others.AniSkip
 import ani.saikou.others.AniSkip.getType
+import ani.saikou.others.Download.download
 import ani.saikou.others.ResettableTimer
 import ani.saikou.others.getSerialized
 import ani.saikou.parsers.*

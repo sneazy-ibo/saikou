@@ -45,7 +45,8 @@ object Download {
         return direct
     }
 
-    fun download(context: Context, episode: Episode, animeTitle: String, downloader: Int) {
+    fun download(context: Context, episode: Episode, animeTitle: String) {
+        toast("Downloading...")
         val extractor = episode.extractors?.find { it.server.name == episode.selectedExtractor } ?: return
         val video =
             if (extractor.videos.size > episode.selectedVideo) extractor.videos[episode.selectedVideo] else return
@@ -57,13 +58,15 @@ object Download {
         val folder = "/Anime/${aTitle}/"
         val fileName = "$title${if (video.size != null) "(${video.size}p)" else ""}.mp4"
         val file = video.file
+        download(context, file, fileName, folder, notif)
+    }
 
-        when (downloader) {
-            1    -> oneDM(context, file, notif)
+    fun download(context: Context, file: FileUrl, fileName: String, folder: String, notif: String? = null) {
+        when (loadData<Int>("settings_download_manager", context, false) ?: 0) {
+            1    -> oneDM(context, file, notif ?: fileName)
             2    -> adm(context, file, fileName, folder)
-            else -> defaultDownload(context, file, fileName, folder, notif)
+            else -> defaultDownload(context, file, fileName, folder, notif ?: fileName)
         }
-
     }
 
     private fun defaultDownload(context: Context, file: FileUrl, fileName: String, folder: String, notif: String) {
