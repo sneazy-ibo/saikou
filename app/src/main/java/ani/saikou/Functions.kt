@@ -44,9 +44,7 @@ import ani.saikou.anime.Episode
 import ani.saikou.databinding.ItemCountDownBinding
 import ani.saikou.mal.MAL
 import ani.saikou.media.Media
-import ani.saikou.others.Download.adm
-import ani.saikou.others.Download.defaultDownload
-import ani.saikou.others.Download.oneDM
+import ani.saikou.others.Download.download
 import ani.saikou.parsers.ShowResponse
 import ani.saikou.settings.UserInterfaceSettings
 import com.bumptech.glide.Glide
@@ -534,13 +532,10 @@ fun openLinkInBrowser(link: String?) {
     }
 }
 
-fun download(activity: Activity, episode: Episode, animeTitle: String) {
+fun download(activity:Context, episode: Episode, animeTitle: String) {
     toast("Downloading...")
-    when (loadData<Int>("settings_download_manager", activity, false) ?: 0) {
-        1    -> oneDM(activity, episode, animeTitle)
-        2    -> adm(activity, episode, animeTitle)
-        else -> defaultDownload(activity, episode, animeTitle)
-    }
+    val downloader = loadData<Int>("settings_download_manager", activity, false) ?: 0
+    download(activity, episode, animeTitle, downloader)
 }
 
 fun saveImageToDownloads(title: String, bitmap: Bitmap, context: Context) {

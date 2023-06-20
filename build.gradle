@@ -1,10 +1,10 @@
 buildscript {
-    ext.kotlin_version = '1.8.21'
     repositories {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
     }
+    ext.kotlin_version = '1.8.22'
     dependencies {
         classpath 'com.android.tools.build:gradle:8.0.2'
         classpath 'com.google.gms:google-services:4.3.15'

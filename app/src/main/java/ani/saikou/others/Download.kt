@@ -1,8 +1,8 @@
 package ani.saikou.others
 
-import android.app.Activity
 import android.app.DownloadManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import ani.saikou.FileUrl
 import ani.saikou.anime.Episode
 import ani.saikou.defaultHeaders
 import ani.saikou.loadData
@@ -29,56 +30,69 @@ object Download {
             false
         }
     }
-    private fun getDownloadDir(activity: Activity): File {
+
+    private fun getDownloadDir(context: Context): File {
         val direct: File
         if (loadData<Boolean>("sd_dl") == true) {
-            val arrayOfFiles = ContextCompat.getExternalFilesDirs(activity, null)
+            val arrayOfFiles = ContextCompat.getExternalFilesDirs(context, null)
             val parentDirectory = arrayOfFiles[1].toString()
             direct = File(parentDirectory)
             if (!direct.exists()) direct.mkdirs()
-        }
-        else {
+        } else {
             direct = File("storage/emulated/0/${Environment.DIRECTORY_DOWNLOADS}/Saikou/")
             if (!direct.exists()) direct.mkdirs()
         }
         return direct
     }
-    fun defaultDownload(activity: Activity, episode: Episode, animeTitle: String) {
-        val manager = activity.getSystemService(AppCompatActivity.DOWNLOAD_SERVICE) as DownloadManager
+
+    fun download(context: Context, episode: Episode, animeTitle: String, downloader: Int) {
         val extractor = episode.extractors?.find { it.server.name == episode.selectedExtractor } ?: return
         val video =
             if (extractor.videos.size > episode.selectedVideo) extractor.videos[episode.selectedVideo] else return
         val regex = "[\\\\/:*?\"<>|]".toRegex()
         val aTitle = animeTitle.replace(regex, "")
-        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(video.file.url))
+        val title = "Episode ${episode.number}${if (episode.title != null) " - ${episode.title}" else ""}".replace(regex, "")
 
-        video.file.headers.forEach {
-            request.addRequestHeader(it.key, it.value)
+        val notif = "$title : $aTitle"
+        val folder = "/Anime/${aTitle}/"
+        val fileName = "$title${if (video.size != null) "(${video.size}p)" else ""}.mp4"
+        val file = video.file
+
+        when (downloader) {
+            1    -> oneDM(context, file, notif)
+            2    -> adm(context, file, fileName, folder)
+            else -> defaultDownload(context, file, fileName, folder, notif)
         }
 
-        val title = "Episode ${episode.number}${if (episode.title != null) " - ${episode.title}" else ""}".replace(regex, "")
-        val name = "$title${if (video.size != null) "(${video.size}p)" else ""}.mp4"
+    }
+
+    private fun defaultDownload(context: Context, file: FileUrl, fileName: String, folder: String, notif: String) {
+        val manager = context.getSystemService(AppCompatActivity.DOWNLOAD_SERVICE) as DownloadManager
+        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(file.url))
+        file.headers.forEach {
+            request.addRequestHeader(it.key, it.value)
+        }
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 
-                val arrayOfFiles = ContextCompat.getExternalFilesDirs(activity, null)
+                val arrayOfFiles = ContextCompat.getExternalFilesDirs(context, null)
                 if (loadData<Boolean>("sd_dl") == true && arrayOfFiles.size > 1 && arrayOfFiles[0] != null && arrayOfFiles[1] != null) {
-                    val parentDirectory = arrayOfFiles[1].toString() + "/Anime/${aTitle}/"
+                    val parentDirectory = arrayOfFiles[1].toString() + folder
                     val direct = File(parentDirectory)
                     if (!direct.exists()) direct.mkdirs()
-                    request.setDestinationUri(Uri.fromFile(File("$parentDirectory$name")))
+                    request.setDestinationUri(Uri.fromFile(File("$parentDirectory$fileName")))
                 } else {
-                    val direct = File(Environment.DIRECTORY_DOWNLOADS + "/Saikou/Anime/${aTitle}/")
+                    val direct = File(Environment.DIRECTORY_DOWNLOADS + "/Saikou$folder")
                     if (!direct.exists()) direct.mkdirs()
                     request.setDestinationInExternalPublicDir(
                         Environment.DIRECTORY_DOWNLOADS,
-                        "/Saikou/Anime/${aTitle}/$name"
+                        "/Saikou$folder$fileName"
                     )
                 }
-                request.setTitle("$title:$aTitle")
+                request.setTitle(notif)
                 manager.enqueue(request)
-                toast("Started Downloading\n$title : $aTitle")
+                toast("Started Downloading\n$notif")
             } catch (e: SecurityException) {
                 toast("Please give permission to access Files & Folders from Settings, & Try again.")
             } catch (e: Exception) {
@@ -86,41 +100,34 @@ object Download {
             }
         }
     }
-    fun oneDM (activity: Activity, episode: Episode, animeTitle: String) {
-        val appName = if (isPackageInstalled("idm.internet.download.manager.plus", activity.packageManager)) {
+
+    private fun oneDM(context: Context, file: FileUrl, notif: String) {
+        val appName = if (isPackageInstalled("idm.internet.download.manager.plus", context.packageManager)) {
             "idm.internet.download.manager.plus"
-        } else if (isPackageInstalled("idm.internet.download.manager", activity.packageManager)) {
+        } else if (isPackageInstalled("idm.internet.download.manager", context.packageManager)) {
             "idm.internet.download.manager"
-        }
-        else if (isPackageInstalled("idm.internet.download.manager.adm.lite", activity.packageManager)) {
+        } else if (isPackageInstalled("idm.internet.download.manager.adm.lite", context.packageManager)) {
             "idm.internet.download.manager.adm.lite"
         } else {
             ""
         }
         if (appName.isNotEmpty()) {
-            val extractor = episode.extractors?.find { it.server.name == episode.selectedExtractor } ?: return
-            val video = if (extractor.videos.size > episode.selectedVideo) extractor.videos[episode.selectedVideo] else return
-            val regex = "[\\\\/:*?\"<>|]".toRegex()
-            val title = "Episode ${episode.number}${if (episode.title != null) " - ${episode.title}" else ""}".replace(regex, "")
-            val name = "$title${if (video.size != null) "(${video.size}p)" else ""}"
-            val aTitle = animeTitle.replace(regex, "")
             val bundle = Bundle()
-            defaultHeaders.forEach { a -> bundle.putString(a.key, a.value)}
-            video.file.headers.forEach { a -> bundle.putString(a.key, a.value)}
+            defaultHeaders.forEach { a -> bundle.putString(a.key, a.value) }
+            file.headers.forEach { a -> bundle.putString(a.key, a.value) }
             // documentation: https://www.apps2sd.info/idmp/faq?id=35
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 component = ComponentName(appName, "idm.internet.download.manager.Downloader")
-                data = Uri.parse(video.file.url)
+                data = Uri.parse(file.url)
                 putExtra("extra_headers", bundle)
-                putExtra("extra_filename", "$aTitle - $name")
+                putExtra("extra_filename", notif)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            ContextCompat.startActivity(activity.baseContext, intent, null)
-        }
-        else {
+            ContextCompat.startActivity(context, intent, null)
+        } else {
             ContextCompat.startActivity(
-                activity.baseContext,
+                context,
                 Intent(
                     Intent.ACTION_VIEW,
                     Uri.parse("market://details?id=idm.internet.download.manager")
@@ -130,30 +137,24 @@ object Download {
             toast("Please install 1DM")
         }
     }
-    fun adm (activity: Activity, episode: Episode, animeTitle: String) {
-        if(isPackageInstalled("com.dv.adm", activity.packageManager)) {
-            val extractor = episode.extractors?.find { it.server.name == episode.selectedExtractor } ?: return
-            val video = if (extractor.videos.size > episode.selectedVideo) extractor.videos[episode.selectedVideo] else return
-            val regex = "[\\\\/:*?\"<>|]".toRegex()
-            val aTitle = animeTitle.replace(regex, "")
-            val title = "Episode ${episode.number}${if (episode.title != null) " - ${episode.title}" else ""}".replace(regex, "")
-            val name = "$title${if (video.size != null) "(${video.size}p)" else ""}"
+
+    private fun adm(context: Context, file: FileUrl, fileName: String, folder: String) {
+        if (isPackageInstalled("com.dv.adm", context.packageManager)) {
             val bundle = Bundle()
-            defaultHeaders.forEach { a -> bundle.putString(a.key, a.value)}
-            video.file.headers.forEach { a -> bundle.putString(a.key, a.value)}
+            defaultHeaders.forEach { a -> bundle.putString(a.key, a.value) }
+            file.headers.forEach { a -> bundle.putString(a.key, a.value) }
             // unofficial documentation: https://pastebin.com/ScDNr2if (there is no official documentation)
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 component = ComponentName("com.dv.adm", "com.dv.adm.AEditor")
-                putExtra("com.dv.get.ACTION_LIST_ADD", "${video.file.url}<info>$name.mp4")
-                putExtra("com.dv.get.ACTION_LIST_PATH", "${getDownloadDir(activity)}/Anime/${aTitle}/")
+                putExtra("com.dv.get.ACTION_LIST_ADD", "${file.url}<info>$fileName")
+                putExtra("com.dv.get.ACTION_LIST_PATH", "${getDownloadDir(context)}$folder")
                 putExtra("android.media.intent.extra.HTTP_HEADERS", bundle)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
-            ContextCompat.startActivity(activity.baseContext, intent, null)
-            }
-        else {
+            ContextCompat.startActivity(context, intent, null)
+        } else {
             ContextCompat.startActivity(
-                activity.baseContext,
+                context,
                 Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.dv.adm")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                 null
             )
