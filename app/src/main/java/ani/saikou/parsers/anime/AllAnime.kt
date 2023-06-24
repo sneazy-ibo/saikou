@@ -4,12 +4,14 @@ import android.net.Uri
 import ani.saikou.*
 import ani.saikou.anilist.Anilist
 import ani.saikou.parsers.*
+import ani.saikou.parsers.anime.extractors.DoodStream
 import ani.saikou.parsers.anime.extractors.FPlayer
 import ani.saikou.parsers.anime.extractors.GogoCDN
+import ani.saikou.parsers.anime.extractors.Mp4Upload
 import ani.saikou.parsers.anime.extractors.StreamSB
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okio.ByteString.Companion.decodeHex
 import java.text.DecimalFormat
 
 class AllAnime : AnimeParser() {
@@ -78,8 +80,9 @@ class AllAnime : AnimeParser() {
                     sourceNum++
                 }
 
-                if (source.sourceUrl.toHttpUrlOrNull() == null) {
-                    val jsonUrl = """https://allanimenews.com/${source.sourceUrl.replace("clock", "clock.json").substring(1)}"""
+                if (!source.sourceUrl.startsWith("http")) {
+                    val url = source.sourceUrl.substring(1).hexDecode().printIt("okay : ")
+                    val jsonUrl = "https://embed.ssbcontent.site${url.replace("clock", "clock.json")}"
                     videoServers.add(VideoServer(serverName, jsonUrl, mapOf("type" to source.type)))
                 } else {
                     videoServers.add(VideoServer(serverName, source.sourceUrl, mapOf("type" to source.type)))
@@ -90,6 +93,10 @@ class AllAnime : AnimeParser() {
         return videoServers
     }
 
+    private fun String.hexDecode():String{
+        return this.decodeHex().utf8()
+    }
+
     override suspend fun getVideoExtractor(server: VideoServer): VideoExtractor? {
         if (server.extraData?.get("type") == "player")
             return AllAnimeExtractor(server, true)
@@ -97,13 +104,12 @@ class AllAnime : AnimeParser() {
         val domain = serverUrl.host ?: return null
         val path = serverUrl.path ?: return null
         val extractor: VideoExtractor? = when {
-            "gogo" in domain    -> GogoCDN(server)
-            "goload" in domain  -> GogoCDN(server)
-            "sb" in domain      -> StreamSB(server)
-            "sss" in domain     -> StreamSB(server)
-            "fplayer" in domain -> FPlayer(server)
-            "fembed" in domain  -> FPlayer(server)
             "apivtwo" in path   -> AllAnimeExtractor(server)
+            "taku" in domain      -> GogoCDN(server)
+            "sb" in domain        -> StreamSB(server)
+            "fplayer" in domain   -> FPlayer(server)
+            "dood" in domain      -> DoodStream(server)
+            "mp4" in domain       -> Mp4Upload(server)
             else                -> null
         }
         return extractor

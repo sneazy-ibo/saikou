@@ -3,15 +3,21 @@ package ani.saikou.parsers.anime
 import android.net.Uri
 import ani.saikou.FileUrl
 import ani.saikou.client
-import ani.saikou.parsers.*
+import ani.saikou.parsers.AnimeParser
+import ani.saikou.parsers.Episode
+import ani.saikou.parsers.ShowResponse
+import ani.saikou.parsers.VideoExtractor
+import ani.saikou.parsers.VideoServer
+import ani.saikou.parsers.anime.extractors.DoodStream
 import ani.saikou.parsers.anime.extractors.FPlayer
 import ani.saikou.parsers.anime.extractors.GogoCDN
+import ani.saikou.parsers.anime.extractors.Mp4Upload
 import ani.saikou.parsers.anime.extractors.StreamSB
 
 class Gogo : AnimeParser() {
     override val name = "Gogo"
-    override val saveName = "gogo_anime_cl"
-    override val hostUrl = "https://gogoanime.cl"
+    override val saveName = "gogo_anime_hu"
+    override val hostUrl = "https://gogoanime.hu"
     override val malSyncBackupName = "Gogoanime"
     override val isDubAvailableSeparately = true
 
@@ -27,7 +33,7 @@ class Gogo : AnimeParser() {
             .select("ul > li > a").reversed()
         epList.forEach {
             val num = it.select(".name").text().replace("EP", "").trim()
-            list.add(Episode(num,hostUrl + it.attr("href").trim()))
+            list.add(Episode(num, hostUrl + it.attr("href").trim()))
         }
 
         return list
@@ -38,37 +44,34 @@ class Gogo : AnimeParser() {
         else text
     }
 
-    override suspend fun loadVideoServers(episodeLink: String, extra: Map<String,String>?): List<VideoServer> {
+    override suspend fun loadVideoServers(episodeLink: String, extra: Map<String, String>?): List<VideoServer> {
         val list = mutableListOf<VideoServer>()
         client.get(episodeLink).document.select("div.anime_muti_link > ul > li").forEach {
             val name = it.select("a").text().replace("Choose this server", "")
             val url = httpsIfy(it.select("a").attr("data-video"))
             val embed = FileUrl(url, mapOf("referer" to hostUrl))
 
-            list.add(VideoServer(name,embed))
+            list.add(VideoServer(name, embed))
         }
         return list
     }
 
     override suspend fun getVideoExtractor(server: VideoServer): VideoExtractor? {
         val domain = Uri.parse(server.embed.url).host ?: return null
+        println("domain: $domain")
         val extractor: VideoExtractor? = when {
-            "gogo" in domain    -> GogoCDN(server)
-            "goload" in domain  -> GogoCDN(server)
-            "playgo" in domain  -> GogoCDN(server)
-            "anihdplay" in domain  -> GogoCDN(server)
-            "taku" in domain  -> GogoCDN(server)
-            "sb" in domain      -> StreamSB(server)
-            "sss" in domain      -> StreamSB(server)
-            "fplayer" in domain -> FPlayer(server)
-            "fembed" in domain  -> FPlayer(server)
-            else                -> null
+            "taku" in domain      -> GogoCDN(server)
+            "sb" in domain        -> StreamSB(server)
+            "fplayer" in domain   -> FPlayer(server)
+            "dood" in domain      -> DoodStream(server)
+            "mp4" in domain       -> Mp4Upload(server)
+            else                  -> null
         }
         return extractor
     }
 
     override suspend fun search(query: String): List<ShowResponse> {
-        val encoded = encode(query + if(selectDub) " (Dub)" else "")
+        val encoded = encode(query + if (selectDub) " (Dub)" else "")
         val list = mutableListOf<ShowResponse>()
         client.get("$hostUrl/search.html?keyword=$encoded").document
             .select(".last_episodes > ul > li div.img > a").forEach {
