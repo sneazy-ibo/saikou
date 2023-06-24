@@ -29,10 +29,16 @@ class AnnaArchive : NovelParser() {
     }
 
     override suspend fun search(query: String): List<ShowResponse> {
+        val regex = Regex("vol\\.? (\\d+)|volume (\\d+)", RegexOption.IGNORE_CASE)
         return client.get("$hostUrl/search?ext=epub&q=$query").document.select(".main > div > div").mapNotNull { div ->
-            val a = div.selectFirst("a")
-                ?: Jsoup.parse(div.data())
-            parseShowResponse(a)
+            val a = div.selectFirst("a") ?: Jsoup.parse(div.data())
+            parseShowResponse(a.selectFirst("a"))
+        }.sortedBy { res ->
+            val match = regex.find( res.name)
+            match?.groupValues
+                ?.firstOrNull { it.isNotEmpty() }
+                ?.filter { it.isDigit() }
+                ?.toIntOrNull() ?: Int.MAX_VALUE
         }
     }
 
