@@ -34,11 +34,11 @@ class AnnaArchive : NovelParser() {
             val a = div.selectFirst("a") ?: Jsoup.parse(div.data())
             parseShowResponse(a.selectFirst("a"))
         }.sortedBy { res ->
-            val match = regex.find( res.name)
-            match?.groupValues
+            val match = regex.find( res.name)?.groupValues
                 ?.firstOrNull { it.isNotEmpty() }
                 ?.filter { it.isDigit() }
                 ?.toIntOrNull() ?: Int.MAX_VALUE
+            match
         }
     }
 
