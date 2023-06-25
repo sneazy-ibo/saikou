@@ -1,6 +1,5 @@
 package ani.saikou.manga.mangareader
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import ani.saikou.BottomSheetDialogFragment
 import ani.saikou.R
 import ani.saikou.databinding.BottomSheetSelectorBinding
-import ani.saikou.hideSystemBars
 import ani.saikou.manga.MangaChapter
 import ani.saikou.media.MediaDetailsViewModel
 import ani.saikou.others.getSerialized
@@ -60,11 +58,6 @@ class ChapterLoaderDialog : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = BottomSheetSelectorBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        activity?.hideSystemBars()
-        super.onDismiss(dialog)
     }
 
     override fun onDestroy() {
