@@ -28,18 +28,38 @@ class AnnaArchive : NovelParser() {
         return ShowResponse(name, "$hostUrl${it.attr("href")}", img, extra = extra)
     }
 
+    private val defaultImg = "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/default.jpg"
+    private val VolumesRegex = Regex("vol\\.? (\\d+(\\.\\d+)?)|volume (\\d+(\\.\\d+)?)", RegexOption.IGNORE_CASE)
     override suspend fun search(query: String): List<ShowResponse> {
-        val regex = Regex("vol\\.? (\\d+)|volume (\\d+)", RegexOption.IGNORE_CASE)
-        return client.get("$hostUrl/search?ext=epub&q=$query").document.select(".main > div > div").mapNotNull { div ->
+        val vols = client.get("$hostUrl/search?ext=epub&q=$query").document.select(".main > div > div").mapNotNull { div ->
             val a = div.selectFirst("a") ?: Jsoup.parse(div.data())
             parseShowResponse(a.selectFirst("a"))
-        }.sortedBy { res ->
-            val match = regex.find( res.name)?.groupValues
+        }.groupBy { res ->
+            val match = VolumesRegex.find(res.name)?.groupValues
                 ?.firstOrNull { it.isNotEmpty() }
-                ?.filter { it.isDigit() }
-                ?.toIntOrNull() ?: Int.MAX_VALUE
+                ?.substringAfter(" ")
+                ?.toDoubleOrNull() ?: Double.MAX_VALUE
             match
-        }
+        }.toSortedMap()
+        return vols.convertWith(query)
+    }
+
+
+    private fun Map<Double, List<ShowResponse>>.convertWith(query: String): List<ShowResponse> {
+        val resultList = this.values
+            .flatMap { showList ->
+                val nonDefaultCoverShows = showList.filter { it.coverUrl.url != defaultImg }
+                val bestShow = nonDefaultCoverShows.firstOrNull { it.name.contains(query) }
+                    ?: nonDefaultCoverShows.firstOrNull()
+                    ?: showList.first()
+                listOf(bestShow)
+            }
+            .toMutableList()
+
+        val remainingShows = this.values.flatten().subtract(resultList.toSet())
+        resultList.addAll(remainingShows)
+
+        return resultList
     }
 
     override suspend fun loadBook(link: String, extra: Map<String, String>?): Book {
