@@ -5,11 +5,13 @@ import ani.saikou.parsers.*
 import ani.saikou.parsers.anime.extractors.StreamTape
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
+import java.net.URL
+
 class NineAnime : AnimeParser() {
 
     override val name = "9anime"
     override val saveName = "9anime_to"
-    override val hostUrl = "https://9animehq.to"
+    override val hostUrl = "https://9anime.to"
     override val malSyncBackupName = "9anime"
     override val isDubAvailableSeparately = true
 
@@ -73,7 +75,7 @@ class NineAnime : AnimeParser() {
         }
 
         override suspend fun extract(): VideoContainer {
-            val slug = server.embed.url.findBetween("e/","?")!!
+            val slug = URL(server.embed.url).path.substringAfter("e/")
             val isMcloud = server.name == "MyCloud"
             val server = if (isMcloud) "Mcloud" else "Vizcloud"
             val url = "https://9anime.eltik.net/raw$server?query=$slug&apikey=saikou"
