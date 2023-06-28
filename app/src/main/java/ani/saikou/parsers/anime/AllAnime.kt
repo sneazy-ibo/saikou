@@ -128,7 +128,7 @@ class AllAnime : AnimeParser() {
             ShowResponse(
                 show.name,
                 link,
-                show.thumbnail ?: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/default.jpg",
+                show.thumbnail ?: defaultImage,
                 otherNames,
                 show.availableEpisodes.let { if (selectDub) it.dub else it.sub }
             )

@@ -23,10 +23,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="-4dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
             android:clipToPadding="false"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -63,8 +62,9 @@
                 android:ellipsize="marquee"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="144dp"
-                android:text="@string/empty"
-                android:textSize="20sp" />
+                android:textIsSelectable="true"
+                android:textSize="20sp"
+                tools:text="@string/empty" />
 
         </LinearLayout>
 
@@ -73,17 +73,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:alpha="0.58"
-            android:padding="16dp"
             app:lineHeight="16sp"
-            tools:ignore="TextContrastCheck"
-            tools:text="@string/always_minimize_info" />
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            tools:text="@string/always_minimize_info"
+            tools:ignore="TextContrastCheck"/>
 
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:fontFamily="@font/poppins_bold"
             android:text="@string/downloads"
             android:textSize="16sp" />

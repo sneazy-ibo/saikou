@@ -1,6 +1,8 @@
 package ani.saikou.novel
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
@@ -41,7 +43,6 @@ class NovelReadFragment : Fragment() {
     val uiSettings = loadData("ui_settings", toast = false) ?: UserInterfaceSettings().apply { saveData("ui_settings", this) }
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.animeSourceRecycler.updatePadding(bottom = binding.animeSourceRecycler.paddingBottom + navBarHeight)
@@ -59,12 +60,15 @@ class NovelReadFragment : Fragment() {
                 progress = View.GONE
                 binding.mediaInfoProgressBar.visibility = progress
                 if (!loaded) {
-                    loaded = true
-                    searchQuery = media.name ?: media.nameRomaji
+                    val sel = media.selected
+                    searchQuery = sel?.server ?: media.name ?: media.nameRomaji
                     headerAdapter = NovelReadAdapter(media, this, model.novelSources)
                     novelResponseAdapter = NovelResponseAdapter(this)
                     binding.animeSourceRecycler.adapter = ConcatAdapter(headerAdapter, novelResponseAdapter)
                     loaded = true
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        search(searchQuery, sel?.source ?: 0, auto = sel?.server == null)
+                    }, 100)
                 }
             }
         }
@@ -79,15 +83,21 @@ class NovelReadFragment : Fragment() {
 
     lateinit var searchQuery: String
     private var searching = false
-    fun search(query: String, source: Int) {
+    fun search(query: String, source: Int, save: Boolean = false, auto: Boolean = false) {
         if (!searching) {
             novelResponseAdapter.clear()
             searchQuery = query
             headerAdapter.progress.visibility = View.VISIBLE
             lifecycleScope.launch(Dispatchers.IO) {
-                model.searchNovels(query, source)
+                if (auto || query=="") model.autoSearchNovels(media)
+                else model.searchNovels(query, source)
             }
             searching = true
+            if (save) {
+                val selected = model.loadSelected(media)
+                selected.server = query
+                model.saveSelected(media.id, selected, requireActivity())
+            }
         }
     }
 

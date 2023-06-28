@@ -102,6 +102,8 @@ abstract class BaseParser {
 
     fun encode(input: String): String = URLEncoder.encode(input, "utf-8").replace("+", "%20")
     fun decode(input: String): String = URLDecoder.decode(input, "utf-8")
+
+    val defaultImage = "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/default.jpg"
 }
 
 

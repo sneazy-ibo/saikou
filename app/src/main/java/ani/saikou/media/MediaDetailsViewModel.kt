@@ -251,6 +251,13 @@ class MediaDetailsViewModel : ViewModel() {
         }
     }
 
+    suspend fun autoSearchNovels(media: Media) {
+        val source = novelSources[media.selected?.source ?: 0]
+        tryWithSuspend(post = true) {
+            novelResponses.postValue(source.sortedSearch(media))
+        }
+    }
+
     val book: MutableLiveData<Book> = MutableLiveData(null)
     suspend fun loadBook(novel: ShowResponse, i: Int) {
         tryWithSuspend {
