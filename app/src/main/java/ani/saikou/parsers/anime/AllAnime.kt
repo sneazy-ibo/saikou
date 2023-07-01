@@ -11,7 +11,6 @@ import ani.saikou.parsers.anime.extractors.Mp4Upload
 import ani.saikou.parsers.anime.extractors.StreamSB
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import okio.ByteString.Companion.decodeHex
 import java.text.DecimalFormat
 
 class AllAnime : AnimeParser() {
@@ -71,17 +70,15 @@ class AllAnime : AnimeParser() {
                 variables,
                 videoServerHash
             ).data?.episode?.sourceUrls?.forEach { source ->
-                // It can be that two different actual sources share the same sourceName
                 var serverName = source.sourceName
                 var sourceNum = 2
-                // Sometimes provides relative links just because ¯\_(ツ)_/¯
                 while (videoServers.any { it.name == serverName }) {
                     serverName = "${source.sourceName} ($sourceNum)"
                     sourceNum++
                 }
 
                 if (!source.sourceUrl.startsWith("http")) {
-                    val url = source.sourceUrl.substring(1).hexDecode().printIt("okay : ")
+                    val url = source.sourceUrl.decodeHash()
                     val jsonUrl = "https://embed.ssbcontent.site${url.replace("clock", "clock.json")}"
                     videoServers.add(VideoServer(serverName, jsonUrl, mapOf("type" to source.type)))
                 } else {
@@ -93,8 +90,20 @@ class AllAnime : AnimeParser() {
         return videoServers
     }
 
-    private fun String.hexDecode():String{
-        return this.decodeHex().utf8()
+    private fun String.hexDecode(): String {
+        return substringAfterLast('#')
+            .chunked(2)
+            .map { it.toInt(16).toByte() }
+            .toByteArray()
+            .toString(Charsets.UTF_8)
+    }
+
+    private fun String.decodeHash(): String {
+        var str = hexDecode()
+        str = str.map {
+            (it.code xor 48).toChar()
+        }.joinToString("")
+        return str
     }
 
     override suspend fun getVideoExtractor(server: VideoServer): VideoExtractor? {
@@ -105,11 +114,11 @@ class AllAnime : AnimeParser() {
         val path = serverUrl.path ?: return null
         val extractor: VideoExtractor? = when {
             "apivtwo" in path   -> AllAnimeExtractor(server)
-            "taku" in domain      -> GogoCDN(server)
-            "sb" in domain        -> StreamSB(server)
-            "fplayer" in domain   -> FPlayer(server)
-            "dood" in domain      -> DoodStream(server)
-            "mp4" in domain       -> Mp4Upload(server)
+            "taku" in domain    -> GogoCDN(server)
+            "sb" in domain      -> StreamSB(server)
+            "fplayer" in domain -> FPlayer(server)
+            "dood" in domain    -> DoodStream(server)
+            "mp4" in domain     -> Mp4Upload(server)
             else                -> null
         }
         return extractor
@@ -182,22 +191,27 @@ class AllAnime : AnimeParser() {
                                     it.format == "adaptive_dash" && it.hardsubLang == "en-US"
                                          ->
                                         Video(null, VideoType.DASH, it.url ?: return@mapNotNull null, null, "DASH")
+
                                     it.format == "adaptive_hls" && it.hardsubLang == "en-US"
                                          ->
                                         Video(null, VideoType.M3U8, it.url ?: return@mapNotNull null, null, "M3U8")
+
                                     else -> null
                                 }
                             }
                         }
+
                         i.hls == true      -> listOf(
                             Video(null, VideoType.M3U8, i.link ?: return@asyncMapNotNull null, null, i.resolutionStr)
                         )
+
                         i.mp4 == true      -> listOf(
                             Video(
                                 null, VideoType.CONTAINER, i.link ?: return@asyncMapNotNull null,
                                 getSize(i.link), i.resolutionStr
                             )
                         )
+
                         else               -> null
                     }
                 }?.flatten() ?: listOf()
