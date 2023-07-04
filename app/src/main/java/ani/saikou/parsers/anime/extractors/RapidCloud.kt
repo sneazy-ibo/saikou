@@ -1,13 +1,10 @@
 package ani.saikou.parsers.anime.extractors
 
 import android.util.Base64
+import android.net.Uri
 import ani.saikou.*
 import ani.saikou.parsers.*
 import kotlinx.serialization.Serializable
-import okhttp3.Request
-import okhttp3.Response
-import okhttp3.WebSocket
-import okhttp3.WebSocketListener
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.util.*
@@ -15,22 +12,18 @@ import java.util.concurrent.*
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-
 @Suppress("BlockingMethodInNonBlockingContext")
 class RapidCloud(override val server: VideoServer) : VideoExtractor() {
 
     override suspend fun extract(): VideoContainer {
-        println(server.embed.url)
         val videos = mutableListOf<Video>()
         val subtitles = mutableListOf<Subtitle>()
-
-        val sId = wss()
         val decryptKey = decryptKey()
 
-        if (sId.isNotEmpty() && decryptKey.isNotEmpty()) {
-            val jsonLink = "https://rapid-cloud.co/ajax/embed-6/getSources?id=${
-                server.embed.url.findBetween("/embed-6/", "?")!!
-            }&sId=$sId"
+        if (decryptKey.isNotEmpty()) {
+            val embedURL = Uri.parse(server.embed.url);
+            val id = embedURL.path?.substringAfterLast("/");
+            val jsonLink = "https://${embedURL.host}/embed-2/ajax/e-1/getSources?id=${id}"
             val response = client.get(jsonLink)
 
             val sourceObject = if (response.text.contains("encrypted")) {
@@ -64,34 +57,6 @@ class RapidCloud(override val server: VideoServer) : VideoExtractor() {
     companion object {
         private suspend fun decryptKey(): String {
             return client.get("https://raw.githubusercontent.com/enimax-anime/key/e6/key.txt").text
-        }
-
-        private suspend fun wss(): String {
-            var sId = client.get("https://api.enime.moe/tool/rapid-cloud/server-id", mapOf("User-Agent" to "Saikou")).text
-            if (sId.isEmpty()) {
-                val latch = CountDownLatch(1)
-                val listener = object : WebSocketListener() {
-                    override fun onOpen(webSocket: WebSocket, response: Response) {
-                        webSocket.send("40")
-                    }
-
-                    override fun onMessage(webSocket: WebSocket, text: String) {
-                        when {
-                            text.startsWith("40") -> {
-                                sId = text.findBetween("40{\"sid\":\"", "\"}") ?: ""
-                                latch.countDown()
-                            }
-                            text == "2"           -> webSocket.send("3")
-                        }
-                    }
-                }
-                okHttpClient.newWebSocket(
-                    Request.Builder().url("wss://ws1.rapid-cloud.co/socket.io/?EIO=4&transport=websocket").build(),
-                    listener
-                )
-                latch.await(30, TimeUnit.SECONDS)
-            }
-            return sId
         }
 
         private fun md5(input: ByteArray): ByteArray {

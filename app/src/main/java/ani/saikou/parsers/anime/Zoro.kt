@@ -18,7 +18,7 @@ class Zoro : AnimeParser() {
 
     override val name = "Zoro"
     override val saveName = "zoro_to"
-    override val hostUrl = "https://zoro.to"
+    override val hostUrl = "https://aniwatch.to"
     override val isDubAvailableSeparately = false
 
     private val header = mapOf("X-Requested-With" to "XMLHttpRequest", "referer" to hostUrl)
@@ -53,7 +53,7 @@ class Zoro : AnimeParser() {
     override suspend fun getVideoExtractor(server: VideoServer): VideoExtractor? {
         val domain = Uri.parse(server.embed.url).host ?: return null
         val extractor: VideoExtractor? = when {
-            "rapid" in domain    -> RapidCloud(server)
+            "megacloud" in domain    -> RapidCloud(server)
             "sb" in domain       -> StreamSB(server)
             "streamta" in domain -> StreamTape(server)
             else                 -> null
