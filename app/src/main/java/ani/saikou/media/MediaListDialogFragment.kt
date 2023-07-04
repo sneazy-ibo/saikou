@@ -46,12 +46,15 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                 binding.mediaListLayout.visibility = View.VISIBLE
 
                 val statuses: Array<String> = resources.getStringArray(R.array.status)
-                binding.mediaListStatus.setText(if (media!!.userStatus != null) media!!.userStatus else statuses[0])
+                val statusStrings = if (media?.manga==null) resources.getStringArray(R.array.status_anime) else resources.getStringArray(R.array.status_manga)
+                val userStatus = if(media!!.userStatus != null) statusStrings[statuses.indexOf(media!!.userStatus)] else statusStrings[0]
+                
+                binding.mediaListStatus.setText(userStatus)
                 binding.mediaListStatus.setAdapter(
                     ArrayAdapter(
                         requireContext(),
                         R.layout.item_dropdown,
-                        statuses
+                        statusStrings
                     )
                 )
 
@@ -150,8 +153,8 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                 }
 
                 binding.mediaListIncrement.setOnClickListener {
-                    if (binding.mediaListStatus.text.toString() == statuses[0]) binding.mediaListStatus.setText(
-                        statuses[1],
+                    if (binding.mediaListStatus.text.toString() == statusStrings[0]) binding.mediaListStatus.setText(
+                        statusStrings[1],
                         false
                     )
                     val init =
@@ -159,7 +162,7 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                             .toInt() else 0
                     if (init < (total ?: 5000)) binding.mediaListProgress.setText((init + 1).toString())
                     if (init + 1 == (total ?: 5000)) {
-                        binding.mediaListStatus.setText(statuses[2], false)
+                        binding.mediaListStatus.setText(statusStrings[2], false)
                         onComplete()
                     }
                 }
@@ -201,7 +204,7 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                                 val progress = _binding?.mediaListProgress?.text.toString().toIntOrNull()
                                 val score =
                                     (_binding?.mediaListScore?.text.toString().toDoubleOrNull()?.times(10))?.toInt()
-                                val status = _binding?.mediaListStatus?.text.toString()
+                                val status = statuses[statusStrings.indexOf(_binding?.mediaListStatus?.text.toString())]
                                 val rewatch = _binding?.mediaListRewatch?.text?.toString()?.toIntOrNull()
                                 val notes = _binding?.mediaListNotes?.text?.toString()
                                 val startD = if (start.date.year != null) start.date else null
@@ -231,7 +234,7 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                             }
                         }
                         Refresh.all()
-                        snackString("List Updated")
+                        snackString(getString(R.string.list_updated))
                         dismissAllowingStateLoss()
                     }
                 }
@@ -245,11 +248,11 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
                                 MAL.query.deleteList(media?.anime!=null,media?.idMAL)
                             }
                             Refresh.all()
-                            snackString("Deleted from List")
+                            snackString(getString(R.string.deleted_from_list))
                             dismissAllowingStateLoss()
                         }
                     } else {
-                        snackString("No List ID found, reloading...")
+                        snackString(getString(R.string.no_list_id))
                         Refresh.all()
                     }
                 }

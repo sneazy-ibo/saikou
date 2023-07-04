@@ -1,5 +1,7 @@
 package ani.saikou.anilist
 
+import ani.saikou.R
+import ani.saikou.currContext
 import ani.saikou.media.Media
 import java.io.Serializable
 
@@ -24,10 +26,10 @@ data class SearchResults(
     fun toChipList(): List<SearchChip> {
         val list = mutableListOf<SearchChip>()
         sort?.let {
-            list.add(SearchChip("SORT", "Sort : $it"))
+            list.add(SearchChip("SORT", currContext()!!.getString(R.string.filter_sort, it)))
         }
         format?.let {
-            list.add(SearchChip("FORMAT", "Format : $it"))
+            list.add(SearchChip("FORMAT", currContext()!!.getString(R.string.filter_format, it)))
         }
         season?.let {
             list.add(SearchChip("SEASON", it))
@@ -39,13 +41,13 @@ data class SearchResults(
             list.add(SearchChip("GENRE", it))
         }
         excludedGenres?.forEach {
-            list.add(SearchChip("EXCLUDED_GENRE", "Not $it"))
+            list.add(SearchChip("EXCLUDED_GENRE", currContext()!!.getString(R.string.filter_exclude, it)))
         }
         tags?.forEach {
             list.add(SearchChip("TAG", it))
         }
         excludedTags?.forEach {
-            list.add(SearchChip("EXCLUDED_TAG", "Not $it"))
+            list.add(SearchChip("EXCLUDED_TAG", currContext()!!.getString(R.string.filter_exclude, it)))
         }
         return list
     }

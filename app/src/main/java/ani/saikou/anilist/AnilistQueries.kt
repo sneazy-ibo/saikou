@@ -16,6 +16,8 @@ import ani.saikou.media.Studio
 import ani.saikou.others.MalScraper
 import ani.saikou.saveData
 import ani.saikou.snackString
+import ani.saikou.currContext
+import ani.saikou.R
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -110,7 +112,11 @@ class AnilistQueries {
                                             name = i.node?.name?.userPreferred,
                                             image = i.node?.image?.medium,
                                             banner = media.banner ?: media.cover,
-                                            role = i.role.toString()
+                                            role = when (i.role.toString()){
+                                                "MAIN" -> currContext()?.getString(R.string.main_role) ?: "MAIN"
+                                                "SUPPORTING" -> currContext()?.getString(R.string.supporting_role) ?: "SUPPORTING"
+                                                else -> i.role.toString()
+                                            }
                                         )
                                     )
                                 }
@@ -203,13 +209,13 @@ class AnilistQueries {
 
                     if (response.data?.media != null) parse()
                     else {
-                        snackString("Adult Stuff? ( ͡° ͜ʖ ͡°)")
+                        snackString(currContext()?.getString(R.string.adult_stuff))
                         response = executeQuery(query, force = true, useToken = false)
                         if (response?.data?.media != null) parse()
-                        else snackString("What did you even open?")
+                        else snackString(currContext()?.getString(R.string.what_did_you_open))
                     }
                 } else {
-                    snackString("Error getting Data from Anilist.")
+                    snackString(currContext()?.getString(R.string.error_getting_data))
                 }
             }
             val mal = async {
@@ -594,7 +600,7 @@ query (${"$"}page: Int = 1, ${"$"}id: Int, ${"$"}type: MediaType, ${"$"}isAdult:
                 page = pageInfo.currentPage.toString().toIntOrNull() ?: 0,
                 hasNextPage = pageInfo.hasNextPage == true,
             )
-        } else snackString("Empty Response, Does your internet perhaps suck?")
+        } else snackString(currContext()?.getString(R.string.empty_response))
         return null
     }
 

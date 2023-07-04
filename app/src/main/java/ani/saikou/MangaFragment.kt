@@ -202,7 +202,7 @@ class MangaFragment : Fragment() {
                 if (it.hasNextPage)
                     progressAdaptor.bar?.visibility = View.VISIBLE
                 else {
-                    snackString("DAMN! YOU TRULY ARE JOBLESS\nYOU REACHED THE END")
+                    snackString(getString(R.string.jobless_message))
                     progressAdaptor.bar?.visibility = View.GONE
                 }
                 loading = false

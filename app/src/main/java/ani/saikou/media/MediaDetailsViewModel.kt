@@ -26,6 +26,8 @@ import ani.saikou.parsers.WatchSources
 import ani.saikou.saveData
 import ani.saikou.snackString
 import ani.saikou.tryWithSuspend
+import ani.saikou.currContext
+import ani.saikou.R
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -193,7 +195,7 @@ class MediaDetailsViewModel : ViewModel() {
                 if (media.anime?.episodes?.get(i) != null) {
                     media.anime.selectedEpisode = i
                 } else {
-                    snackString("Couldn't find episode : $i")
+                    snackString(currContext()?.getString(R.string.episode_not_found, i))
                     return@post
                 }
                 media.selected = this.loadSelected(media)

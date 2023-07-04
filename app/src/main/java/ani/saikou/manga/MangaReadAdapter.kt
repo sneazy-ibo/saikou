@@ -9,17 +9,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import ani.saikou.R
+import ani.saikou.*
 import ani.saikou.anime.handleProgress
 import ani.saikou.databinding.ItemAnimeWatchBinding
 import ani.saikou.databinding.ItemChipBinding
-import ani.saikou.loadData
-import ani.saikou.loadImage
 import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsActivity
 import ani.saikou.media.SourceSearchDialogFragment
 import ani.saikou.parsers.MangaReadSources
-import ani.saikou.px
 import ani.saikou.subcriptions.Notifications.Companion.openSettings
 import ani.saikou.subcriptions.Subscription.Companion.getChannelId
 import com.google.android.material.chip.Chip
@@ -192,7 +189,7 @@ class MangaReadAdapter(
                     val ep = media.manga.chapters!![continueEp]!!
                     binding.itemEpisodeImage.loadImage(media.banner ?: media.cover)
                     binding.animeSourceContinueText.text =
-                        "Continue : Chapter ${ep.number}${if (!ep.title.isNullOrEmpty()) "\n${ep.title}" else ""}"
+                        currActivity()!!.getString(R.string.continue_chapter) + "${ep.number}${if (!ep.title.isNullOrEmpty()) "\n${ep.title}" else ""}"
                     binding.animeSourceContinue.setOnClickListener {
                         fragment.onMangaChapterClick(continueEp)
                     }

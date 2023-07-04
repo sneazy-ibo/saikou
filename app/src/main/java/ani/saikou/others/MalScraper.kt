@@ -1,6 +1,8 @@
 package ani.saikou.others
 
+import ani.saikou.R
 import ani.saikou.client
+import ani.saikou.currContext
 import ani.saikou.media.Media
 import ani.saikou.snackString
 import kotlinx.coroutines.TimeoutCancellationException
@@ -42,7 +44,7 @@ object MalScraper {
                 }
             }
         } catch (e: Exception) {
-            if (e is TimeoutCancellationException) snackString("Failed to load data from MAL")
+            if (e is TimeoutCancellationException) snackString(currContext()?.getString(R.string.error_loading_mal_data))
         }
     }
 }

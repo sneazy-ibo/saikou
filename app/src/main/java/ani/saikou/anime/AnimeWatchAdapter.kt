@@ -53,12 +53,12 @@ class AnimeWatchAdapter(
         }
 
         binding.animeSourceDubbed.isChecked = media.selected!!.preferDub
-        binding.animeSourceDubbedText.text = if (media.selected!!.preferDub) "Dubbed" else "Subbed"
+        binding.animeSourceDubbedText.text = if (media.selected!!.preferDub) currActivity()!!.getString(R.string.dubbed) else currActivity()!!.getString(R.string.subbed)
 
         //PreferDub
         var changing = false
         binding.animeSourceDubbed.setOnCheckedChangeListener { _, isChecked ->
-            binding.animeSourceDubbedText.text = if (isChecked) "Dubbed" else "Subbed"
+            binding.animeSourceDubbedText.text = if (isChecked) currActivity()!!.getString(R.string.dubbed) else currActivity()!!.getString(R.string.subbed)
             if (!changing) fragment.onDubClicked(isChecked)
         }
 
@@ -230,7 +230,7 @@ class AnimeWatchAdapter(
                     binding.itemEpisodeImage.loadImage(ep.thumb ?: FileUrl[media.banner ?: media.cover], 0)
                     if (ep.filler) binding.itemEpisodeFillerView.visibility = View.VISIBLE
                     binding.animeSourceContinueText.text =
-                        "Continue : Episode ${ep.number}${if (ep.filler) " - Filler" else ""}${if (ep.title != null) "\n${ep.title}" else ""}"
+                        currActivity()!!.getString(R.string.continue_episode) + "${ep.number}${if (ep.filler) " - Filler" else ""}${if (ep.title != null) "\n${ep.title}" else ""}"
                     binding.animeSourceContinue.setOnClickListener {
                         fragment.onEpisodeClick(continueEp)
                     }

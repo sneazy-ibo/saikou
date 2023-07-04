@@ -73,7 +73,7 @@ Architecture: ${getArch()}
 OS Version: $CODENAME $RELEASE ($SDK_INT)
             """.trimIndent()
             copyToClipboard(info, false)
-            toast("Copied device info")
+            toast(getString(R.string.copied_device_info))
             return@setOnLongClickListener true
         }
 
@@ -341,7 +341,7 @@ OS Version: $CODENAME $RELEASE ($SDK_INT)
             CustomBottomDialog.newInstance().apply {
                 setTitleText(title)
                 addView(text)
-                setNegativeButton("Close") {
+                setNegativeButton(currContext()!!.getString(R.string.close)) {
                     dismiss()
                 }
                 show(supportFragmentManager, "dialog")
@@ -396,7 +396,7 @@ OS Version: $CODENAME $RELEASE ($SDK_INT)
         binding.settingsCheckUpdate.setOnCheckedChangeListener { _, isChecked ->
             saveData("check_update", isChecked)
             if (!isChecked) {
-                snackString("You Long Click the button to check for App Update")
+                snackString(getString(R.string.long_click_to_check_update))
             }
         }
 

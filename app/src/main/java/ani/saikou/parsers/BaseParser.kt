@@ -1,9 +1,7 @@
 package ani.saikou.parsers
 
-import ani.saikou.FileUrl
-import ani.saikou.loadData
+import ani.saikou.*
 import ani.saikou.media.Media
-import ani.saikou.saveData
 import java.io.Serializable
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -78,7 +76,7 @@ abstract class BaseParser {
     open fun saveShowResponse(mediaId: Int, response: ShowResponse?, selected: Boolean = false) {
         if (response != null) {
             checkIfVariablesAreEmpty()
-            setUserText("${if (selected) "Selected" else "Found"} : ${response.name}")
+            setUserText("${if (selected) currContext()!!.getString(R.string.selected) else currContext()!!.getString(R.string.found)} : ${response.name}")
             saveData("${saveName}_$mediaId", response)
         }
     }

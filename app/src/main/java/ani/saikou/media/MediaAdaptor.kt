@@ -65,7 +65,7 @@ class MediaAdaptor(
                 val media = mediaList?.getOrNull(position)
                 if (media != null) {
                     b.itemCompactImage.loadImage(media.cover)
-                    b.itemCompactOngoing.visibility = if (media.status == "RELEASING") View.VISIBLE else View.GONE
+                    b.itemCompactOngoing.visibility = if (media.status == currActivity()!!.getString(R.string.status_releasing)) View.VISIBLE else View.GONE
                     b.itemCompactTitle.text = media.userPreferredName
                     b.itemCompactScore.text =
                         ((if (media.userScore == 0) (media.meanScore ?: 0) else media.userScore) / 10.0).toString()
@@ -107,7 +107,7 @@ class MediaAdaptor(
                 if (media != null) {
                     b.itemCompactImage.loadImage(media.cover)
                     b.itemCompactBanner.loadImage(media.banner ?: media.cover, 400)
-                    b.itemCompactOngoing.visibility = if (media.status == "RELEASING") View.VISIBLE else View.GONE
+                    b.itemCompactOngoing.visibility = if (media.status == currActivity()!!.getString(R.string.status_releasing)) View.VISIBLE else View.GONE
                     b.itemCompactTitle.text = media.userPreferredName
                     b.itemCompactScore.text =
                         ((if (media.userScore == 0) (media.meanScore ?: 0) else media.userScore) / 10.0).toString()
@@ -116,12 +116,14 @@ class MediaAdaptor(
                         (if (media.userScore != 0) R.drawable.item_user_score else R.drawable.item_score)
                     )
                     if (media.anime != null) {
-                        b.itemTotal.text = " Episode${if ((media.anime.totalEpisodes ?: 0) != 1) "s" else ""}"
+                        b.itemTotal.text = " " + if ((media.anime.totalEpisodes ?: 0) != 1) currActivity()!!.getString(R.string.episode_plural)
+                                else currActivity()!!.getString(R.string.episode_singular)
                         b.itemCompactTotal.text =
                             if (media.anime.nextAiringEpisode != null) (media.anime.nextAiringEpisode.toString() + " / " + (media.anime.totalEpisodes
                                 ?: "??").toString()) else (media.anime.totalEpisodes ?: "??").toString()
                     } else if (media.manga != null) {
-                        b.itemTotal.text = " Chapter${if ((media.manga.totalChapters ?: 0) != 1) "s" else ""}"
+                        b.itemTotal.text = " " + if ((media.manga.totalChapters ?: 0) != 1) currActivity()!!.getString(R.string.chapter_plural)
+                        else currActivity()!!.getString(R.string.chapter_singular)
                         b.itemCompactTotal.text = "${media.manga.totalChapters ?: "??"}"
                     }
                     @SuppressLint("NotifyDataSetChanged")
@@ -151,7 +153,7 @@ class MediaAdaptor(
                             .diskCacheStrategy(DiskCacheStrategy.ALL).override(400)
                             .apply(RequestOptions.bitmapTransform(BlurTransformation(2, 3)))
                             .into(banner)
-                    b.itemCompactOngoing.visibility = if (media.status == "RELEASING") View.VISIBLE else View.GONE
+                    b.itemCompactOngoing.visibility = if (media.status == currActivity()!!.getString(R.string.status_releasing)) View.VISIBLE else View.GONE
                     b.itemCompactTitle.text = media.userPreferredName
                     b.itemCompactScore.text =
                         ((if (media.userScore == 0) (media.meanScore ?: 0) else media.userScore) / 10.0).toString()
@@ -160,12 +162,14 @@ class MediaAdaptor(
                         (if (media.userScore != 0) R.drawable.item_user_score else R.drawable.item_score)
                     )
                     if (media.anime != null) {
-                        b.itemTotal.text = " Episode${if ((media.anime.totalEpisodes ?: 0) != 1) "s" else ""}"
+                        b.itemTotal.text = " " + if ((media.anime.totalEpisodes ?: 0) != 1) currActivity()!!.getString(R.string.episode_plural)
+                        else currActivity()!!.getString(R.string.episode_singular)
                         b.itemCompactTotal.text =
                             if (media.anime.nextAiringEpisode != null) (media.anime.nextAiringEpisode.toString() + " / " + (media.anime.totalEpisodes
                                 ?: "??").toString()) else (media.anime.totalEpisodes ?: "??").toString()
                     } else if (media.manga != null) {
-                        b.itemTotal.text = " Chapter${if ((media.manga.totalChapters ?: 0) != 1) "s" else ""}"
+                        b.itemTotal.text =" " + if ((media.manga.totalChapters ?: 0) != 1) currActivity()!!.getString(R.string.chapter_plural)
+                        else currActivity()!!.getString(R.string.chapter_singular)
                         b.itemCompactTotal.text = "${media.manga.totalChapters ?: "??"}"
                     }
                     @SuppressLint("NotifyDataSetChanged")
@@ -196,7 +200,7 @@ class MediaAdaptor(
                             .diskCacheStrategy(DiskCacheStrategy.ALL).override(400)
                             .apply(RequestOptions.bitmapTransform(BlurTransformation(2, 3)))
                             .into(banner)
-                    b.itemCompactOngoing.visibility = if (media.status == "RELEASING") View.VISIBLE else View.GONE
+                    b.itemCompactOngoing.visibility = if (media.status == currActivity()!!.getString(R.string.status_releasing)) View.VISIBLE else View.GONE
                     b.itemCompactTitle.text = media.userPreferredName
                     b.itemCompactScore.text =
                         ((if (media.userScore == 0) (media.meanScore ?: 0) else media.userScore) / 10.0).toString()
@@ -214,12 +218,14 @@ class MediaAdaptor(
                     }
                     b.itemCompactStatus.text = media.status ?: ""
                     if (media.anime != null) {
-                        b.itemTotal.text = " Episode${if ((media.anime.totalEpisodes ?: 0) != 1) "s" else ""}"
+                        b.itemTotal.text = " " + if ((media.anime.totalEpisodes ?: 0) != 1) currActivity()!!.getString(R.string.episode_plural)
+                        else currActivity()!!.getString(R.string.episode_singular)
                         b.itemCompactTotal.text =
                             if (media.anime.nextAiringEpisode != null) (media.anime.nextAiringEpisode.toString() + " / " + (media.anime.totalEpisodes
                                 ?: "??").toString()) else (media.anime.totalEpisodes ?: "??").toString()
                     } else if (media.manga != null) {
-                        b.itemTotal.text = " Chapter${if ((media.manga.totalChapters ?: 0) != 1) "s" else ""}"
+                        b.itemTotal.text = " " + if ((media.manga.totalChapters ?: 0) != 1) currActivity()!!.getString(R.string.chapter_plural)
+                        else currActivity()!!.getString(R.string.chapter_singular)
                         b.itemCompactTotal.text = "${media.manga.totalChapters ?: "??"}"
                     }
                     @SuppressLint("NotifyDataSetChanged")

@@ -48,7 +48,7 @@ class ImageViewDialog : BottomSheetDialogFragment() {
         val (title, image, image2) = Triple(_title, _image, _image2)
         if (image == null || title == null) {
             dismiss()
-            snackString("Error getting Image Data")
+            snackString(getString(R.string.error_getting_image_data))
             return
         }
         if (reload) {
@@ -87,7 +87,7 @@ class ImageViewDialog : BottomSheetDialogFragment() {
                 ObjectAnimator.ofFloat(binding.bottomImageView, "alpha", 0f, 1f).setDuration(400L).start()
                 binding.bottomImageProgress.visibility = View.GONE
             } else {
-                toast("Loading Image Failed")
+                toast(getString(R.string.loading_image_failed))
                 binding.bottomImageNo.visibility = View.VISIBLE
                 binding.bottomImageProgress.visibility = View.GONE
             }

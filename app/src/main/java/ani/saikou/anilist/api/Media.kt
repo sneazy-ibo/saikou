@@ -2,6 +2,8 @@
 
 package ani.saikou.anilist.api
 
+import ani.saikou.R
+import ani.saikou.currContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -203,7 +205,15 @@ enum class MediaStatus {
     FINISHED, RELEASING, NOT_YET_RELEASED, CANCELLED, HIATUS;
 
     override fun toString(): String {
-        return super.toString().replace("_", " ")
+        return when (super.toString()) {
+            "FINISHED" -> currContext()!!.getString(R.string.status_finished)
+            "RELEASING" -> currContext()!!.getString(R.string.status_releasing)
+            "NOT_YET_RELEASED" -> currContext()!!.getString(R.string.status_not_yet_released)
+            "CANCELLED" -> currContext()!!.getString(R.string.status_cancelled)
+            "HIATUS" -> currContext()!!.getString(R.string.status_hiatus)
+            else -> ""
+        }
+
     }
 }
 
@@ -435,7 +445,17 @@ enum class MediaRelation {
     ADAPTATION, PREQUEL, SEQUEL, PARENT, SIDE_STORY, CHARACTER, SUMMARY, ALTERNATIVE, SPIN_OFF, OTHER, SOURCE, COMPILATION, CONTAINS;
 
     override fun toString(): String {
-        return super.toString().replace("_", " ")
+        return when (super.toString()) {
+            "ADAPTATION" -> currContext()!!.getString(R.string.type_adaptation)
+            "PARENT" -> currContext()!!.getString(R.string.type_parent)
+            "CHARACTER" -> currContext()!!.getString(R.string.type_character)
+            "SUMMARY" -> currContext()!!.getString(R.string.type_summary)
+            "ALTERNATIVE" -> currContext()!!.getString(R.string.type_alternative)
+            "OTHER" -> currContext()!!.getString(R.string.type_other)
+            "SOURCE" -> currContext()!!.getString(R.string.type_source)
+            "CONTAINS" -> currContext()!!.getString(R.string.type_contains)
+            else -> super.toString().replace("_", " ")
+        }
     }
 }
 

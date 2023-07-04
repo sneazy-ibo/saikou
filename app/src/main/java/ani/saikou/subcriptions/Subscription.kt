@@ -69,20 +69,20 @@ class Subscription {
                         val parser = SubscriptionHelper.getAnimeParser(context, media.isAdult, media.id)
                         progress(index[it.first]!!, parser.name, media.name)
                         val ep: Episode? = SubscriptionHelper.getEpisode(context, parser, media.id, media.isAdult)
-                        if (ep != null) "Episode ${ep.number}${
+                        if (ep != null) currActivity()!!.getString(R.string.episode)+"${ep.number}${
                             if (ep.title != null) " : ${ep.title}" else ""
                         }${
                             if (ep.isFiller) " [Filler]" else ""
-                        } - just got released!" to ep.thumbnail
+                        } "+ currActivity()!!.getString(R.string.just_released) to ep.thumbnail
                         else null
                     } else {
                         val parser = SubscriptionHelper.getMangaParser(context, media.isAdult, media.id)
                         progress(index[it.first]!!, parser.name, media.name)
                         val ep: MangaChapter? =
                             SubscriptionHelper.getChapter(context, parser, media.id, media.isAdult)
-                        if (ep != null) "Chapter ${ep.number}${
+                        if (ep != null) currActivity()!!.getString(R.string.chapter)+"${ep.number}${
                             if (ep.title != null) " : ${ep.title}" else ""
-                        } - just got released!" to null
+                        } "+ currActivity()!!.getString(R.string.just_released) to null
                         else null
                     } ?: return@map
                     createNotification(context.applicationContext, media, text.first, text.second)
@@ -126,7 +126,7 @@ class Subscription {
                 context,
                 null,
                 "subscription_checking",
-                "Checking Subscriptions",
+                currContext()!!.getString(R.string.checking_subscriptions_title),
                 null,
                 true
             ).setOngoing(true).setProgress(size, 0, false).setAutoCancel(false)

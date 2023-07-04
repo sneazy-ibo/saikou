@@ -15,13 +15,13 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         try {
             val data: Uri = intent?.data
-                ?: throw Exception("Mal Login : Uri not Found")
+                ?: throw Exception(getString(R.string.mal_login_uri_not_found))
             val codeChallenge: String = loadData("malCodeChallenge", this)
-                ?: throw Exception("Mal Login : codeChallenge not found")
+                ?: throw Exception(getString(R.string.mal_login_code_challenge_not_found))
             val code = data.getQueryParameter("code")
-                ?: throw Exception("Mal Login : Code not present in Redirected URI")
+                ?: throw Exception(getString(R.string.mal_login_code_not_present))
 
-            snackString("Logging in MAL")
+            snackString(getString(R.string.logging_in_mal))
             lifecycleScope.launch(Dispatchers.IO) {
                 tryWithSuspend(true) {
                     val res = client.post(
@@ -35,7 +35,7 @@ class Login : AppCompatActivity() {
                     ).parsed<MAL.ResponseToken>()
                     saveResponse(res)
                     MAL.token = res.accessToken
-                    snackString("Getting User Data")
+                    snackString(getString(R.string.getting_user_data))
                     MAL.query.getUserData()
                     launch(Dispatchers.Main) {
                         startMainActivity(this@Login)

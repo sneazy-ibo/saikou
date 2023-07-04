@@ -64,7 +64,7 @@ class SettingsDialogFragment : BottomSheetDialogFragment() {
                     } else Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
                 )
             } catch (e: ActivityNotFoundException) {
-                toast("Couldn't find any File Manager to open SD card")
+                toast(getString(R.string.file_manager_not_found))
             }
             dismiss()
         }

@@ -90,7 +90,7 @@ class HomeFragment : Fragment() {
                 binding.homeListContainer.layoutAnimation = LayoutAnimationController(setSlideIn(uiSettings), 0.25f)
             }
             else {
-                snackString("Please Reload.")
+                snackString(getString(R.string.please_reload))
             }
         }
 

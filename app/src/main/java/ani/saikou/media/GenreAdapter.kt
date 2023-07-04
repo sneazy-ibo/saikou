@@ -7,7 +7,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
+import ani.saikou.R
 import ani.saikou.anilist.Anilist
+import ani.saikou.currActivity
 import ani.saikou.databinding.ItemGenreBinding
 import ani.saikou.loadImage
 import ani.saikou.px
@@ -43,13 +45,13 @@ class GenreAdapter(
                     Intent(itemView.context, SearchActivity::class.java)
                         .putExtra("type", type)
                         .putExtra("genre", pos[bindingAdapterPosition])
-                        .putExtra("sortBy", "Trending")
+                        .putExtra("sortBy", currActivity()!!.getString(R.string.sort_trending))
                         .putExtra("search", true)
                         .also {
                         if (pos[bindingAdapterPosition].lowercase() == "hentai") {
                             if (!Anilist.adult) Toast.makeText(
                                 itemView.context,
-                                "Turn on 18+ Content from your Anilist Settings",
+                                currActivity()?.getString(R.string.content_18),
                                 Toast.LENGTH_SHORT
                             ).show()
                             it.putExtra("hentai", true)

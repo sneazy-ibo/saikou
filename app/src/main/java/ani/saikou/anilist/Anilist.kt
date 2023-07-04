@@ -5,8 +5,10 @@ import android.content.Context
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import ani.saikou.client
+import ani.saikou.currContext
 import ani.saikou.openLinkInBrowser
 import ani.saikou.tryWithSuspend
+import ani.saikou.R
 import java.io.File
 import java.util.*
 
@@ -27,14 +29,13 @@ object Anilist {
     var tags: Map<Boolean, List<String>>? = null
 
     val sortBy = mapOf(
-        "Score" to "SCORE_DESC",
-        "Popular" to "POPULARITY_DESC",
-        "Trending" to "TRENDING_DESC",
+        currContext()?.getString(R.string.sort_score) to "SCORE_DESC",
+        currContext()?.getString(R.string.sort_popular) to "POPULARITY_DESC",
+        currContext()?.getString(R.string.sort_trending) to "TRENDING_DESC",
         "A-Z" to "TITLE_ENGLISH",
         "Z-A" to "TITLE_ENGLISH_DESC",
-        "What?" to "SCORE",
+        currContext()?.getString(R.string.sort_what) to "SCORE"
     )
-
     val seasons = listOf(
         "WINTER", "SPRING", "SUMMER", "FALL"
     )
@@ -136,7 +137,7 @@ object Anilist {
                 if (token != null && useToken) headers["Authorization"] = "Bearer $token"
 
                 val json = client.post("https://graphql.anilist.co/", headers, data = data, cacheTime = cache ?: 10)
-                if (!json.text.startsWith("{")) throw Exception("Seems like Anilist is down, maybe try using a VPN or you can wait for it to comeback.")
+                if (!json.text.startsWith("{")) throw Exception(currContext()?.getString(R.string.anilist_down))
                 if (show) println("Response : ${json.text}")
                 json.parsed()
             } else null

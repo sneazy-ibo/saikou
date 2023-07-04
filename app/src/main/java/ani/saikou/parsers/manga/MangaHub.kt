@@ -5,12 +5,14 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import ani.saikou.FileUrl
 import ani.saikou.client
+import ani.saikou.currContext
 import ani.saikou.others.webview.WebViewBottomDialog
 import ani.saikou.parsers.MangaChapter
 import ani.saikou.parsers.MangaImage
 import ani.saikou.parsers.MangaParser
 import ani.saikou.parsers.ShowResponse
 import ani.saikou.webViewInterface
+import ani.saikou.R
 
 class MangaHub : MangaParser() {
 
@@ -44,7 +46,7 @@ class MangaHub : MangaParser() {
     private suspend fun getAccess(): String{
         if(accessString!=null) return accessString!!
         val webView = CFBypass.newInstance("https://mangahub.io/")
-        val string = webViewInterface(webView)?.get("access") ?: throw Exception("Wasn't able to get access")
+        val string = webViewInterface(webView)?.get("access") ?: throw Exception(currContext()?.getString(R.string.access_not_available))
         accessString = string
         return string
     }

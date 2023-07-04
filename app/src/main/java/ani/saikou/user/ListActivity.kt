@@ -43,10 +43,13 @@ class ListActivity : AppCompatActivity() {
 
         val model: ListViewModel by viewModels()
         model.getLists().observe(this) {
+            val defaultKeys = listOf("Reading", "Watching", "Completed", "Paused", "Dropped", "Planning", "Favourites", "Rewatching", "Rereading", "All")
+            val userKeys : Array<String> = resources.getStringArray(R.array.keys)
+
             if (it != null) {
                 binding.listProgressBar.visibility = View.GONE
                 binding.listViewPager.adapter = ListViewPagerAdapter(it.size, false,this)
-                val keys = it.keys.toList()
+                val keys = it.keys.toList().mapNotNull { key -> userKeys.getOrNull(defaultKeys.indexOf(key))?: key }
                 val values = it.values.toList()
                 val savedTab = this.selectedTabIdx
                 TabLayoutMediator(binding.listTabLayout, binding.listViewPager) { tab, position ->

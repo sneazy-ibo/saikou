@@ -46,7 +46,7 @@ object MAL {
     private suspend fun refreshToken(): ResponseToken? {
         return tryWithSuspend {
             val token = loadData<ResponseToken>(MAL_TOKEN)
-                ?: throw Exception("Refresh Token : Failed to load Saved Token")
+                ?: throw Exception(currContext()?.getString(R.string.refresh_token_load_failed))
             val res = client.post(
                 "https://myanimelist.net/v1/oauth2/token",
                 data = mapOf(
@@ -67,7 +67,7 @@ object MAL {
                 ?: return@tryWithSuspend false
             if (System.currentTimeMillis() > res.expiresIn)
                 res = refreshToken()
-                    ?: throw Exception("Refreshing Token Failed")
+                    ?: throw Exception(currContext()?.getString(R.string.refreshing_token_failed))
             token = res.accessToken
             return@tryWithSuspend true
         } ?: false

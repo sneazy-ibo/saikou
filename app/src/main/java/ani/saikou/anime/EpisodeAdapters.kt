@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
+import ani.saikou.*
 import ani.saikou.databinding.ItemEpisodeCompactBinding
 import ani.saikou.databinding.ItemEpisodeGridBinding
 import ani.saikou.databinding.ItemEpisodeListBinding
-import ani.saikou.loadData
 import ani.saikou.media.Media
-import ani.saikou.setAnimation
-import ani.saikou.updateAnilistProgress
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 
@@ -63,7 +61,7 @@ class EpisodeAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val ep = arr[position]
         val title =
-            "${if (!ep.title.isNullOrEmpty() && ep.title != "null") "" else "Episode "}${if (!ep.title.isNullOrEmpty() && ep.title != "null") ep.title else ep.number}"
+            "${if (!ep.title.isNullOrEmpty() && ep.title != "null") "" else currContext()!!.getString(R.string.episode_singular)} ${if (!ep.title.isNullOrEmpty() && ep.title != "null") ep.title else ep.number}"
 
         when (holder) {
             is EpisodeListViewHolder    -> {

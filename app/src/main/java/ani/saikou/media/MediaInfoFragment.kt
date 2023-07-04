@@ -125,7 +125,7 @@ class MediaInfoFragment : Fragment() {
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 binding.mediaInfoDescription.text =
-                    "\t\t\t" + if (desc.toString() != "null") desc else "No Description Available"
+                    "\t\t\t" + if (desc.toString() != "null") desc else getString(R.string.no_description_available)
                 binding.mediaInfoDescription.setOnClickListener {
                     if (binding.mediaInfoDescription.maxLines == 5) {
                         ObjectAnimator.ofInt(binding.mediaInfoDescription, "maxLines", 100)
@@ -312,14 +312,14 @@ class MediaInfoFragment : Fragment() {
                                 chip.context,
                                 Intent(chip.context, SearchActivity::class.java)
                                     .putExtra("type", type)
-                                    .putExtra("sortBy", "Trending")
+                                    .putExtra("sortBy", currContext()!!.getString(R.string.sort_trending))
                                     .putExtra("tag", media.tags[position].substringBefore(" :"))
                                     .putExtra("search", true)
                                     .also {
                                         if (media.isAdult) {
                                             if (!Anilist.adult) Toast.makeText(
                                                 chip.context,
-                                                "Turn on 18+ Content from your Anilist Settings",
+                                                currActivity()?.getString(R.string.content_18),
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                             it.putExtra("hentai", true)

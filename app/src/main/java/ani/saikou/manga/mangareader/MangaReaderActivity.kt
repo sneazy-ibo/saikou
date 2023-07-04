@@ -180,9 +180,9 @@ class MangaReaderActivity : AppCompatActivity() {
         showProgressDialog = if (settings.askIndividual) loadData<Boolean>("${media.id}_progressDialog") != true else false
         progressDialog =
             if (showProgressDialog && Anilist.userid != null && if (media.isAdult) settings.updateForH else true)
-                AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Update progress on anilist?").apply {
+                AlertDialog.Builder(this, R.style.DialogTheme).setTitle(getString(R.string.title_update_progress)).apply {
                     setMultiChoiceItems(
-                        arrayOf("Don't ask again for ${media.userPreferredName}"),
+                        arrayOf(getString(R.string.dont_ask_again, media.userPreferredName)),
                         booleanArrayOf(false)
                     ) { _, _, isChecked ->
                         if (isChecked) progressDialog = null
@@ -220,7 +220,7 @@ class MangaReaderActivity : AppCompatActivity() {
         }
         binding.mangaReaderNextChapter.setOnClickListener {
             if (chaptersArr.size > currentChapterIndex + 1) progress { change(currentChapterIndex + 1) }
-            else snackString("Next Chapter Not Found")
+            else snackString(getString(R.string.next_chapter_not_found))
         }
         //Prev Chapter
         binding.mangaReaderPrevChap.setOnClickListener {
@@ -228,7 +228,7 @@ class MangaReaderActivity : AppCompatActivity() {
         }
         binding.mangaReaderPreviousChapter.setOnClickListener {
             if (currentChapterIndex > 0) change(currentChapterIndex - 1)
-            else snackString("This is the 1st Chapter!")
+            else snackString(getString(R.string.first_chapter))
         }
 
         model.getMangaChapter().observe(this) {
@@ -310,8 +310,8 @@ class MangaReaderActivity : AppCompatActivity() {
         if ((settings.default.direction == TOP_TO_BOTTOM || settings.default.direction == BOTTOM_TO_TOP)) {
             binding.mangaReaderSwipy.vertical = true
             if (settings.default.direction == TOP_TO_BOTTOM) {
-                binding.BottomSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex + 1) ?: "No Chapter"
-                binding.TopSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex - 1) ?: "No Chapter"
+                binding.BottomSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex + 1) ?: getString(R.string.no_chapter)
+                binding.TopSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex - 1) ?: getString(R.string.no_chapter)
                 binding.mangaReaderSwipy.onTopSwiped = {
                     binding.mangaReaderPreviousChapter.performClick()
                 }
@@ -319,8 +319,8 @@ class MangaReaderActivity : AppCompatActivity() {
                     binding.mangaReaderNextChapter.performClick()
                 }
             } else {
-                binding.BottomSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex - 1) ?: "No Chapter"
-                binding.TopSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex + 1) ?: "No Chapter"
+                binding.BottomSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex - 1) ?: getString(R.string.no_chapter)
+                binding.TopSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex + 1) ?: getString(R.string.no_chapter)
                 binding.mangaReaderSwipy.onTopSwiped = {
                     binding.mangaReaderNextChapter.performClick()
                 }
@@ -343,8 +343,8 @@ class MangaReaderActivity : AppCompatActivity() {
         } else {
             binding.mangaReaderSwipy.vertical = false
             if (settings.default.direction == RIGHT_TO_LEFT) {
-                binding.LeftSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex + 1) ?: "No Chapter"
-                binding.RightSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex - 1) ?: "No Chapter"
+                binding.LeftSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex + 1) ?: getString(R.string.no_chapter)
+                binding.RightSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex - 1) ?: getString(R.string.no_chapter)
                 binding.mangaReaderSwipy.onLeftSwiped = {
                     binding.mangaReaderNextChapter.performClick()
                 }
@@ -352,8 +352,8 @@ class MangaReaderActivity : AppCompatActivity() {
                     binding.mangaReaderPreviousChapter.performClick()
                 }
             } else {
-                binding.LeftSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex - 1) ?: "No Chapter"
-                binding.RightSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex + 1) ?: "No Chapter"
+                binding.LeftSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex - 1) ?: getString(R.string.no_chapter)
+                binding.RightSwipeText.text = chaptersTitleArr.getOrNull(currentChapterIndex + 1) ?: getString(R.string.no_chapter)
                 binding.mangaReaderSwipy.onLeftSwiped = {
                     binding.mangaReaderPreviousChapter.performClick()
                 }
@@ -644,13 +644,13 @@ class MangaReaderActivity : AppCompatActivity() {
         if (maxChapterPage - currentChapterPage <= 1 && Anilist.userid != null) {
             if (showProgressDialog && progressDialog != null) {
                 progressDialog?.setCancelable(false)
-                    ?.setPositiveButton("Yes") { dialog, _ ->
+                    ?.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
                         saveData("${media.id}_save_progress", true)
                         updateAnilistProgress(media, media.manga!!.selectedChapter!!)
                         dialog.dismiss()
                         runnable.run()
                     }
-                    ?.setNegativeButton("No") { dialog, _ ->
+                    ?.setNegativeButton(getString(R.string.no)) { dialog, _ ->
                         saveData("${media.id}_save_progress", false)
                         dialog.dismiss()
                         runnable.run()

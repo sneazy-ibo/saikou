@@ -125,7 +125,7 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
         val gestureDetector = GestureDetector(this, object : GesturesListener() {
             override fun onDoubleClick(event: MotionEvent) {
                 if (!uiSettings.bannerAnimations)
-                    snackString("Try Enabling Banner Animations from Settings")
+                    snackString(getString(R.string.enable_banner_animations))
                 else {
                     binding.mediaBanner.restart()
                     binding.mediaBanner.performClick()
@@ -184,13 +184,13 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
             val text = SpannableStringBuilder().apply {
                 val white = ContextCompat.getColor(this@MediaDetailsActivity, R.color.bg_opp)
                 if (media.userStatus != null) {
-                    append(if (media.anime != null) "Watched " else "Read ")
+                    append(if (media.anime != null) getString(R.string.watched_num) else getString(R.string.read_num))
                     val typedValue = TypedValue()
                     theme.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true)
                     bold { color(typedValue.data) { append("${media.userProgress}") } }
-                    append(" out of ")
+                    append(if (media.anime != null) getString(R.string.episodes_out_of) else getString(R.string.chapeters_out_of))
                 } else {
-                    append("Total of ")
+                    append(if (media.anime != null) getString(R.string.episoded_total_of) else getString(R.string.chapters_total_of))
                 }
                 if (media.anime != null) {
                     if (media.anime!!.nextAiringEpisode != null) {
@@ -205,9 +205,13 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
         }
 
         fun progress() {
+            val statuses: Array<String> = resources.getStringArray(R.array.status)
+            val statusStrings = if (media.manga==null) resources.getStringArray(R.array.status_anime) else resources.getStringArray(R.array.status_manga)
+            val userStatus = if(media.userStatus != null) statusStrings[statuses.indexOf(media.userStatus)] else statusStrings[0]
+
             if (media.userStatus != null) {
                 binding.mediaTotal.visibility = View.VISIBLE
-                binding.mediaAddToList.text = media.userStatus
+                binding.mediaAddToList.text = userStatus
             } else {
                 binding.mediaAddToList.setText(R.string.add)
             }
@@ -216,11 +220,11 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
                 if (Anilist.userid != null) {
                     if (supportFragmentManager.findFragmentByTag("dialog") == null)
                         MediaListDialogFragment().show(supportFragmentManager, "dialog")
-                } else snackString("Please Login with Anilist!")
+                } else snackString(getString(R.string.please_login_anilist))
             }
             binding.mediaAddToList.setOnLongClickListener {
                 saveData("${media.id}_progressDialog", true)
-                snackString("Auto Update Progress has now been Reset-ed ")
+                snackString(getString(R.string.auto_update_reset))
                 true
             }
         }

@@ -79,7 +79,7 @@ class MangaPageAdapter : RecyclerView.Adapter<MangaPageAdapter.MangaPageViewHold
                 it.context,
                 Intent(it.context, SearchActivity::class.java)
                     .putExtra("type", "MANGA")
-                    .putExtra("sortBy", "Score")
+                    .putExtra("sortBy", currContext()!!.getString(R.string.sort_score))
                     .putExtra("search", true),
                 null
             )

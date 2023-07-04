@@ -58,12 +58,41 @@
     <string name="list_editor">List Editor</string>
     <string name="add_fav">Add to Favourites</string>
     <string name="notifications">Notifications</string>
+    <string-array name="keys">
+        <item>Reading</item>
+        <item>Watching</item>
+        <item>Completed</item>
+        <item>Paused</item>
+        <item>Dropped</item>
+        <item>Planning</item>
+        <item>Favourites</item>
+        <item>Rewatching</item>
+        <item>Rereading</item>
+        <item>All</item>
+    </string-array>
+
     <string name="status">STATUS</string>
-    <string-array name="status">
+    <string-array name="status" translatable="false">
         <item>PLANNING</item>
         <item>CURRENT</item>
         <item>COMPLETED</item>
         <item>REPEATING</item>
+        <item>PAUSED</item>
+        <item>DROPPED</item>
+    </string-array>
+    <string-array name="status_anime">
+        <item>PLANNING</item>
+        <item>WATCHING</item>
+        <item>COMPLETED</item>
+        <item>RE-WATCHING</item>
+        <item>PAUSED</item>
+        <item>DROPPED</item>
+    </string-array>
+    <string-array name="status_manga">
+        <item>PLANNING</item>
+        <item>READING</item>
+        <item>COMPLETED</item>
+        <item>RE-READING</item>
         <item>PAUSED</item>
         <item>DROPPED</item>
     </string-array>
@@ -186,7 +215,7 @@
     <string name="secondary_sub_outline_type_select">Subtitle Outline Type</string>
     <string name="sub_background_color_select">Subtitle Background Color</string>
     <string name="sub_window_color_select">Subtitle Window Color</string>
-    <string name="sub_window_color_info">"The subtitle window is the part left and right from them. (where the background isn't)"</string>
+    <string name="sub_window_color_info">"The subtitle window is the part left and right from them. (where the background isn\'t)"</string>
     <string name="sub_color_info"><b>Note:</b> Changing Subtitle formatting only works with Soft-Subbed Sources such as Zoro!</string>
     <string name="sub_font_select">Subtitle Font</string>
     <string name="subtitle_font_size">Subtitle Size</string>
@@ -252,6 +281,7 @@
     <string name="previous">Previous</string>
     <string name="current_page">Current Page</string>
     <string name="dubbed">Dubbed</string>
+    <string name="subbed">Subbed</string>
     <string name="prefer_dub">Prefer Dubbed Anime</string>
     <string name="none">None</string>
     <string name="selected_dns">Selected DNS</string>
@@ -345,4 +375,211 @@
     <string name="sort_by_release_date">Sort by Release Date</string>
     <string name="crop_borders">Crop Borders</string>
     <string name="note">NOTE</string>
+
+
+    <string name="jobless_message">DAMN! YOU TRULY ARE JOBLESS\nYOU REACHED THE END</string>
+    <string name="file_manager_not_found">Couldn\'t find any File Manager to open SD card</string>
+    <string name="error_loading_data">Error loading data %1$s</string>
+    <string name="long_click_to_check_update">You Long Click the button to check for App Update</string>
+    <string name="saved_to_path">Saved to:\n%s</string>
+    <string name="setting_progress">Setting progress to %1$d</string>
+    <string name="login_anilist_account">Please Login into anilist account!</string>
+    <string name="congrats_vro">Congrats Vro</string>
+    <string name="please_reload">Please Reload.</string>
+    <string name="copied_text">Copied "%1$s"</string>
+    <string name="back_to_exit">Please perform BACK again to Exit</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="anilist_not_found">Seems like that wasn\'t found on Anilist.</string>
+    <string name="disabled_auto_skip">Disabled Auto Skipping OP &amp; ED</string>
+    <string name="auto_skip">Auto Skipping OP &amp; ED</string>
+    <string name="copied_to_clipboard">Copied to Clipboard</string>
+    <string name="first_episode">This is the 1st Episode!</string>
+    <string name="reset_auto_update">You can long click List Editor button to Reset Auto Update</string>
+    <string name="autoplay_cancelled">Autoplay cancelled, no Interaction for more than 1 Hour.</string>
+    <string name="auto_select_server_error">Couldn\'t auto select the server, Please try again!</string>
+    <string name="logging_in_mal">Logging in MAL</string>
+    <string name="getting_user_data">Getting User Data</string>
+    <string name="no_next_episode">No next Episode Found!</string>
+    <string name="enable_banner_animations">Try Enabling Banner Animations from Settings</string>
+    <string name="please_login_anilist">Please Login with Anilist!</string>
+    <string name="auto_update_reset">Auto Update Progress has now been Reset-ed</string>
+    <string name="cant_wait">Can\'t Wait, huh? fine X(</string>
+    <string name="downloading">Downloading…</string>
+    <string name="next_chapter_not_found">Next Chapter Not Found</string>
+    <string name="first_chapter">This is the 1st Chapter!</string>
+    <string name="adult_stuff">Adult Stuff? ( ͡° ͜ʖ ͡°)</string>
+    <string name="what_did_you_open">What did you even open?</string>
+    <string name="error_getting_data">Error getting Data from Anilist.</string>
+    <string name="empty_response">Empty Response, Does your internet perhaps suck?</string>
+    <string name="error_loading_mal_user_data">Error loading MAL User Data</string>
+    <string name="error_loading_mal_data">Failed to load data from MAL</string>
+    <string name="error_loading_anilist_user_data">Error loading Anilist User Data</string>
+    <string name="episode_not_found">Couldn\'t find episode : %1$s</string>
+    <string name="list_updated">List Updated</string>
+    <string name="deleted_from_list">Deleted from List</string>
+    <string name="no_list_id">No List ID found, reloading…</string>
+    <string name="checking_for_update">Checking for Update</string>
+    <string name="dont_show_again">Don\'t show again for version %1$s</string>
+    <string name="no_update_found">No Update Found</string>
+    <string name="downloading_update">Downloading Update %1$s</string>
+    <string name="permission_required">Please give permission to access Files &amp; Folders from Settings, &amp; Try again.</string>
+    <string name="started_downloading">Started Downloading\n%1$s</string>
+    <string name="install_1dm">Please install 1DM</string>
+    <string name="install_adm">Please install ADM</string>
+    <string name="error_getting_image_data">Error getting Image Data</string>
+    <string name="loading_image_failed">Loading Image Failed</string>
+    <string name="copied_device_info">Copied device info</string>
+    <string name="anilist_down">Seems like Anilist is down, maybe try using a VPN or you can wait for it to come back.</string>
+    <string name="failed_to_load_data">Failed to load saved data of %1$d</string>
+    <string name="access_not_available">Wasn\'t able to get access</string>
+    <string name="mal_login_uri_not_found">Mal Login : Uri not Found</string>
+    <string name="mal_login_code_challenge_not_found">Mal Login : codeChallenge not found</string>
+    <string name="mal_login_code_not_present">Mal Login : Code not present in Redirected URI</string>
+    <string name="refresh_token_load_failed">Refresh Token : Failed to load Saved Token</string>
+    <string name="refreshing_token_failed">Refreshing Token Failed</string>
+    <string name="episode_release_countdown">Episode %1$d will be released in</string>
+    <string name="time_format">%1$d days %2$d hrs %3$d mins %4$d secs</string>
+
+    <string name="sort_score">Score</string>
+    <string name="sort_popular">Popular</string>
+    <string name="sort_trending">Trending</string>
+    <string name="sort_what">What?</string>
+    <string name="main_role">MAIN</string>
+    <string name="supporting_role">SUPPORTING</string>
+
+    <string name="status_finished">FINISHED</string>
+    <string name="status_releasing">RELEASING</string>
+    <string name="status_not_yet_released">NOT YET RELEASED</string>
+    <string name="status_cancelled">CANCELLED</string>
+    <string name="status_hiatus">HIATUS</string>
+
+    <string name="type_adaptation">ADAPTATION</string>
+    <string name="type_parent">PARENT</string>
+    <string name="type_character">CHARACTER</string>
+    <string name="type_summary">SUMMARY</string>
+    <string name="type_alternative">ALTERNATIVE</string>
+    <string name="type_other">OTHER</string>
+    <string name="type_source">SOURCE</string>
+    <string name="type_contains">CONTAINS</string>
+
+    <string name="read_on_saikou">Read on Saikou</string>
+    <string name="watch_on_saikou">Watch on Saikou</string>
+    <string name="continue_episode">Continue : Episode </string>
+    <string name="continue_chapter">Continue : Chapter </string>
+    <string name="episode">Episode </string>
+    <string name="chapter">Chapter </string>
+    <string name="just_released">- just got released!</string>
+    <string name="checking_subscriptions_title">Checking Subscriptions</string>
+
+    <string name="speed">Speed</string>
+    <string name="auto_update">Auto Update progress for %1$s?</string>
+    <string name="continue_from">Continue from %1$s?</string>
+    <string name="title_update_progress">Update progress on anilist?</string>
+    <string name="dont_ask_again">"Don\'t ask again for %1$s"</string>
+    <string name="default_speed">Default Speed</string>
+    <string name="default_resize_mode">Default Resize Mode</string>
+    <string name="primary_sub_color">Primary Sub Color</string>
+    <string name="outline_sub_color">Outline Sub Color</string>
+    <string name="outline_type">Outline Type</string>
+    <string name="subtitle_font">Subtitle Font</string>
+
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="close">Close</string>
+    <string name= "no_chapter">No Chapter</string>
+    <string name= "content_18">Turn on 18+ Content from your Anilist Settings</string>
+    <string name= "avaible">Avaible</string>
+    <string name="lets_go">Let\'s Go</string>
+    <string name="cope">Cope</string>
+
+    <string name="watched_num">"Watched "</string>
+    <string name="read_num">"Read "</string>
+    <string name="episodes_out_of">" out of "</string>
+    <string name="chapeters_out_of">" out of "</string>
+    <string name="episoded_total_of">"Total of "</string>
+    <string name="chapters_total_of">"Total of "</string>
+    <string name="no_description_available">"No Description Available"</string>
+
+    <string name="top_to_bottom">Top to Bottom</string>
+    <string name="right_to_left">Right to Left</string>
+    <string name="bottom_to_top">Bottom to Top</string>
+    <string name="left_to_right">Left to Right</string>
+
+    <string name="paged">Paged</string>
+    <string name="continuous_paged">Continuous Paged</string>
+    <string name="continuous">Continuous</string>
+
+    <string name="selected">Selected</string>
+    <string name="found">Found</string>
+
+    <string name="age">__Age:__ </string>
+    <string name="birthday">\n__Birthday:__ </string>
+    <string name="gender">\n__Gender:__ </string>"
+
+    <string name="male">Male</string>"
+    <string name="female">Female</string>"
+
+
+    <string name="question_1">What is Saikou?\n Why should you use Saikou?</string>
+    <string name="answer_1">Saikou is crafted based on simplistic yet state-of-the-art elegance. It is an Anilist only client, which also lets you stream-download Anime &amp; Manga. We plan on adding MyAnimeList support very soon.\nSaikou (最高; Sai-kō) literally means the best in Japanese. Well, we would like to say this is the best open source app for anime and manga on Android, but hey, Try it out yourself &amp; judge!</string>
+    
+    <string name="question_2">What are some features of Saikou?</string>
+    <string name="answer_2">Some mentionable features of Saikou are\n\n- Easy and functional way to both, watch anime and read manga, Ad Free.\n- A completely open source app with a nice UI &amp; Animations\n- The most Efficient scraping for anime and manga from multiple sources. (Spoiler Alert : No web-views were harmed)\n- Synchronize anime and manga real-time with AniList. Easily categorize anime and manga based on your current status. (Powered by AniList)\n- Find all shows using thoroughly and frequently updated list of all trending, popular and ongoing anime based on scores.\n- View extensive details about anime shows, movies and manga titles. It also features ability to countdown to the next episode of airing anime. (Powered by AniList &amp; MyAnimeList)</string>
+
+    <string name="question_3">What are Artifacts?</string>
+    <string name="answer_3">Whenever a developer commits or pull requests a feature or fix, GitHub automatically makes an APK file for you to use. This APK is called an Artifact. Artifacts through pull requests may or may not be added to the main release of the app. Artifacts have a higher chance of having bugs and glitches. To know if new artifacts are available, star the saikou repository and turn on notifications\n\nTo download an Artifact:\n1) Sign In/Up in GitHub\n2) Go to saikou\n3) Go to actions\n4) Press on the workflow run you want to download the artifact of.\n5) Press on artifact\n6) Extract the file using a zip extractor\n7) Install and enjoy.</string>
+
+    <string name="question_4">Is Saikou available for PC?</string>
+    <string name="answer_4">Currently no (for both Windows and Linux). There isn\'t any estimation when it will be available. But you can download any Android emulator and run Saikou on it. For Windows 11 users, they can use the Windows Subsystem for Android (WSA) to run Saikou in Windows.</string>
+
+    <string name="question_5">Is Saikou available for iOS?</string>
+    <string name="answer_5">Saikou for iOS is now under development with the name "SaikouS". You can download the builds uploaded by the respective developer from our <a href="https://discord.gg/2T7TunuwFZ">discord server</a>.<br/><br/>Press <a href="https://github.com/5H4D0WILA/SaikouS">here</a> if you want to check out the GitHub Repository.</string>
+
+    <string name="question_6">Why are my stats not updating?</string>
+    <string name="answer_6">This is because it updates every 48 hours automatically (by Anilist). If you really need to update your stats, you can force update your stats after going to this <a href="https://anilist.co/settings/lists">link</a>.</string>
+
+    <string name="question_7">How to download Episodes?</string>
+    <string name="answer_7">Download 1DM or ADM from Google Play Store.
+        • Enter the app, give storage access and set your preferences (downloading speed, downloading path etc(optional))
+        • Now go to Saikou > Settings > Common > Download Managers and choose the download manager you just set up.
+        • Go to your desired episode and press on the download icon of any server. There may be a popup to set your preferences again, just press on "Download" and it will be saved in the directed path.
+
+        Note: Direct downloads are also possible without a manager but it\'s not recommended.</string>
+
+    <string name="question_8">How to download Manga Chapters?</string>
+    <string name="answer_8">It is yet not possible to download chapters in Saikou but this feature will be implemented soon.</string>
+
+    <string name="question_9">How to enable NSFW content?</string>
+    <string name="answer_9">You can enable nsfw content by enabling 18+ contents from this <a href="https://anilist.co/settings/media">link</a>.</string>
+
+    <string name="question_10">How to import my MAL/Kitsu list to Anilist?</string>
+    <string name="answer_10">Here is how you do it,\n\nExport:\nGo to this <a href="https://malscraper.azurewebsites.net/">link</a>. Then give your Kitsu/MAL username and download both anime and manga list. (They will be in XML format)\nNote: You have to write the username of the tracker you selected\n\nImport:\nAfter exporting your anime and manga list from Kitsu/MAL, now go <a href="https://anilist.co/settings/import">here</a>\nSelect/drop the anime XML file on the box above.\nSelect/drop the manga XML file on the box below.</string>
+
+    <string name="question_11">How to import my Anilist/Kitsu list to MAL?</string>
+    <string name="answer_11">Here is how you do it,\n\nExport:\nGo to this <a href="https://malscraper.azurewebsites.net/">link</a>. Then give your Anilist username/Kitsu ID in the "Username/Kitsu User ID" box. Then select list type and enable \'update_on_import\'. Then download the file; it will be in .xml format. Be sure to download both Anime and Manga lists.\n\nImport:\nTo import it in your MAL account, go to this <a href="https://myanimelist.net/import.php">link</a> and choose "MyAnimeList Import" as import type. Now press on "Choose File" and select the downloaded anime/manga list XML file. Then press on "Import Data". Congratulations, you just imported the selected list to your MAL account.</string>
+
+    <string name="question_12">Why can\'t I find a specific anime/manga title?</string>
+    <string name="answer_12">Let\'s say you are looking for Castlevania in Saikou. But Anilist doesn\'t have it, so Saikou doesn\'t either.\nA solution to the above problem is as follows:\n1) Go to any anime that\'s not in your list.\n2) Go to the watch section.\n3) Select any source and press on the wrong title.\n4) Now search for Castlevania (The anime you were looking for) and select it.\n5) ENJOY!\n\nIf you can\'t find the anime even through these steps, then that\'s bad luck for you, bud. Even that source doesn\'t have it. Try a different source.</string>
+
+    <string name="question_13">How to fix sources selecting a completely wrong title?</string>
+    <string name="answer_13">If your app selects the wrong title, then you can correct it by pressing on "Wrong Title?" above the layouts and selecting the correct title</string>
+
+    <string name="question_14">How to read coloured mangas?</string>
+    <string name="answer_14">Are you in search of coloured manga? Sorry to break it to you but an extremely small amount of mangas have coloured version. Those which has a coloured version is also available in Saikou. Let\'s say you want to read the coloured version of chainsaw man. Then follow the below steps ↓\n\n1) Go to Chainsaw Man\n2) Press on \'Read\'\n3) Select any working source\n4) Press on \'Wrong Title\'\n5) Select the colored version chainsaw man\n6) Enjoy\n\nNote: Many sources don\'t have the coloured version available even if it\'s available somewhere on the internet. So try a different source. If none of the sources have it, then a coloured version of your desired manga simply doesn\'t exist. If you can find it on any manga site on the internet, you can suggest that site through the Discord server.</string>
+
+    <string name="question_15">Handshake fails? Why are no timestamps not loading?</string>
+    <string name="answer_15">You can fix this issue by enabling "Proxy" from \n"Settings" > "Anime" > "Player Settings" > "Timestamps" > "Proxy".\nIf the timestamps are still not loading but the handshake failed popup is fixed, then the episode you are watching just doesn\'t have timestamps yet for it.</string>
+
+    <string name="subscribed_notification">Subscribed! Receiving notifications, when new episodes are released on %1$s.</string>
+
+    <string name="unsubscribed_notification">Unsubscribed, you will not receive any notifications.</string>
+    <string name="episode_plural">Episodes</string>
+    <string name="episode_singular">Episode</string>
+    <string name="chapter_singular">Chapter</string>
+    <string name="chapter_plural">Chapters</string>
+
+    <string name="filter_format">"Format : %1$s"</string>
+    <string name="filter_sort">"Sort : %1$s"</string>
+    <string name="filter_exclude">"Not %1$s"</string>
 </resources>

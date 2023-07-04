@@ -25,7 +25,7 @@ import java.io.File
 
 object AppUpdater {
     suspend fun check(activity: FragmentActivity,post:Boolean=false) {
-        if(post) snackString("Checking for Update")
+        if(post) snackString(currContext()?.getString(R.string.checking_for_update))
         val repo = activity.getString(R.string.repo)
         tryWithSuspend {
             val md =
@@ -36,7 +36,7 @@ object AppUpdater {
             val dontShow = loadData("dont_ask_for_update_$version") ?: false
             if (compareVersion(version) && !dontShow && !activity.isDestroyed) activity.runOnUiThread {
                 CustomBottomDialog.newInstance().apply {
-                    setTitleText("${if (!BuildConfig.DEBUG) "" else "Beta "}Update Available")
+                    setTitleText("${if (!BuildConfig.DEBUG) "" else "Beta "}Update " + currContext()!!.getString(R.string.avaible))
                     addView(
                         TextView(activity).apply {
                             val markWon = Markwon.builder(activity).usePlugin(SoftBreakAddsNewLinePlugin.create()).build()
@@ -44,12 +44,12 @@ object AppUpdater {
                         }
                     )
 
-                    setCheck("Don't show again for version $version", false) { isChecked ->
+                    setCheck(currContext()!!.getString(R.string.dont_show_again, version), false) { isChecked ->
                         if (isChecked) {
                             saveData("dont_ask_for_update_$version", isChecked)
                         }
                     }
-                    setPositiveButton("Let's Go") {
+                    setPositiveButton(currContext()!!.getString(R.string.lets_go)) {
                         MainScope().launch(Dispatchers.IO) {
                             try {
                                 client.get("https://api.github.com/repos/$repo/releases/tags/v$version")
@@ -65,14 +65,14 @@ object AppUpdater {
                         }
                         dismiss()
                     }
-                    setNegativeButton("Cope") {
+                    setNegativeButton(currContext()!!.getString(R.string.cope)) {
                         dismiss()
                     }
                     show(activity.supportFragmentManager, "dialog")
                 }
             }
             else{
-                if(post) snackString("No Update Found")
+                if(post) snackString(currContext()?.getString(R.string.no_update_found))
             }
         }
     }
@@ -100,7 +100,7 @@ object AppUpdater {
     //Blatantly kanged from https://github.com/LagradOst/CloudStream-3/blob/master/app/src/main/java/com/lagradost/cloudstream3/utils/InAppUpdater.kt
     private fun Activity.downloadUpdate(version: String, url: String): Boolean {
 
-        toast("Downloading Update $version")
+        toast(getString(R.string.downloading_update, version))
 
         val downloadManager = this.getSystemService<DownloadManager>()!!
 

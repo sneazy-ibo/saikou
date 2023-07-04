@@ -124,7 +124,7 @@ fun <T> loadData(fileName: String, context: Context? = null, toast: Boolean = tr
                 return data
             }
     } catch (e: Exception) {
-        if (toast) snackString("Error loading data $fileName")
+        if (toast) snackString(a?.getString(R.string.error_loading_data, fileName))
         e.printStackTrace()
     }
     return null
@@ -269,8 +269,10 @@ class InputFilterMinMax(private val min: Double, private val max: Double, privat
 
     @SuppressLint("SetTextI18n")
     private fun isInRange(a: Double, b: Double, c: Double): Boolean {
+        val statusStrings =  currContext()!!.resources.getStringArray(R.array.status_manga)[2]
+
         if (c == b) {
-            status?.setText("COMPLETED", false)
+            status?.setText(statusStrings, false)
             status?.parent?.requestLayout()
         }
         return if (b > a) c in a..b else c in b..a
@@ -564,7 +566,7 @@ fun saveImage(image: Bitmap, path: String, imageFileName: String): File? {
         image.compress(Bitmap.CompressFormat.PNG, 0, fOut)
         fOut.close()
         scanFile(imageFile.absolutePath, currContext()!!)
-        toast("Saved to:\n$path")
+        toast(String.format(currContext()!!.getString(R.string.saved_to_path, path)))
         imageFile
     }
 }
@@ -591,13 +593,13 @@ fun updateAnilistProgress(media: Media, number: String) {
                     a, null,
                     if (media.userStatus == "REPEATING") media.userStatus!! else "CURRENT"
                 )
-                toast("Setting progress to $a")
+                toast(currContext()?.getString(R.string.setting_progress, a))
             }
             media.userProgress = a
             Refresh.all()
         }
     } else {
-        toast("Please Login into anilist account!")
+        toast(currContext()?.getString(R.string.login_anilist_account))
     }
 }
 
@@ -629,7 +631,7 @@ fun copyToClipboard(string: String, toast: Boolean = true) {
     val clipboard = getSystemService(activity, ClipboardManager::class.java)
     val clip = ClipData.newPlainText("label", string)
     clipboard?.setPrimaryClip(clip)
-    if (toast) snackString("Copied \"$string\"")
+    if (toast) snackString(activity.getString(R.string.copied_text, string))
 }
 
 @SuppressLint("SetTextI18n")
@@ -637,17 +639,17 @@ fun countDown(media: Media, view: ViewGroup) {
     if (media.anime?.nextAiringEpisode != null && media.anime.nextAiringEpisodeTime != null && (media.anime.nextAiringEpisodeTime!! - System.currentTimeMillis() / 1000) <= 86400 * 7.toLong()) {
         val v = ItemCountDownBinding.inflate(LayoutInflater.from(view.context), view, false)
         view.addView(v.root, 0)
-        v.mediaCountdownText.text = "Episode ${media.anime.nextAiringEpisode!! + 1} will be released in"
+        v.mediaCountdownText.text = currActivity()?.getString(R.string.episode_release_countdown, media.anime.nextAiringEpisode!! + 1)
+
         object : CountDownTimer((media.anime.nextAiringEpisodeTime!! + 10000) * 1000 - System.currentTimeMillis(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val a = millisUntilFinished / 1000
-                v.mediaCountdown.text =
-                    "${a / 86400} days ${a % 86400 / 3600} hrs ${a % 86400 % 3600 / 60} mins ${a % 86400 % 3600 % 60} secs"
+                v.mediaCountdown.text = currActivity()?.getString(R.string.time_format, a / 86400 , a % 86400 / 3600, a % 86400 % 3600 / 60, a % 86400 % 3600 % 60)
             }
 
             override fun onFinish() {
                 v.mediaCountdownContainer.visibility = View.GONE
-                snackString("Congrats Vro")
+                snackString(currContext()?.getString(R.string.congrats_vro))
             }
         }.start()
     }
@@ -747,7 +749,7 @@ fun snackString(s: String?, activity: Activity? = null, clipboard: String? = nul
                     }
                     setOnLongClickListener {
                         copyToClipboard(clipboard ?: s, false)
-                        toast("Copied to Clipboard")
+                        toast(getString(R.string.copied_to_clipboard))
                         true
                     }
                 }

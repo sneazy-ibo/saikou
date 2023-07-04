@@ -16,6 +16,8 @@ import ani.saikou.defaultHeaders
 import ani.saikou.loadData
 import ani.saikou.parsers.Book
 import ani.saikou.toast
+import ani.saikou.currContext
+import ani.saikou.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,7 +49,7 @@ object Download {
     }
 
     fun download(context: Context, episode: Episode, animeTitle: String) {
-        toast("Downloading...")
+        toast(context.getString(R.string.downloading))
         val extractor = episode.extractors?.find { it.server.name == episode.selectedExtractor } ?: return
         val video =
             if (extractor.videos.size > episode.selectedVideo) extractor.videos[episode.selectedVideo] else return
@@ -63,7 +65,7 @@ object Download {
     }
 
     fun download(context: Context, book:Book, pos:Int, novelTitle:String){
-        toast("Downloading...")
+        toast(currContext()?.getString(R.string.downloading))
         val regex = "[\\\\/:*?\"<>|]".toRegex()
         val nTitle = novelTitle.replace(regex, "")
         val title = book.name.replace(regex, "")
@@ -109,9 +111,9 @@ object Download {
                 }
                 request.setTitle(notif)
                 manager.enqueue(request)
-                toast("Started Downloading\n$notif")
+                toast(currContext()?.getString(R.string.started_downloading, notif))
             } catch (e: SecurityException) {
-                toast("Please give permission to access Files & Folders from Settings, & Try again.")
+                toast(currContext()?.getString(R.string.permission_required))
             } catch (e: Exception) {
                 toast(e.toString())
             }
@@ -151,7 +153,7 @@ object Download {
                 ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                 null
             )
-            toast("Please install 1DM")
+            toast(currContext()?.getString(R.string.install_1dm))
         }
     }
 
@@ -175,7 +177,7 @@ object Download {
                 Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.dv.adm")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                 null
             )
-            toast("Please install ADM")
+            toast(currContext()?.getString(R.string.install_adm))
         }
     }
 }

@@ -259,8 +259,8 @@ class AnimeWatchFragment : Fragment() {
                 media.userPreferredName
             )
         snackString(
-            if (subscribed) "Subscribed! Receiving notifications, when new episodes are released on $source."
-            else "Unsubscribed, you will not receive any notifications."
+            if (subscribed) getString(R.string.subscribed_notification, source)
+            else getString(R.string.unsubscribed_notification)
         )
     }
 

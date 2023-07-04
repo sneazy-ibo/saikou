@@ -1,12 +1,14 @@
 package ani.saikou.subcriptions
 
 import android.content.Context
+import ani.saikou.currContext
 import ani.saikou.loadData
 import ani.saikou.media.Media
 import ani.saikou.media.Selected
 import ani.saikou.parsers.*
 import ani.saikou.saveData
 import ani.saikou.tryWithSuspend
+import ani.saikou.R
 import kotlinx.coroutines.withTimeoutOrNull
 
 class SubscriptionHelper {
@@ -39,7 +41,7 @@ class SubscriptionHelper {
             val selected = loadSelected(context, id, isAdult, true)
             val ep = withTimeoutOrNull(10 * 1000) {
                 tryWithSuspend {
-                    val show = parser.loadSavedShowResponse(id) ?: throw Exception("Failed to load saved data of $id")
+                    val show = parser.loadSavedShowResponse(id) ?: throw Exception(currContext()?.getString(R.string.failed_to_load_data, id))
                     parser.getLatestEpisode(show.link, show.extra, selected.latest)
                 }
             }
@@ -60,7 +62,7 @@ class SubscriptionHelper {
             val selected = loadSelected(context, id, isAdult, true)
             val chp = withTimeoutOrNull(10 * 1000) {
                 tryWithSuspend {
-                    val show = parser.loadSavedShowResponse(id) ?: throw Exception("Failed to load saved data of $id")
+                    val show = parser.loadSavedShowResponse(id) ?: throw Exception(currContext()?.getString(R.string.failed_to_load_data, id))
                     parser.getLatestChapter(show.link, show.extra, selected.latest)
                 }
             }
