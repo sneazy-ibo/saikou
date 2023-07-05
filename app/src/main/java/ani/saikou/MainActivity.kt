@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
             doubleBackToExitPressedOnce = true
-            snackString(getString(R.string.back_to_exit))
+            snackString(this@MainActivity.getString(R.string.back_to_exit))
             Handler(Looper.getMainLooper()).postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
         }
 
@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (!isOnline(this)) {
-            snackString(getString(R.string.no_internet_connection))
+            snackString(this@MainActivity.getString(R.string.no_internet_connection))
             startActivity(Intent(this, NoInternet::class.java))
         } else {
             val model: AnilistHomeViewModel by viewModels()
@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity() {
                                     .putExtra("media", media as Serializable)
                             )
                         } else {
-                            snackString(getString(R.string.anilist_not_found))
+                            snackString(this@MainActivity.getString(R.string.anilist_not_found))
                         }
                     }
                     delay(500)
@@ -188,12 +188,12 @@ class MainActivity : AppCompatActivity() {
                             markWon.setMarkdown(this, md)
                         })
 
-                        setNegativeButton(getString(R.string.no)) {
+                        setNegativeButton(this@MainActivity.getString(R.string.no)) {
                             saveData("allow_opening_links", true, this@MainActivity)
                             dismiss()
                         }
 
-                        setPositiveButton(getString(R.string.yes)) {
+                        setPositiveButton(this@MainActivity.getString(R.string.yes)) {
                             saveData("allow_opening_links", true, this@MainActivity)
                             tryWith(true) {
                                 startActivity(

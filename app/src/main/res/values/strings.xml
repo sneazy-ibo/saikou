@@ -407,7 +407,8 @@
     <string name="downloading">Downloading…</string>
     <string name="next_chapter_not_found">Next Chapter Not Found</string>
     <string name="first_chapter">This is the 1st Chapter!</string>
-    <string name="adult_stuff">Adult Stuff? ( ͡° ͜ʖ ͡°)</string>
+    <string name="adult_stuff">Adult Stuff?&#40; &#865;&#176; &#860;&#662; &#865;&#176; &#41;
+</string>
     <string name="what_did_you_open">What did you even open?</string>
     <string name="error_getting_data">Error getting Data from Anilist.</string>
     <string name="empty_response">Empty Response, Does your internet perhaps suck?</string>
@@ -523,7 +524,7 @@
 
     <string name="question_1">What is Saikou?\n Why should you use Saikou?</string>
     <string name="answer_1">Saikou is crafted based on simplistic yet state-of-the-art elegance. It is an Anilist only client, which also lets you stream-download Anime &amp; Manga. We plan on adding MyAnimeList support very soon.\nSaikou (最高; Sai-kō) literally means the best in Japanese. Well, we would like to say this is the best open source app for anime and manga on Android, but hey, Try it out yourself &amp; judge!</string>
-    
+
     <string name="question_2">What are some features of Saikou?</string>
     <string name="answer_2">Some mentionable features of Saikou are\n\n- Easy and functional way to both, watch anime and read manga, Ad Free.\n- A completely open source app with a nice UI &amp; Animations\n- The most Efficient scraping for anime and manga from multiple sources. (Spoiler Alert : No web-views were harmed)\n- Synchronize anime and manga real-time with AniList. Easily categorize anime and manga based on your current status. (Powered by AniList)\n- Find all shows using thoroughly and frequently updated list of all trending, popular and ongoing anime based on scores.\n- View extensive details about anime shows, movies and manga titles. It also features ability to countdown to the next episode of airing anime. (Powered by AniList &amp; MyAnimeList)</string>
 
