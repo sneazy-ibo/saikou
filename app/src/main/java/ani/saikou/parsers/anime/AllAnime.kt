@@ -19,8 +19,9 @@ class AllAnime : AnimeParser() {
     override val hostUrl = "https://allanime.to"
     override val isDubAvailableSeparately = true
 
-    private val apiHost = "https://api.allanime.co"
+    private val apiHost = "api.allanime.day"
     private val ytAnimeCoversHost = "https://wp.youtube-anime.com/aln.youtube-anime.com"
+    private val referer = "https://embed.ssbcontent.site"
     private val idRegex = Regex("${hostUrl}/anime/(\\w+)")
     private val epNumRegex = Regex("/[sd]ub/(\\d+)")
 
@@ -60,34 +61,21 @@ class AllAnime : AnimeParser() {
     }
 
     override suspend fun loadVideoServers(episodeLink: String, extra: Map<String, String>?): List<VideoServer> {
-        val showId = idRegex.find(episodeLink)?.groupValues?.get(1)
-        val videoServers = mutableListOf<VideoServer>()
-        val episodeNum = epNumRegex.find(episodeLink)?.groupValues?.get(1)
-        if (showId != null && episodeNum != null) {
-            val variables =
-                """{"showId":"$showId","translationType":"${if (selectDub) "dub" else "sub"}","episodeString":"$episodeNum"}"""
-            graphqlQuery(
-                variables,
-                videoServerHash
-            ).data?.episode?.sourceUrls?.forEach { source ->
-                var serverName = source.sourceName
-                var sourceNum = 2
-                while (videoServers.any { it.name == serverName }) {
-                    serverName = "${source.sourceName} ($sourceNum)"
-                    sourceNum++
-                }
-
-                if (!source.sourceUrl.startsWith("http")) {
+        val showId = idRegex.find(episodeLink)?.groupValues?.get(1) ?: return emptyList()
+        val episodeNum = epNumRegex.find(episodeLink)?.groupValues?.get(1) ?: return emptyList()
+        val variables =
+            """{"showId":"$showId","translationType":"${if (selectDub) "dub" else "sub"}","episodeString":"$episodeNum"}"""
+        return graphqlQuery(variables, videoServerHash)
+            .data?.episode?.sourceUrls?.map { source ->
+                val serverName = source.sourceName
+                val jsonUrl = if (!source.sourceUrl.startsWith("http")) {
                     val url = source.sourceUrl.decodeHash()
-                    val jsonUrl = "https://embed.ssbcontent.site${url.replace("clock", "clock.json")}"
-                    videoServers.add(VideoServer(serverName, jsonUrl, mapOf("type" to source.type)))
-                } else {
-                    videoServers.add(VideoServer(serverName, source.sourceUrl, mapOf("type" to source.type)))
-                }
-            }
-
-        }
-        return videoServers
+                    if (!url.startsWith("http"))
+                        FileUrl("$referer${url.replace("clock", "clock.json")}")
+                    else FileUrl(url, mapOf("referer" to referer))
+                } else FileUrl(source.sourceUrl)
+                VideoServer(serverName, jsonUrl, mapOf("type" to source.type))
+            } ?: emptyList()
     }
 
     private fun String.hexDecode(): String {
@@ -147,7 +135,8 @@ class AllAnime : AnimeParser() {
     private suspend fun graphqlQuery(variables: String, persistHash: String): Query {
         val extensions = """{"persistedQuery":{"version":1,"sha256Hash":"$persistHash"}}"""
         val res = client.get(
-            "$apiHost/allanimeapi",
+            "https://$apiHost/api",
+            headers = mapOf("origin" to hostUrl),
             params = mapOf(
                 "variables" to variables,
                 "extensions" to extensions
@@ -171,46 +160,51 @@ class AllAnime : AnimeParser() {
         return null
     }
 
-    private class AllAnimeExtractor(override val server: VideoServer, val direct: Boolean = false) : VideoExtractor() {
+    private inner class AllAnimeExtractor(override val server: VideoServer, val direct: Boolean = false) : VideoExtractor() {
         override suspend fun extract(): VideoContainer {
-            val url = server.embed.url
+            val url = server.embed
             return if (direct)
                 VideoContainer(listOf(Video(null, VideoType.CONTAINER, url, getSize(url))))
             else {
-                val res = client.get(url).parsed<VideoResponse>()
+                val res = client.get(url.url, url.headers).parsed<VideoResponse>()
                 val sub = mutableListOf<Subtitle>()
                 val vid = res.links?.asyncMapNotNull { i ->
                     i.subtitles?.forEach {
                         if (it.label?.contains("vtt") == true)
                             sub.add(Subtitle(it.lang ?: return@forEach, it.src ?: return@forEach))
                     }
+
                     when {
                         i.crIframe == true -> {
                             i.portData?.streams?.mapNotNull {
+                                val fileUrl = FileUrl(it.url ?: return@mapNotNull null, mapOf("referer" to referer))
                                 when {
                                     it.format == "adaptive_dash" && it.hardsubLang == "en-US"
                                          ->
-                                        Video(null, VideoType.DASH, it.url ?: return@mapNotNull null, null, "DASH")
+                                        Video(null, VideoType.DASH, fileUrl, null, "DASH")
 
                                     it.format == "adaptive_hls" && it.hardsubLang == "en-US"
                                          ->
-                                        Video(null, VideoType.M3U8, it.url ?: return@mapNotNull null, null, "M3U8")
+                                        Video(null, VideoType.M3U8, fileUrl, null, "M3U8")
 
                                     else -> null
                                 }
                             }
                         }
 
-                        i.hls == true      -> listOf(
-                            Video(null, VideoType.M3U8, i.link ?: return@asyncMapNotNull null, null, i.resolutionStr)
-                        )
-
-                        i.mp4 == true      -> listOf(
-                            Video(
-                                null, VideoType.CONTAINER, i.link ?: return@asyncMapNotNull null,
-                                getSize(i.link), i.resolutionStr
+                        i.hls == true      -> {
+                            val fileUrl = FileUrl(i.link ?: return@asyncMapNotNull null, mapOf("referer" to referer))
+                            listOf(
+                                Video(null, VideoType.M3U8, fileUrl, null, i.resolutionStr)
                             )
-                        )
+                        }
+
+                        i.mp4 == true      -> {
+                            val fileUrl = FileUrl(i.link ?: return@asyncMapNotNull null, mapOf("referer" to referer))
+                            listOf(
+                                Video(null, VideoType.M3U8, fileUrl, getSize(fileUrl), i.resolutionStr)
+                            )
+                        }
 
                         else               -> null
                     }
