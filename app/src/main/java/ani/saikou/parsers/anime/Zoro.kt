@@ -18,13 +18,13 @@ class Zoro : AnimeParser() {
 
     override val name = "Zoro"
     override val saveName = "zoro_to"
-    override val hostUrl = "https://aniwatch.to"
+    override val hostUrl = "https://kaido.to"
     override val isDubAvailableSeparately = false
 
     private val header = mapOf("X-Requested-With" to "XMLHttpRequest", "referer" to hostUrl)
 
     override suspend fun loadEpisodes(animeLink: String, extra: Map<String, String>?): List<Episode> {
-        val res = client.get("$hostUrl/ajax/v2/episode/list/$animeLink", header).parsed<HtmlResponse>()
+        val res = client.get("$hostUrl/ajax/episode/list/$animeLink", header).parsed<HtmlResponse>()
         val element = Jsoup.parse(res.html ?: return listOf())
         return element.select(".detail-infor-content > div > a").map {
             val title = it.attr("title")
@@ -39,13 +39,13 @@ class Zoro : AnimeParser() {
     private val embedHeaders = mapOf("referer" to "$hostUrl/")
 
     override suspend fun loadVideoServers(episodeLink: String, extra: Map<String,String>?): List<VideoServer> {
-        val res = client.get("$hostUrl/ajax/v2/episode/servers?episodeId=$episodeLink", header).parsed<HtmlResponse>()
+        val res = client.get("$hostUrl/ajax/episode/servers?episodeId=$episodeLink", header).parsed<HtmlResponse>()
         val element = Jsoup.parse(res.html ?: return listOf())
 
         return element.select("div.server-item").asyncMap {
             val serverName = "${it.attr("data-type").uppercase()} - ${it.text()}"
             val link =
-                client.get("$hostUrl/ajax/v2/episode/sources?id=${it.attr("data-id")}", header).parsed<SourceResponse>().link
+                client.get("$hostUrl/ajax/episode/sources?id=${it.attr("data-id")}", header).parsed<SourceResponse>().link
             VideoServer(serverName, FileUrl(link, embedHeaders))
         }
     }
@@ -54,6 +54,7 @@ class Zoro : AnimeParser() {
         val domain = Uri.parse(server.embed.url).host ?: return null
         val extractor: VideoExtractor? = when {
             "megacloud" in domain    -> RapidCloud(server)
+            "rapid" in domain    -> RapidCloud(server)
             "sb" in domain       -> StreamSB(server)
             "streamta" in domain -> StreamTape(server)
             else                 -> null
