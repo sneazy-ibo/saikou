@@ -28,9 +28,11 @@ class DevelopersDialogFragment : BottomSheetDialogFragment() {
         Developer("sreekrishna2001","https://avatars.githubusercontent.com/u/67505103?s=120&v=4","Contributor","https://github.com/Sreekrishna2001"),
         Developer("riimuru","https://avatars.githubusercontent.com/u/57333995?s=120&v=4","Contributor","https://github.com/riimuru"),
         Developer("vu nguyen","https://avatars.githubusercontent.com/u/68330291?s=120&v=4","Contributor","https://github.com/hoangvu12"),
-        Developer("animejeff","https://avatars.githubusercontent.com/u/101831300?s=120&v=4","rotubirtnoC","https://github.com/AnimeJeff"),
+        Developer("animejeff","https://avatars.githubusercontent.com/u/101831300?s=120&v=4","Contributor","https://github.com/AnimeJeff"),
         Developer("antonydp","https://avatars.githubusercontent.com/u/38143733?s=120&v=4","Contributor","https://github.com/antonydp"),
         Developer("tobybridle","https://avatars.githubusercontent.com/u/52335751?s=120&v=4","Contributor","https://github.com/TobyBridle"),
+        Developer("enimax","https://avatars.githubusercontent.com/u/107899019?s=120&v=4","Contributor","https://github.com/enimax-anime"),
+        Developer("vipulog","https://avatars.githubusercontent.com/u/90324465?s=120&v=4","Contributor","https://github.com/VipulOG")
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
