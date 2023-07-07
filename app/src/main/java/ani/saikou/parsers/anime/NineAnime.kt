@@ -3,6 +3,7 @@ package ani.saikou.parsers.anime
 import ani.saikou.*
 import ani.saikou.parsers.*
 import ani.saikou.parsers.anime.extractors.FileMoon
+import ani.saikou.parsers.anime.extractors.Mp4Upload
 import ani.saikou.parsers.anime.extractors.StreamTape
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
@@ -48,6 +49,7 @@ class NineAnime : AnimeParser() {
             "MyCloud"       -> Extractor(server)
             "Streamtape"    -> StreamTape(server)
             "Filemoon"    -> FileMoon(server)
+            "Mp4upload"     -> Mp4Upload(server)
             else            -> null
         }
         return extractor
