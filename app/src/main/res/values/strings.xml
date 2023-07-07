@@ -465,10 +465,10 @@
 
     <string name="read_on_saikou">Read on Saikou</string>
     <string name="watch_on_saikou">Watch on Saikou</string>
-    <string name="continue_episode">Continue : Episode </string>
-    <string name="continue_chapter">Continue : Chapter </string>
-    <string name="episode">Episode </string>
-    <string name="chapter">Chapter </string>
+    <string name="continue_episode">"Continue : Episode "</string>
+    <string name="continue_chapter">"Continue : Chapter "</string>
+    <string name="episode">"Episode "</string>
+    <string name="chapter">"Chapter "</string>
     <string name="just_released">- just got released!</string>
     <string name="checking_subscriptions_title">Checking Subscriptions</string>
 
@@ -514,13 +514,12 @@
     <string name="selected">Selected</string>
     <string name="found">Found</string>
 
-    <string name="age">__Age:__ </string>
-    <string name="birthday">\n__Birthday:__ </string>
-    <string name="gender">\n__Gender:__ </string>"
+    <string name="age">"__Age:__ "</string>
+    <string name="birthday">\n"__Birthday:__ "</string>
+    <string name="gender">\n"__Gender:__ "</string>"
 
-    <string name="male">Male</string>"
-    <string name="female">Female</string>"
-
+    <string name="male">Male</string>
+    <string name="female">Female</string>
 
     <string name="question_1">What is Saikou?\n Why should you use Saikou?</string>
     <string name="answer_1">Saikou is crafted based on simplistic yet state-of-the-art elegance. It is an Anilist only client, which also lets you stream-download Anime &amp; Manga. We plan on adding MyAnimeList support very soon.\nSaikou (最高; Sai-kō) literally means the best in Japanese. Well, we would like to say this is the best open source app for anime and manga on Android, but hey, Try it out yourself &amp; judge!</string>

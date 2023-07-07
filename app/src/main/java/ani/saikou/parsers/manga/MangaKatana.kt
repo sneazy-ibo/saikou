@@ -1,11 +1,11 @@
 package ani.saikou.parsers.manga
 
 import ani.saikou.client
-import ani.saikou.findBetween
 import ani.saikou.parsers.MangaChapter
 import ani.saikou.parsers.MangaImage
 import ani.saikou.parsers.MangaParser
 import ani.saikou.parsers.ShowResponse
+import ani.saikou.printIt
 
 class MangaKatana : MangaParser() {
 
@@ -36,9 +36,9 @@ class MangaKatana : MangaParser() {
     }
 
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
-        val match = client.get(chapterLink).text.findBetween("=[",",];f")!!
+        val match = client.get(chapterLink).text.substringBefore(",];f").substringAfterLast("=[","")
         return match.split(",").map {
-            MangaImage(url = it.replace("\"", "").replace("'", ""))
+            MangaImage(it.replace("\"", "").replace("'", "").printIt("Image : "))
         }
     }
 
