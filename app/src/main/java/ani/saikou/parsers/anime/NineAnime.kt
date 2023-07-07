@@ -2,6 +2,7 @@ package ani.saikou.parsers.anime
 
 import ani.saikou.*
 import ani.saikou.parsers.*
+import ani.saikou.parsers.anime.extractors.FileMoon
 import ani.saikou.parsers.anime.extractors.StreamTape
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
@@ -46,6 +47,7 @@ class NineAnime : AnimeParser() {
             "Vidstream"     -> Extractor(server)
             "MyCloud"       -> Extractor(server)
             "Streamtape"    -> StreamTape(server)
+            "Filemoon"    -> FileMoon(server)
             else            -> null
         }
         return extractor
