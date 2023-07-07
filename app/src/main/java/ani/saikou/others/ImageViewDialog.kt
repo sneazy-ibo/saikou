@@ -7,10 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import ani.saikou.*
+import ani.saikou.BottomSheetDialogFragment
+import ani.saikou.FileUrl
+import ani.saikou.R
 import ani.saikou.databinding.BottomSheetImageBinding
 import ani.saikou.manga.mangareader.BaseImageAdapter.Companion.loadBitmap
 import ani.saikou.manga.mangareader.BaseImageAdapter.Companion.mergeBitmap
+import ani.saikou.openLinkInBrowser
+import ani.saikou.saveImageToDownloads
+import ani.saikou.setSafeOnClickListener
+import ani.saikou.shareImage
+import ani.saikou.snackString
+import ani.saikou.toast
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.davemorrissey.labs.subscaleview.ImageSource
 import kotlinx.coroutines.launch
@@ -87,7 +95,7 @@ class ImageViewDialog : BottomSheetDialogFragment() {
                 ObjectAnimator.ofFloat(binding.bottomImageView, "alpha", 0f, 1f).setDuration(400L).start()
                 binding.bottomImageProgress.visibility = View.GONE
             } else {
-                toast(getString(R.string.loading_image_failed))
+                toast(context?.getString(R.string.loading_image_failed))
                 binding.bottomImageNo.visibility = View.VISIBLE
                 binding.bottomImageProgress.visibility = View.GONE
             }

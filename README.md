@@ -41,41 +41,40 @@ Saikou is crafted based on simplistic yet state-of-the-art elegance. It is an [A
 
 * **Available Anime sources:-**
 
-|                            SITE                            |   STATUS    | DIRECT DOWNLOADS |
-|:----------------------------------------------------------:|:-----------:|:----------------:|
-|             [AllAnime](https://allanime.site)              |   WORKING   |       SOME       |
-|                [Gogo](https://gogoanime.cl)                |   WORKING   |       SOME       |
-|                  [Zoro](https://zoro.to)                   |   WORKING   |        NO        |
-|                 [Marin](https://marin.moe)                 |   WORKING   |        YES       |
-|             [AnimePahe](https://animepahe.ru)              |   WORKING   |        YES       |
-|           [ConsumeBili](https://www.bilibili.tv)           | NOT WORKING |        NO        |
-|                 [9anime](https://9anime.to)                | NOT WORKING |        NO        |
-|               [Haho (18+)](https://haho.moe)               |   WORKING   |        YES       |
-|         [HentaiMama (18+)](https://hentaimama.io)          |   WORKING   |       SOME       |
-|       [HentaiStream (18+)](https://hentaistream.com)       | NOT-WORKING |        YES       |
-|           [HentaiFF (18+)](https://hentaiff.com)           |   WORKING   |       SOME       |
+|                      SITE                      |   STATUS    | DIRECT DOWNLOADS |
+|:----------------------------------------------:|:-----------:|:----------------:|
+|        [AllAnime](https://allanime.to)         |   WORKING   |       SOME       |
+|          [Gogo](https://gogoanime.cl)          |   WORKING   |       SOME       |
+|            [Zoro](https://zoro.to)             |   WORKING   |        NO        |
+|           [Marin](https://marin.moe)           |   WORKING   |       YES        |
+|       [AnimePahe](https://animepahe.ru)        |   WORKING   |       YES        |
+|          [9anime](https://9anime.to)           | NOT WORKING |        NO        |
+|         [Haho (18+)](https://haho.moe)         |   WORKING   |       YES        |
+|   [HentaiMama (18+)](https://hentaimama.io)    |   WORKING   |       SOME       |
+| [HentaiStream (18+)](https://hentaistream.com) | NOT-WORKING |       YES        |
+|     [HentaiFF (18+)](https://hentaiff.com)     |   WORKING   |       SOME       |
 
 
 * **Available Manga sources:-**
 
-|                    SITE                    |   STATUS    |
-|:------------------------------------------:|:-----------:|
-|  [MangaKakalot](https://mangakakalot.com)  |   WORKING   |
-|    [MangaBuddy](https://mangabuddy.com)    |   WORKING   |
-|     [MangaPill](https://mangapill.com)     |   WORKING   |
-|      [MangaDex](https://mangadex.org)      |   WORKING   |
-|  [MangaReaderTo](https://mangareader.to)   |   WORKING   |
-|     [AllAnime](https://allanime.site)      | NOT WORKING |
-|      [Comickfun](https://comick.fun)       | NOT WORKING |
-|   [Manga4Life](https://manga4life.com/)    |   WORKING   |
-|   [MangaRead](https://www.mangaread.org)   |   WORKING   |
-|   [MangaKatana](https://mangakatana.com)   |   WORKING   |
-|  [ColoredManga](https://coloredmanga.com/) |   WORKING   |
-|  [MangaKomi](https://mangakomi.io/manga/)  |   WORKING   |
-|      [Toonily](https://toonily.com/)       |   WORKING   |
-|    [NHentai (18+)](https://nhentai.net)    |   WORKING   |
-| [NineHentai (18+)](https://ninehentai.net) |   WORKING   |
-|   [Manwha18 (18+)](https://manhwa18.cc)    |   WORKING   |
+|                    SITE                    | STATUS  |
+|:------------------------------------------:|:-------:|
+|  [MangaKakalot](https://mangakakalot.com)  | WORKING |
+|    [MangaBuddy](https://mangabuddy.com)    | WORKING |
+|     [MangaPill](https://mangapill.com)     | WORKING |
+|      [MangaDex](https://mangadex.org)      | WORKING |
+|  [MangaReaderTo](https://mangareader.to)   | WORKING |
+|     [AllAnime](https://allanime.site)      | WORKING |
+|      [Comickfun](https://comick.fun)       | WORKING |
+|   [Manga4Life](https://manga4life.com/)    | WORKING |
+|   [MangaRead](https://www.mangaread.org)   | WORKING |
+|   [MangaKatana](https://mangakatana.com)   | WORKING |
+| [ColoredManga](https://coloredmanga.com/)  | WORKING |
+|  [MangaKomi](https://mangakomi.io/manga/)  | WORKING |
+|      [Toonily](https://toonily.com/)       | WORKING |
+|    [NHentai (18+)](https://nhentai.net)    | WORKING |
+| [NineHentai (18+)](https://ninehentai.net) | WORKING |
+|   [Manwha18 (18+)](https://manhwa18.cc)    | WORKING |
 
 ## Planned Stuff
 

@@ -37,10 +37,10 @@ open class Manga4Life : MangaParser() {
 
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
         val str = client.get(chapterLink).text
-        val server = str.findBetween(" vm.CurPathName =", ";")?.trim('"') ?: return listOf()
-        var slug = str.findBetween("vm.IndexName = ", ";")?.trim('"') ?: return listOf()
+        val server = str.findBetween("vm.CurPathName = ", ";")?.trim('"')!!
+        var slug = str.findBetween("vm.IndexName = ", ";")?.trim('"')!!
         val json = Mapper.parse<ChapterResponse>(
-            str.findBetween("vm.CurChapter = ", ";") ?: return listOf()
+            str.findBetween("vm.CurChapter = ", ";")!!
         )
         slug += json.directory.let { if (it.isEmpty()) "" else "/$it" }
         val chap = chapterImage(json.chapter)

@@ -139,9 +139,9 @@ fun initActivity(a: Activity) {
     uiSettings.darkMode.apply {
         AppCompatDelegate.setDefaultNightMode(
             when (this) {
-                true  -> AppCompatDelegate.MODE_NIGHT_YES
+                true -> AppCompatDelegate.MODE_NIGHT_YES
                 false -> AppCompatDelegate.MODE_NIGHT_NO
-                else  -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
             }
         )
     }
@@ -217,6 +217,7 @@ fun isOnline(context: Context): Boolean {
                             cap.hasTransport(TRANSPORT_VPN) ||
                             cap.hasTransport(TRANSPORT_WIFI) ||
                             cap.hasTransport(TRANSPORT_WIFI_AWARE) -> true
+
                     else                                           -> false
                 }
             } else false
@@ -269,7 +270,7 @@ class InputFilterMinMax(private val min: Double, private val max: Double, privat
 
     @SuppressLint("SetTextI18n")
     private fun isInRange(a: Double, b: Double, c: Double): Boolean {
-        val statusStrings =  currContext()!!.resources.getStringArray(R.array.status_manga)[2]
+        val statusStrings = currContext()!!.resources.getStringArray(R.array.status_manga)[2]
 
         if (c == b) {
             status?.setText(statusStrings, false)
@@ -399,9 +400,8 @@ fun MutableList<ShowResponse>.sortByTitle(string: String) {
 }
 
 fun String.findBetween(a: String, b: String): String? {
-    val start = this.indexOf(a)
-    val end = if (start != -1) this.indexOf(b, start) else return null
-    return if (end != -1) this.subSequence(start, end).removePrefix(a).removeSuffix(b).toString() else null
+    val string = substringAfter(a, "").substringBefore(b,"")
+    return string.ifEmpty { null }
 }
 
 fun ImageView.loadImage(url: String?, size: Int = 0) {
@@ -639,12 +639,19 @@ fun countDown(media: Media, view: ViewGroup) {
     if (media.anime?.nextAiringEpisode != null && media.anime.nextAiringEpisodeTime != null && (media.anime.nextAiringEpisodeTime!! - System.currentTimeMillis() / 1000) <= 86400 * 7.toLong()) {
         val v = ItemCountDownBinding.inflate(LayoutInflater.from(view.context), view, false)
         view.addView(v.root, 0)
-        v.mediaCountdownText.text = currActivity()?.getString(R.string.episode_release_countdown, media.anime.nextAiringEpisode!! + 1)
+        v.mediaCountdownText.text =
+            currActivity()?.getString(R.string.episode_release_countdown, media.anime.nextAiringEpisode!! + 1)
 
         object : CountDownTimer((media.anime.nextAiringEpisodeTime!! + 10000) * 1000 - System.currentTimeMillis(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val a = millisUntilFinished / 1000
-                v.mediaCountdown.text = currActivity()?.getString(R.string.time_format, a / 86400 , a % 86400 / 3600, a % 86400 % 3600 / 60, a % 86400 % 3600 % 60)
+                v.mediaCountdown.text = currActivity()?.getString(
+                    R.string.time_format,
+                    a / 86400,
+                    a % 86400 / 3600,
+                    a % 86400 % 3600 / 60,
+                    a % 86400 % 3600 % 60
+                )
             }
 
             override fun onFinish() {
@@ -855,10 +862,12 @@ fun checkCountry(context: Context): Boolean {
             val tz = TimeZone.getDefault().id
             tz.equals("Asia/Kolkata", ignoreCase = true)
         }
+
         TelephonyManager.SIM_STATE_READY  -> {
             val countryCodeValue = telMgr.networkCountryIso
             countryCodeValue.equals("in", ignoreCase = true)
         }
+
         else                              -> false
     }
 }

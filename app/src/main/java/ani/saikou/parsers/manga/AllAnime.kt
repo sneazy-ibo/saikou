@@ -1,5 +1,6 @@
 package ani.saikou.parsers.manga
 
+import ani.saikou.FileUrl
 import ani.saikou.anilist.Anilist
 import ani.saikou.client
 import ani.saikou.parsers.MangaChapter
@@ -15,15 +16,15 @@ class AllAnime : MangaParser() {
     override val saveName = "all_anime_manga"
     override val hostUrl = "https://allanime.to"
 
-    private val apiHost = "https://api.allanime.co"
+    private val apiHost = "api.allanime.day"
     private val ytAnimeCoversHost = "https://wp.youtube-anime.com/aln.youtube-anime.com"
     private val idRegex = Regex("${hostUrl}/manga/(\\w+)")
     private val epNumRegex = Regex("/[sd]ub/(\\d+)")
 
-    private val idHash = "debd1b866dcfde6e648b5da50b8b1363f1d11c9b6bf3b4d5ce80f1ee7e58da08"
-    private val episodeInfoHash = "3dced4c4c5c44b3737c3eeb8a5cd268bb0e4963f03de11703bfc6bbe760393cf"
-    private val searchHash = "edbe1fb23e711aa2bf493874a2d656a5438fe9b0b3a549c4b8a831cc2e929bae"
-    private val chapterHash = "42b6dd56556f98a565de67b8bb7b321b86ff97e920f915f03e47adb3901e40a8"
+    private val idHash = "a42e1106694628f5e4eaecd8d7ce0c73895a22a3c905c29836e2c220cf26e55f"
+    private val episodeInfoHash = "ae7b2ed82ce3bf6fe9af426372174468958a066694167e6800bfcb3fcbdbb460"
+    private val searchHash = "a27e57ef5de5bae714db701fb7b5cf57e13d57938fc6256f7d5c70a975d11f3d"
+    private val chapterHash = "295146730c381d163441c23d0761e1eae8d0333db5c30688739b1ef1f399925c"
 
     override suspend fun loadChapters(mangaLink: String, extra: Map<String, String>?): List<MangaChapter> {
         val showId = idRegex.find(mangaLink)?.groupValues?.get(1)!!
@@ -31,7 +32,7 @@ class AllAnime : MangaParser() {
         val format = DecimalFormat("#####.#####")
 
         return episodeInfos.sortedBy { it.episodeIdNum }.map { epInfo ->
-            val link = """${hostUrl}/manga/$showId/chapters/sub/${epInfo.episodeIdNum}"""
+            val link = "${hostUrl}/manga/$showId/chapters/sub/${epInfo.episodeIdNum}"
             val epNum = format.format(epInfo.episodeIdNum).toString()
             MangaChapter(epNum, link, epInfo.notes)
         }
@@ -45,7 +46,7 @@ class AllAnime : MangaParser() {
         // For future reference: If pictureUrlHead is null then the link provided is a relative link of the "apivtwo" variety, but it doesn't seem to contain useful images
         val chapter = chapterPages?.filter { !it.pictureUrlHead.isNullOrEmpty() }?.get(0)!!
         return chapter.pictureUrls.sortedBy { it.num }
-            .map { MangaImage("""${chapter.pictureUrlHead}${it.url}""") }
+            .map { MangaImage(FileUrl("${chapter.pictureUrlHead}${it.url}", mapOf("referer" to chapterLink))) }
 
     }
 
@@ -56,7 +57,7 @@ class AllAnime : MangaParser() {
             graphqlQuery(variables, searchHash).data?.mangas?.edges!!
 
         return edges.map { show ->
-            val link = """${hostUrl}/manga/${show.id}"""
+            val link = "${hostUrl}/manga/${show.id}"
             val otherNames = mutableListOf<String>()
             show.englishName?.let { otherNames.add(it) }
             show.nativeName?.let { otherNames.add(it) }
@@ -71,13 +72,16 @@ class AllAnime : MangaParser() {
 
     private suspend fun graphqlQuery(variables: String, persistHash: String): Query {
         val extensions = """{"persistedQuery":{"version":1,"sha256Hash":"$persistHash"}}"""
-        return client.get(
-            "$apiHost/allanimeapi",
+        val res = client.get(
+            "https://$apiHost/api",
+            headers = mapOf("origin" to hostUrl),
             params = mapOf(
                 "variables" to variables,
                 "extensions" to extensions
             )
-        ).parsed()
+        ).parsed<Query>()
+        if (res.data == null) throw Exception("Var : $variables\nError : ${res.errors!![0].message}")
+        return res
     }
 
     private suspend fun getEpisodeInfos(showId: String): List<EpisodeInfo>? {
@@ -96,8 +100,15 @@ class AllAnime : MangaParser() {
 
     @Serializable
     private data class Query(
-        @SerialName("data") var data: Data?
+        @SerialName("data") var data: Data?,
+        var errors: List<Error>?
     ) {
+
+        @Serializable
+        data class Error(
+            var message: String
+        )
+
         @Serializable
         data class Data(
             @SerialName("manga") val manga: Manga?,

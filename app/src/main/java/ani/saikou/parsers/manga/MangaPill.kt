@@ -1,5 +1,6 @@
 package ani.saikou.parsers.manga
 
+import ani.saikou.FileUrl
 import ani.saikou.client
 import ani.saikou.parsers.MangaChapter
 import ani.saikou.parsers.MangaImage
@@ -21,7 +22,7 @@ class MangaPill : MangaParser() {
 
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
         return client.get(chapterLink).document.select("img.js-page").map {
-            MangaImage(it.attr("data-src"))
+            MangaImage(FileUrl(it.attr("data-src"), mapOf("referer" to chapterLink)))
         }
     }
 
