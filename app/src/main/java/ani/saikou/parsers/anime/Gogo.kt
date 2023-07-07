@@ -9,7 +9,6 @@ import ani.saikou.parsers.ShowResponse
 import ani.saikou.parsers.VideoExtractor
 import ani.saikou.parsers.VideoServer
 import ani.saikou.parsers.anime.extractors.DoodStream
-import ani.saikou.parsers.anime.extractors.FPlayer
 import ani.saikou.parsers.anime.extractors.GogoCDN
 import ani.saikou.parsers.anime.extractors.Mp4Upload
 import ani.saikou.parsers.anime.extractors.StreamSB
@@ -62,7 +61,6 @@ class Gogo : AnimeParser() {
         val extractor: VideoExtractor? = when {
             "taku" in domain      -> GogoCDN(server)
             "sb" in domain        -> StreamSB(server)
-            "fplayer" in domain   -> FPlayer(server)
             "dood" in domain      -> DoodStream(server)
             "mp4" in domain       -> Mp4Upload(server)
             else                  -> null

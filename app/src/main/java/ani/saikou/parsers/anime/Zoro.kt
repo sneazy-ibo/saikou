@@ -17,7 +17,7 @@ import java.net.URLEncoder
 class Zoro : AnimeParser() {
 
     override val name = "Zoro"
-    override val saveName = "zoro_to"
+    override val saveName = "kaido_to"
     override val hostUrl = "https://kaido.to"
     override val isDubAvailableSeparately = false
 

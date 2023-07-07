@@ -58,8 +58,8 @@ class MediaListDialogSmallFragment : BottomSheetDialogFragment() {
         binding.mediaListProgressBar.visibility = View.GONE
         binding.mediaListLayout.visibility = View.VISIBLE
         val statuses: Array<String> = resources.getStringArray(R.array.status)
-        val statusStrings = if (media?.manga==null) resources.getStringArray(R.array.status_anime) else resources.getStringArray(R.array.status_manga)
-        val userStatus = if(media!!.userStatus != null) statusStrings[statuses.indexOf(media!!.userStatus)] else statusStrings[0]
+        val statusStrings = if (media.manga==null) resources.getStringArray(R.array.status_anime) else resources.getStringArray(R.array.status_manga)
+        val userStatus = if(media.userStatus != null) statusStrings[statuses.indexOf(media.userStatus)] else statusStrings[0]
 
         binding.mediaListStatus.setText(userStatus)
         binding.mediaListStatus.setAdapter(

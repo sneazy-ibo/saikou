@@ -21,69 +21,52 @@ class GogoCDN(override val server: VideoServer) : VideoExtractor() {
 
         val response = client.get(url).document
 
-        if (url.contains("streaming.php")) {
+        val keys = keysAndIv
 
-            val keys = keysAndIv
+        val it = response.select("script[data-name=\"episode\"]").attr("data-value")
 
-            val it = response.select("script[data-name=\"episode\"]").attr("data-value")
+        val decrypted = cryptoHandler(it, keys.key, keys.iv, false)!!.replace("\t", "")
+        val id = decrypted.findBetween("", "&")!!
+        val end = decrypted.substringAfter(id)
 
-            val decrypted = cryptoHandler(it, keys.key, keys.iv, false)!!.replace("\t", "")
-            val id = decrypted.findBetween("", "&")!!
-            val end = decrypted.substringAfter(id)
+        val encryptedId = cryptoHandler(id, keys.key, keys.iv, true)
+        val encryptedUrl = "https://${Uri.parse(url).host}/encrypt-ajax.php?id=$encryptedId$end&alias=$id"
 
-            val encryptedId = cryptoHandler(id, keys.key, keys.iv, true)
-            val encryptedUrl = "https://${Uri.parse(url).host}/encrypt-ajax.php?id=$encryptedId$end&alias=$id"
+        val encrypted = client.get(encryptedUrl, mapOf("X-Requested-With" to "XMLHttpRequest"), host)
+            .text.findBetween("""{"data":"""", "\"}")!!
 
-            val encrypted = client.get(encryptedUrl, mapOf("X-Requested-With" to "XMLHttpRequest"), host)
-                .text.findBetween("""{"data":"""", "\"}")!!
+        val jumbledJson = cryptoHandler(encrypted, keys.secondKey, keys.iv, false)!!
+            .replace("""o"<P{#meme":""", """e":[{"file":""")
 
-            val jumbledJson = cryptoHandler(encrypted, keys.secondKey, keys.iv, false)!!
-                .replace("""o"<P{#meme":""", """e":[{"file":""")
+        val json =
+            Mapper.parse<SourceResponse>(jumbledJson.dropLast(jumbledJson.length - jumbledJson.lastIndexOf('}') - 1))
 
-            val json =
-                Mapper.parse<SourceResponse>(jumbledJson.dropLast(jumbledJson.length - jumbledJson.lastIndexOf('}') - 1))
+        suspend fun add(i: SourceResponse.Source, backup: Boolean) {
+            val label = i.label?.lowercase() ?: return
+            val fileURL = FileUrl(i.file ?: return, mapOf("referer" to url))
 
-            suspend fun add(i: SourceResponse.Source, backup: Boolean) {
-                val label = i.label?.lowercase() ?: return
-                val fileURL = FileUrl(i.file ?: return, mapOf("referer" to url))
-
-                if (label != "auto p" && label != "hls p") {
-                    list.add(
-                        Video(
-                            label.replace(" ", "").replace("p", "").toIntOrNull(),
-                            VideoType.CONTAINER,
-                            fileURL,
-                            if (!backup) getSize(fileURL) else null,
-                            if (backup) "Backup" else null
-                        )
+            if (label != "auto p" && label != "hls p") {
+                list.add(
+                    Video(
+                        label.replace(" ", "").replace("p", "").toIntOrNull(),
+                        VideoType.CONTAINER,
+                        fileURL,
+                        if (!backup) getSize(fileURL) else null,
+                        if (backup) "Backup" else null
                     )
-                } else list.add(
-                    Video(null, VideoType.M3U8, fileURL, null, if (backup) "Backup" else null)
                 )
-            }
-
-            json.source?.asyncMap { i ->
-                add(i, false)
-            }
-            json.sourceBk?.asyncMap { i ->
-                add(i, true)
-            }
-        } else if (url.contains("embedplus")) {
-            val file = (response.toString().findBetween("sources:[{file: '", "',"))
-            if (file != null) {
-                if (
-                    try {
-                        client.head(file);true
-                    } catch (e: Exception) {
-                        false
-                    }
-                ) {
-                    list.add(
-                        Video(null, VideoType.M3U8, file)
-                    )
-                }
-            }
+            } else list.add(
+                Video(null, VideoType.M3U8, fileURL, null, if (backup) "Backup" else null)
+            )
         }
+
+        json.source?.asyncMap { i ->
+            add(i, false)
+        }
+        json.sourceBk?.asyncMap { i ->
+            add(i, true)
+        }
+
         return VideoContainer(list)
     }
 

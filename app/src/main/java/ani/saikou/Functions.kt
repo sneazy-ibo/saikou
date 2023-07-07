@@ -381,6 +381,12 @@ fun levenshtein(lhs: CharSequence, rhs: CharSequence): Int {
     return cost[lhsLength - 1]
 }
 
+fun List<ShowResponse>.sortByTitle(string: String): List<ShowResponse> {
+    val list = this.toMutableList()
+    list.sortByTitle(string)
+    return list
+}
+
 fun MutableList<ShowResponse>.sortByTitle(string: String) {
     val temp: MutableMap<Int, Int> = mutableMapOf()
     for (i in 0 until this.size) {
