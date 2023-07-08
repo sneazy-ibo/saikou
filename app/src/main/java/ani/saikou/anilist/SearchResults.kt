@@ -26,7 +26,8 @@ data class SearchResults(
     fun toChipList(): List<SearchChip> {
         val list = mutableListOf<SearchChip>()
         sort?.let {
-            list.add(SearchChip("SORT", currContext()!!.getString(R.string.filter_sort, it)))
+            val c = currContext()!!
+            list.add(SearchChip("SORT", c.getString(R.string.filter_sort, c.resources.getStringArray(R.array.sort_by)[Anilist.sortBy.indexOf(it)])))
         }
         format?.let {
             list.add(SearchChip("FORMAT", currContext()!!.getString(R.string.filter_format, it)))

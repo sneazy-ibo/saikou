@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ani.saikou.anilist.Anilist
 import ani.saikou.anilist.AnilistMangaViewModel
 import ani.saikou.anilist.SearchResults
 import ani.saikou.anilist.getUserId
@@ -86,7 +87,7 @@ class MangaFragment : Fragment() {
                 onList = false,
                 results = arrayListOf(),
                 hasNextPage = true,
-                sort = "Popular"
+                sort = Anilist.sortBy[1]
             )
         }
         val popularAdaptor = MediaAdaptor(1, model.searchResults.results, requireActivity())
@@ -181,7 +182,7 @@ class MangaFragment : Fragment() {
             model.searchResults.results.clear()
             popularAdaptor.notifyDataSetChanged()
             scope.launch(Dispatchers.IO) {
-                model.loadPopular("MANGA", sort = "Popular", onList = checked)
+                model.loadPopular("MANGA", sort = Anilist.sortBy[1], onList = checked)
             }
         }
 
@@ -224,7 +225,7 @@ class MangaFragment : Fragment() {
                         model.loaded = true
                         model.loadTrending()
                         model.loadTrendingNovel()
-                        model.loadPopular("MANGA", sort = "Popular")
+                        model.loadPopular("MANGA", sort = Anilist.sortBy[1])
                     }
                     live.postValue(false)
                     _binding?.mangaRefresh?.isRefreshing = false

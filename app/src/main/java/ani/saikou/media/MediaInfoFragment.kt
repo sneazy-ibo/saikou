@@ -217,7 +217,6 @@ class MediaInfoFragment : Fragment() {
                     val markWon = Markwon.builder(requireContext())
                         .usePlugin(SoftBreakAddsNewLinePlugin.create()).build()
 
-                    @Suppress("BlockingMethodInNonBlockingContext")
                     fun makeLink(a: String): String {
                         val first = a.indexOf('"').let { if (it != -1) it else return a } + 1
                         val end = a.indexOf('"', first).let { if (it != -1) it else return a }
@@ -312,7 +311,7 @@ class MediaInfoFragment : Fragment() {
                                 chip.context,
                                 Intent(chip.context, SearchActivity::class.java)
                                     .putExtra("type", type)
-                                    .putExtra("sortBy", currContext()!!.getString(R.string.sort_trending))
+                                    .putExtra("sortBy", Anilist.sortBy[2])
                                     .putExtra("tag", media.tags[position].substringBefore(" :"))
                                     .putExtra("search", true)
                                     .also {

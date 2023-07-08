@@ -97,7 +97,7 @@ class AnimeFragment : Fragment() {
                 onList = false,
                 results = mutableListOf(),
                 hasNextPage = true,
-                sort = "Popular"
+                sort = Anilist.sortBy[1]
             )
         }
         val popularAdaptor = MediaAdaptor(1, model.searchResults.results, requireActivity())
@@ -136,7 +136,7 @@ class AnimeFragment : Fragment() {
             model.searchResults.results.clear()
             popularAdaptor.notifyDataSetChanged()
             scope.launch(Dispatchers.IO) {
-                model.loadPopular("ANIME", sort = "Popular", onList = checked)
+                model.loadPopular("ANIME", sort = Anilist.sortBy[1], onList = checked)
             }
         }
 
@@ -256,7 +256,7 @@ class AnimeFragment : Fragment() {
                         model.loaded = true
                         model.loadTrending(1)
                         model.loadUpdated()
-                        model.loadPopular("ANIME", sort = "Popular")
+                        model.loadPopular("ANIME", sort = Anilist.sortBy[1])
                     }
                     live.postValue(false)
                     _binding?.animeRefresh?.isRefreshing = false

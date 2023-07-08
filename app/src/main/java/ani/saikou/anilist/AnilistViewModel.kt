@@ -4,14 +4,14 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import ani.saikou.R
+import ani.saikou.currContext
 import ani.saikou.loadData
 import ani.saikou.mal.MAL
 import ani.saikou.media.Media
 import ani.saikou.others.AppUpdater
 import ani.saikou.snackString
 import ani.saikou.tryWithSuspend
-import ani.saikou.currContext
-import ani.saikou.R
 
 
 suspend fun getUserId(update: Runnable) {
@@ -87,7 +87,7 @@ class AnilistAnimeViewModel : ViewModel() {
             Anilist.query.search(
                 type,
                 perPage = 12,
-                sort = "Trending",
+                sort = Anilist.sortBy[2],
                 season = season,
                 seasonYear = year,
                 hd = true
@@ -105,7 +105,7 @@ class AnilistAnimeViewModel : ViewModel() {
         type: String,
         search_val: String? = null,
         genres: ArrayList<String>? = null,
-        sort: String = "Popular",
+        sort: String = Anilist.sortBy[1],
         onList: Boolean = true,
     ) {
         animePopular.postValue(
@@ -146,12 +146,12 @@ class AnilistMangaViewModel : ViewModel() {
     private val trending: MutableLiveData<MutableList<Media>> = MutableLiveData<MutableList<Media>>(null)
     fun getTrending(): LiveData<MutableList<Media>> = trending
     suspend fun loadTrending() =
-        trending.postValue(Anilist.query.search(type, perPage = 10, sort = "Trending", hd = true)?.results)
+        trending.postValue(Anilist.query.search(type, perPage = 10, sort = Anilist.sortBy[2], hd = true)?.results)
 
     private val updated: MutableLiveData<MutableList<Media>> = MutableLiveData<MutableList<Media>>(null)
     fun getTrendingNovel(): LiveData<MutableList<Media>> = updated
     suspend fun loadTrendingNovel() =
-        updated.postValue(Anilist.query.search(type, perPage = 10, sort = "Trending", format = "NOVEL")?.results)
+        updated.postValue(Anilist.query.search(type, perPage = 10, sort = Anilist.sortBy[2], format = "NOVEL")?.results)
 
     private val mangaPopular = MutableLiveData<SearchResults?>(null)
     fun getPopular(): LiveData<SearchResults?> = mangaPopular
@@ -159,7 +159,7 @@ class AnilistMangaViewModel : ViewModel() {
         type: String,
         search_val: String? = null,
         genres: ArrayList<String>? = null,
-        sort: String = "Popular",
+        sort: String = Anilist.sortBy[1],
         onList: Boolean = true,
     ) {
         mangaPopular.postValue(

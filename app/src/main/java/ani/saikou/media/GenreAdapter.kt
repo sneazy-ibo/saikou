@@ -45,7 +45,7 @@ class GenreAdapter(
                     Intent(itemView.context, SearchActivity::class.java)
                         .putExtra("type", type)
                         .putExtra("genre", pos[bindingAdapterPosition])
-                        .putExtra("sortBy", currActivity()!!.getString(R.string.sort_trending))
+                        .putExtra("sortBy", Anilist.sortBy[2])
                         .putExtra("search", true)
                         .also {
                         if (pos[bindingAdapterPosition].lowercase() == "hentai") {
