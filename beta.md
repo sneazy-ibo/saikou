@@ -5,6 +5,6 @@ This means beta can now also have ground breaking bugs with it. (Previously, I a
 
 If you wish still wish to stay on the Beta Version, [click here](https://github.com/saikou-app/saikou/releases)
 
-If not
+If not, 
 
 ## You will now be downloading the stable version of the app.
