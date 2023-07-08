@@ -1,6 +1,7 @@
 name: Android CI Beta
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
     paths-ignore:
