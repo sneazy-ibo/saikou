@@ -78,7 +78,7 @@ jobs:
 
     - name: Delete Old Pre-Releases
       id: delete-pre-releases
-      uses: sgpublic/delete-release-action@main
+      uses: sgpublic/delete-release-action@master
       with:
         pre-release-drop: true
         pre-release-keep-count: 3
