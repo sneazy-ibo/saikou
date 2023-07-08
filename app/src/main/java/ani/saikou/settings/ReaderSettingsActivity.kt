@@ -4,8 +4,14 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updateLayoutParams
-import ani.saikou.*
+import ani.saikou.R
 import ani.saikou.databinding.ActivityReaderSettingsBinding
+import ani.saikou.initActivity
+import ani.saikou.loadData
+import ani.saikou.navBarHeight
+import ani.saikou.saveData
+import ani.saikou.snackString
+import ani.saikou.statusBarHeight
 
 class ReaderSettingsActivity : AppCompatActivity() {
     lateinit var binding: ActivityReaderSettingsBinding
@@ -53,7 +59,7 @@ class ReaderSettingsActivity : AppCompatActivity() {
             binding.readerSettingsContinuous
         )
 
-        binding.readerSettingsLayoutText.text = settings.default.layout.string
+        binding.readerSettingsLayoutText.text = resources.getStringArray(R.array.manga_layouts)[settings.default.layout.ordinal]
         var selectedLayout = layoutList[settings.default.layout.ordinal]
         selectedLayout.alpha = 1f
 
@@ -63,16 +69,16 @@ class ReaderSettingsActivity : AppCompatActivity() {
                 selectedLayout = imageButton
                 selectedLayout.alpha = 1f
                 settings.default.layout = CurrentReaderSettings.Layouts[index]?:CurrentReaderSettings.Layouts.CONTINUOUS
-                binding.readerSettingsLayoutText.text = settings.default.layout.string
+                binding.readerSettingsLayoutText.text = resources.getStringArray(R.array.manga_layouts)[settings.default.layout.ordinal]
                 saveData(reader, settings)
             }
         }
 
-        binding.readerSettingsDirectionText.text = settings.default.direction.string
+        binding.readerSettingsDirectionText.text = resources.getStringArray(R.array.manga_directions)[settings.default.direction.ordinal]
         binding.readerSettingsDirection.rotation = 90f * (settings.default.direction.ordinal)
         binding.readerSettingsDirection.setOnClickListener {
             settings.default.direction = CurrentReaderSettings.Directions[settings.default.direction.ordinal + 1] ?: CurrentReaderSettings.Directions.TOP_TO_BOTTOM
-            binding.readerSettingsDirectionText.text = settings.default.direction.string
+            binding.readerSettingsDirectionText.text = resources.getStringArray(R.array.manga_directions)[settings.default.direction.ordinal]
             binding.readerSettingsDirection.rotation = 90f * (settings.default.direction.ordinal)
             saveData(reader, settings)
         }
