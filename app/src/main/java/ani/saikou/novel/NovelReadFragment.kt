@@ -76,7 +76,7 @@ class NovelReadFragment : Fragment() {
             if (it != null) {
                 searching = false
                 novelResponseAdapter.submitList(it)
-                headerAdapter.progress.visibility = View.GONE
+                headerAdapter.progress?.visibility = View.GONE
             }
         }
     }
@@ -87,7 +87,7 @@ class NovelReadFragment : Fragment() {
         if (!searching) {
             novelResponseAdapter.clear()
             searchQuery = query
-            headerAdapter.progress.visibility = View.VISIBLE
+            headerAdapter.progress?.visibility = View.VISIBLE
             lifecycleScope.launch(Dispatchers.IO) {
                 if (auto || query=="") model.autoSearchNovels(media)
                 else model.searchNovels(query, source)

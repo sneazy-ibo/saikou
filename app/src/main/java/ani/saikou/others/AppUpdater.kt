@@ -21,22 +21,34 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.decodeFromJsonElement
 import java.io.File
 
 object AppUpdater {
-    suspend fun check(activity: FragmentActivity,post:Boolean=false) {
+    @Suppress("KotlinConstantConditions")
+    suspend fun check(activity: FragmentActivity, post:Boolean=false) {
         if(post) snackString(currContext()?.getString(R.string.checking_for_update))
         val repo = activity.getString(R.string.repo)
         tryWithSuspend {
-            val md =
-                client.get("https://raw.githubusercontent.com/$repo/main/${if (!BuildConfig.DEBUG) "stable" else "beta"}.md").text
+            val (md, version) = if(BuildConfig.BUILD_TYPE=="debug"){
+                val res = client
+                    .get("https://api.github.com/repos/$repo/releases?prerelease=true&sort=created_at%3Adesc")
+                    .parsed<JsonArray>()[0]
+                val r = Mapper.json.decodeFromJsonElement<GithubResponse>(res)
+                val v = r.tagName.substringAfter("v","")
+                (r.body ?: "") to v.ifEmpty { throw Exception("Weird Version : ${r.tagName}") }
+            }else{
+                val res =
+                    client.get("https://raw.githubusercontent.com/$repo/main/stable.md").text
+                res to res.substringAfter("# ").substringBefore("\n")
+            }
 
-            val version = md.substringAfter("# ").substringBefore("\n")
             logger("Git Version : $version")
             val dontShow = loadData("dont_ask_for_update_$version") ?: false
             if (compareVersion(version) && !dontShow && !activity.isDestroyed) activity.runOnUiThread {
                 CustomBottomDialog.newInstance().apply {
-                    setTitleText("${if (!BuildConfig.DEBUG) "" else "Beta "}Update " + currContext()!!.getString(R.string.avaible))
+                    setTitleText("${if (BuildConfig.BUILD_TYPE=="debug") "Beta " else ""}Update " + currContext()!!.getString(R.string.available))
                     addView(
                         TextView(activity).apply {
                             val markWon = Markwon.builder(activity).usePlugin(SoftBreakAddsNewLinePlugin.create()).build()
@@ -46,7 +58,7 @@ object AppUpdater {
 
                     setCheck(currContext()!!.getString(R.string.dont_show_again, version), false) { isChecked ->
                         if (isChecked) {
-                            saveData("dont_ask_for_update_$version", isChecked)
+                            saveData("dont_ask_for_update_$version", true)
                         }
                     }
                     setPositiveButton(currContext()!!.getString(R.string.lets_go)) {
@@ -79,21 +91,24 @@ object AppUpdater {
 
     private fun compareVersion(version: String): Boolean {
 
-        fun toDouble(list: List<String>): Double {
-            return list.mapIndexed { i: Int, s: String ->
-                when (i) {
-                    0 -> s.toDouble() * 100
-                    1 -> s.toDouble() * 10
-                    2 -> s.toDouble()
-                    3 -> "0.$s".toDouble()
-                    else -> s.toDouble()
-                }
-            }.sum()
-        }
+        if(BuildConfig.DEBUG)
+            return BuildConfig.VERSION_NAME != version
+        else {
+            fun toDouble(list: List<String>): Double {
+                return list.mapIndexed { i: Int, s: String ->
+                    when (i) {
+                        0    -> s.toDouble() * 100
+                        1    -> s.toDouble() * 10
+                        2    -> s.toDouble()
+                        else -> s.toDoubleOrNull()?: 0.0
+                    }
+                }.sum()
+            }
 
-        val new = toDouble(version.split("."))
-        val curr = toDouble(BuildConfig.VERSION_NAME.split("."))
-        return new > curr
+            val new = toDouble(version.split("."))
+            val curr = toDouble(BuildConfig.VERSION_NAME.split("."))
+            return new > curr
+        }
     }
 
 
@@ -179,6 +194,11 @@ object AppUpdater {
 
     @Serializable
     data class GithubResponse(
+        @SerialName("html_url")
+        val htmlUrl: String,
+        @SerialName("tag_name")
+        val tagName: String,
+        val body: String? = null,
         val assets: List<Asset>? = null
     ) {
         @Serializable

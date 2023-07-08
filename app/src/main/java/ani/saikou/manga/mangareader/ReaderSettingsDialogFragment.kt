@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ani.saikou.BottomSheetDialogFragment
+import ani.saikou.R
 import ani.saikou.databinding.BottomSheetCurrentReaderSettingsBinding
 import ani.saikou.settings.CurrentReaderSettings
 import ani.saikou.settings.CurrentReaderSettings.Directions
@@ -23,11 +24,11 @@ class ReaderSettingsDialogFragment : BottomSheetDialogFragment() {
         val activity = requireActivity() as MangaReaderActivity
         val settings = activity.settings.default
 
-        binding.readerDirectionText.text = settings.direction.string
+        binding.readerDirectionText.text = resources.getStringArray(R.array.manga_directions)[settings.direction.ordinal]
         binding.readerDirection.rotation = 90f * (settings.direction.ordinal)
         binding.readerDirection.setOnClickListener {
             settings.direction = Directions[settings.direction.ordinal + 1] ?: Directions.TOP_TO_BOTTOM
-            binding.readerDirectionText.text = settings.direction.string
+            binding.readerDirectionText.text = resources.getStringArray(R.array.manga_directions)[settings.direction.ordinal]
             binding.readerDirection.rotation = 90f * (settings.direction.ordinal)
             activity.applySettings()
         }
@@ -55,7 +56,7 @@ class ReaderSettingsDialogFragment : BottomSheetDialogFragment() {
             activity.applySettings()
         }
 
-        binding.readerLayoutText.text = settings.layout.string
+        binding.readerLayoutText.text = resources.getStringArray(R.array.manga_layouts)[settings.layout.ordinal]
         var selected = list[settings.layout.ordinal]
         selected.alpha = 1f
 
@@ -65,7 +66,7 @@ class ReaderSettingsDialogFragment : BottomSheetDialogFragment() {
                 selected = imageButton
                 selected.alpha = 1f
                 settings.layout = CurrentReaderSettings.Layouts[index]?:CurrentReaderSettings.Layouts.CONTINUOUS
-                binding.readerLayoutText.text = settings.layout.string
+                binding.readerLayoutText.text = resources.getStringArray(R.array.manga_layouts)[settings.layout.ordinal]
                 activity.applySettings()
                 paddingAvailable(settings.layout.ordinal!=0)
             }

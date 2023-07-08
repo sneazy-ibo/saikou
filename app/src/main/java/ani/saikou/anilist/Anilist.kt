@@ -4,11 +4,11 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
+import ani.saikou.R
 import ani.saikou.client
 import ani.saikou.currContext
 import ani.saikou.openLinkInBrowser
 import ani.saikou.tryWithSuspend
-import ani.saikou.R
 import java.io.File
 import java.util.*
 
@@ -28,14 +28,10 @@ object Anilist {
     var genres: ArrayList<String>? = null
     var tags: Map<Boolean, List<String>>? = null
 
-    val sortBy = mapOf(
-        currContext()?.getString(R.string.sort_score) to "SCORE_DESC",
-        currContext()?.getString(R.string.sort_popular) to "POPULARITY_DESC",
-        currContext()?.getString(R.string.sort_trending) to "TRENDING_DESC",
-        "A-Z" to "TITLE_ENGLISH",
-        "Z-A" to "TITLE_ENGLISH_DESC",
-        currContext()?.getString(R.string.sort_what) to "SCORE"
+    val sortBy = listOf(
+        "SCORE_DESC","POPULARITY_DESC","TRENDING_DESC","TITLE_ENGLISH","TITLE_ENGLISH_DESC","SCORE"
     )
+
     val seasons = listOf(
         "WINTER", "SPRING", "SUMMER", "FALL"
     )

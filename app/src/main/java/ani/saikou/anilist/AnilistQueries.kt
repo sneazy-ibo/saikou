@@ -1,6 +1,7 @@
 package ani.saikou.anilist
 
 import android.app.Activity
+import ani.saikou.R
 import ani.saikou.anilist.Anilist.authorRoles
 import ani.saikou.anilist.Anilist.executeQuery
 import ani.saikou.anilist.api.FuzzyDate
@@ -8,6 +9,7 @@ import ani.saikou.anilist.api.Page
 import ani.saikou.anilist.api.Query
 import ani.saikou.checkGenreTime
 import ani.saikou.checkId
+import ani.saikou.currContext
 import ani.saikou.loadData
 import ani.saikou.logError
 import ani.saikou.media.Character
@@ -16,8 +18,6 @@ import ani.saikou.media.Studio
 import ani.saikou.others.MalScraper
 import ani.saikou.saveData
 import ani.saikou.snackString
-import ani.saikou.currContext
-import ani.saikou.R
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -546,7 +546,7 @@ query (${"$"}page: Int = 1, ${"$"}id: Int, ${"$"}type: MediaType, ${"$"}isAdult:
             ${if (seasonYear != null) ""","seasonYear":"$seasonYear"""" else ""}
             ${if (season != null) ""","season":"$season"""" else ""}
             ${if (search != null) ""","search":"$search"""" else ""}
-            ${if (Anilist.sortBy.containsKey(sort)) ""","sort":"${Anilist.sortBy[sort]}"""" else ""}
+            ${if (sort!=null) ""","sort":"$sort"""" else ""}
             ${if (format != null) ""","format":"${format.replace(" ", "_")}"""" else ""}
             ${if (genres?.isNotEmpty() == true) ""","genres":[${genres.joinToString { "\"$it\"" }}]""" else ""}
             ${

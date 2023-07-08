@@ -1,7 +1,5 @@
 package ani.saikou.settings
 
-import ani.saikou.R
-import ani.saikou.currContext
 import java.io.Serializable
 
 data class CurrentReaderSettings(
@@ -22,22 +20,21 @@ data class CurrentReaderSettings(
     var cropBorderThreshold: Int = 10,
 ) : Serializable {
 
-    enum class Directions(val string: String) {
-
-        TOP_TO_BOTTOM(currContext()!!.getString(R.string.top_to_bottom)),
-        RIGHT_TO_LEFT(currContext()!!.getString(R.string.right_to_left)),
-        BOTTOM_TO_TOP(currContext()!!.getString(R.string.bottom_to_top)),
-        LEFT_TO_RIGHT(currContext()!!.getString(R.string.left_to_right));
+    enum class Directions {
+        TOP_TO_BOTTOM,
+        RIGHT_TO_LEFT,
+        BOTTOM_TO_TOP,
+        LEFT_TO_RIGHT;
 
         companion object {
             operator fun get(value: Int) = values().firstOrNull { it.ordinal == value }
         }
     }
 
-    enum class Layouts(val string: String) {
-        PAGED(currContext()!!.getString(R.string.paged)),
-        CONTINUOUS_PAGED(currContext()!!.getString(R.string.continuous_paged)),
-        CONTINUOUS(currContext()!!.getString(R.string.continuous));
+    enum class Layouts {
+        PAGED,
+        CONTINUOUS_PAGED,
+        CONTINUOUS;
 
         companion object {
             operator fun get(value: Int) = values().firstOrNull { it.ordinal == value }

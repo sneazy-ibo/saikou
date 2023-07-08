@@ -188,9 +188,9 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
                     val typedValue = TypedValue()
                     theme.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true)
                     bold { color(typedValue.data) { append("${media.userProgress}") } }
-                    append(if (media.anime != null) getString(R.string.episodes_out_of) else getString(R.string.chapeters_out_of))
+                    append(if (media.anime != null) getString(R.string.episodes_out_of) else getString(R.string.chapters_out_of))
                 } else {
-                    append(if (media.anime != null) getString(R.string.episoded_total_of) else getString(R.string.chapters_total_of))
+                    append(if (media.anime != null) getString(R.string.episodes_total_of) else getString(R.string.chapters_total_of))
                 }
                 if (media.anime != null) {
                     if (media.anime!!.nextAiringEpisode != null) {

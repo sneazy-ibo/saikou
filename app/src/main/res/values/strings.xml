@@ -407,8 +407,7 @@
     <string name="downloading">Downloading…</string>
     <string name="next_chapter_not_found">Next Chapter Not Found</string>
     <string name="first_chapter">This is the 1st Chapter!</string>
-    <string name="adult_stuff">Adult Stuff?&#40; &#865;&#176; &#860;&#662; &#865;&#176; &#41;
-</string>
+    <string name="adult_stuff">Adult Stuff?&#40; &#865;&#176; &#860;&#662; &#865;&#176; &#41;</string>
     <string name="what_did_you_open">What did you even open?</string>
     <string name="error_getting_data">Error getting Data from Anilist.</string>
     <string name="empty_response">Empty Response, Does your internet perhaps suck?</string>
@@ -440,11 +439,14 @@
     <string name="refreshing_token_failed">Refreshing Token Failed</string>
     <string name="episode_release_countdown">Episode %1$d will be released in</string>
     <string name="time_format">%1$d days %2$d hrs %3$d mins %4$d secs</string>
-
-    <string name="sort_score">Score</string>
-    <string name="sort_popular">Popular</string>
-    <string name="sort_trending">Trending</string>
-    <string name="sort_what">What?</string>
+    <string-array name="sort_by">
+        <item>Score</item>
+        <item>Popular</item>
+        <item>Trending</item>
+        <item>A-Z</item>
+        <item>Z-A</item>
+        <item>What?</item>
+    </string-array>
     <string name="main_role">MAIN</string>
     <string name="supporting_role">SUPPORTING</string>
 
@@ -490,26 +492,30 @@
     <string name="close">Close</string>
     <string name= "no_chapter">No Chapter</string>
     <string name= "content_18">Turn on 18+ Content from your Anilist Settings</string>
-    <string name= "avaible">Avaible</string>
+    <string name= "available">Available</string>
     <string name="lets_go">Let\'s Go</string>
     <string name="cope">Cope</string>
 
     <string name="watched_num">"Watched "</string>
     <string name="read_num">"Read "</string>
     <string name="episodes_out_of">" out of "</string>
-    <string name="chapeters_out_of">" out of "</string>
-    <string name="episoded_total_of">"Total of "</string>
+    <string name="chapters_out_of">" out of "</string>
+    <string name="episodes_total_of">"Total of "</string>
     <string name="chapters_total_of">"Total of "</string>
     <string name="no_description_available">"No Description Available"</string>
 
-    <string name="top_to_bottom">Top to Bottom</string>
-    <string name="right_to_left">Right to Left</string>
-    <string name="bottom_to_top">Bottom to Top</string>
-    <string name="left_to_right">Left to Right</string>
+    <string-array name="manga_directions">
+        <item>Top to Bottom</item>
+        <item>Right to Left</item>
+        <item>Bottom to Top</item>
+        <item>Left to Right</item>
+    </string-array>
 
-    <string name="paged">Paged</string>
-    <string name="continuous_paged">Continuous Paged</string>
-    <string name="continuous">Continuous</string>
+    <string-array name="manga_layouts">
+        <item>Paged</item>
+        <item>Continuous Paged</item>
+        <item>Continuous</item>
+    </string-array>
 
     <string name="selected">Selected</string>
     <string name="found">Found</string>

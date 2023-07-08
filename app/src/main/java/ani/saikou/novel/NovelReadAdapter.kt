@@ -19,7 +19,7 @@ class NovelReadAdapter(
     private val novelReadSources: NovelReadSources
 ) : RecyclerView.Adapter<NovelReadAdapter.ViewHolder>() {
 
-    lateinit var progress: View
+    var progress: View? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NovelReadAdapter.ViewHolder {
         val binding = ItemNovelHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)

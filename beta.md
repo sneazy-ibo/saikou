@@ -1,15 +1,10 @@
-# 1.2.3.2
+# 1.2.4
 
-- New Source AnimeDao
-- Remove ConsumeBili
-- Fix all Non-Adult Sources!
-- Fix Scrapers & added new scrapers for 9anime, thanks to @antonydp
-- Improved localization for other languages, thanks to @antonydp
-- Fix 9anime & Zoro(aniwatch.to) thanks to @enimax-anime
-- Added Support for Downloading(only) Novels, thanks to @antonydp 's suggestion
-- Fix Scrolling problem when opening an image in the image viewer
-- Add option to change Notes in List Editor, by @VipulOg
-- Fix Black layer when seeking in video player, thanks to @VipulOG
-- Update Discord Links
-- Fix StreamSB Scraping
-- Other changes in the code, which I can't care to put here
+Hey there, the beta app has now switched to getting immediate updates. (gets updated when the code gets updated)
+This means beta can now also have ground breaking bugs with it. (Previously, I avoided this so beta were stable enough to use)
+
+If you wish still wish to stay on the Beta Version, [click here](https://github.com/saikou-app/saikou/releases)
+
+If not
+
+## You will now be downloading the stable version of the app.

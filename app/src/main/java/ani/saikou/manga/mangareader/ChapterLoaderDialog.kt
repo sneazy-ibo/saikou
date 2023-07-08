@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import ani.saikou.BottomSheetDialogFragment
 import ani.saikou.R
+import ani.saikou.currActivity
 import ani.saikou.databinding.BottomSheetSelectorBinding
 import ani.saikou.manga.MangaChapter
 import ani.saikou.media.MediaDetailsViewModel
@@ -44,10 +45,12 @@ class ChapterLoaderDialog : BottomSheetDialogFragment() {
                 binding.selectorAutoText.text = chp.title
                 lifecycleScope.launch(Dispatchers.IO) {
                     if(model.loadMangaChapterImages(chp, m.selected!!)) {
-                        tryWith { dismiss() }
-                        if(launch) {
-                            val intent = Intent(requireContext(), MangaReaderActivity::class.java).apply { putExtra("media", m) }
-                            startActivity(intent)
+                        currActivity()?.runOnUiThread {
+                            tryWith { dismiss() }
+                            if(launch) {
+                                val intent = Intent(requireContext(), MangaReaderActivity::class.java).apply { putExtra("media", m) }
+                                startActivity(intent)
+                            }
                         }
                     }
                 }
