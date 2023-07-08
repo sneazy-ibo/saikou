@@ -8,6 +8,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+def gitCommitHash = 'git rev-parse --verify --short HEAD'.execute().text.trim()
+
 android {
     compileSdk 33
 
@@ -16,13 +18,14 @@ android {
         minSdk 21
         targetSdk 33
         versionCode ((System.currentTimeMillis() / 60000).toInteger())
-        versionName "1.2.3.2"
+        versionName "1.2.4"
         signingConfig signingConfigs.debug
     }
 
     buildTypes {
         debug {
             applicationIdSuffix ".beta"
+            versionNameSuffix "." + gitCommitHash
         }
         release {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
