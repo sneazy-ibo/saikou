@@ -75,7 +75,7 @@ jobs:
     - name: Upload APK to Discord
       shell: bash
       run: |
-        curl -F 'payload_json={"content":"<@&1091764171764400259> **${{ env.VERSION }}**"}\n${{ github.event.head_commit.message }}' -F "saikou_debug=@app/build/outputs/apk/debug/app-debug.apk" ${{ secrets.DISCORD_WEBHOOK_URL }}
+        curl -F 'payload_json={"content":"<@&1091764171764400259> **${{ env.VERSION }}**\n\n${{ github.event.head_commit.message }}"}' -F "saikou_debug=@app/build/outputs/apk/debug/app-debug.apk" ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     - name: Delete Old Pre-Releases
       id: delete-pre-releases
@@ -85,4 +85,4 @@ jobs:
         pre-release-keep-count: 3
         pre-release-drop-tag: true
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
