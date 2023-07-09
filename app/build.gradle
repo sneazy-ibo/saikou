@@ -25,9 +25,11 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".beta"
+            debuggable true
             versionNameSuffix "." + gitCommitHash
         }
         release {
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

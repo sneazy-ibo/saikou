@@ -26,12 +26,11 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import java.io.File
 
 object AppUpdater {
-    @Suppress("KotlinConstantConditions")
     suspend fun check(activity: FragmentActivity, post:Boolean=false) {
         if(post) snackString(currContext()?.getString(R.string.checking_for_update))
         val repo = activity.getString(R.string.repo)
         tryWithSuspend {
-            val (md, version) = if(BuildConfig.BUILD_TYPE=="debug"){
+            val (md, version) = if(BuildConfig.DEBUG){
                 val res = client
                     .get("https://api.github.com/repos/$repo/releases?prerelease=true&sort=created_at%3Adesc")
                     .parsed<JsonArray>()[0]
@@ -48,7 +47,7 @@ object AppUpdater {
             val dontShow = loadData("dont_ask_for_update_$version") ?: false
             if (compareVersion(version) && !dontShow && !activity.isDestroyed) activity.runOnUiThread {
                 CustomBottomDialog.newInstance().apply {
-                    setTitleText("${if (BuildConfig.BUILD_TYPE=="debug") "Beta " else ""}Update " + currContext()!!.getString(R.string.available))
+                    setTitleText("${if (BuildConfig.DEBUG) "Beta " else ""}Update " + currContext()!!.getString(R.string.available))
                     addView(
                         TextView(activity).apply {
                             val markWon = Markwon.builder(activity).usePlugin(SoftBreakAddsNewLinePlugin.create()).build()

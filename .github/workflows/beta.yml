@@ -78,7 +78,7 @@ jobs:
       shell: bash
       run: |
         contentbody=$( jq -Rsa . <<< "${{ github.event.head_commit.message }}" )
-        curl -F "payload_json={\"content\":\" **${{ env.VERSION }}**\n\n${contentbody:1:-1}\"}" -F "saikou_debug=@app/build/outputs/apk/debug/app-debug.apk" ${{ secrets.DISCORD_WEBHOOK_URL }}
+        curl -F "payload_json={\"content\":\"<@&1127494815693684826> **${{ env.VERSION }}**\n\n${contentbody:1:-1}\"}" -F "saikou_debug=@app/build/outputs/apk/debug/app-debug.apk" ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     - name: Delete Old Pre-Releases
       id: delete-pre-releases
