@@ -24,6 +24,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.decodeFromJsonElement
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 object AppUpdater {
     suspend fun check(activity: FragmentActivity, post:Boolean=false) {
@@ -31,10 +33,13 @@ object AppUpdater {
         val repo = activity.getString(R.string.repo)
         tryWithSuspend {
             val (md, version) = if(BuildConfig.DEBUG){
-                val res = client
-                    .get("https://api.github.com/repos/$repo/releases?prerelease=true&sort=created_at%3Adesc")
-                    .parsed<JsonArray>()[0]
-                val r = Mapper.json.decodeFromJsonElement<GithubResponse>(res)
+                val res = client.get("https://api.github.com/repos/$repo/releases")
+                    .parsed<JsonArray>().map {
+                        Mapper.json.decodeFromJsonElement<GithubResponse>(it)
+                    }
+                val r = res.filter { it.prerelease }.maxByOrNull {
+                    it.timeStamp()
+                } ?: throw Exception("No Pre Release Found")
                 val v = r.tagName.substringAfter("v","")
                 (r.body ?: "") to v.ifEmpty { throw Exception("Weird Version : ${r.tagName}") }
             }else{
@@ -191,12 +196,17 @@ object AppUpdater {
         }
     }
 
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+
     @Serializable
     data class GithubResponse(
         @SerialName("html_url")
         val htmlUrl: String,
         @SerialName("tag_name")
         val tagName: String,
+        val prerelease: Boolean,
+        @SerialName("created_at")
+        val createdAt : String,
         val body: String? = null,
         val assets: List<Asset>? = null
     ) {
@@ -205,5 +215,9 @@ object AppUpdater {
             @SerialName("browser_download_url")
             val browserDownloadURL: String
         )
+
+        fun timeStamp(): Long {
+            return dateFormat.parse(createdAt)!!.time
+        }
     }
 }
