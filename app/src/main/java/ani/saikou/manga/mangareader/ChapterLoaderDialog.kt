@@ -45,11 +45,12 @@ class ChapterLoaderDialog : BottomSheetDialogFragment() {
                 binding.selectorAutoText.text = chp.title
                 lifecycleScope.launch(Dispatchers.IO) {
                     if(model.loadMangaChapterImages(chp, m.selected!!)) {
-                        currActivity()?.runOnUiThread {
+                        val activity = currActivity()
+                        activity?.runOnUiThread {
                             tryWith { dismiss() }
                             if(launch) {
-                                val intent = Intent(requireContext(), MangaReaderActivity::class.java).apply { putExtra("media", m) }
-                                startActivity(intent)
+                                val intent = Intent(activity, MangaReaderActivity::class.java).apply { putExtra("media", m) }
+                                activity.startActivity(intent)
                             }
                         }
                     }

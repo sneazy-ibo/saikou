@@ -155,7 +155,9 @@ class SearchActivity : AppCompatActivity() {
     fun search() {
         val size = model.searchResults.results.size
         model.searchResults.results.clear()
-        mediaAdaptor.notifyItemRangeRemoved(0, size)
+        runOnUiThread {
+            mediaAdaptor.notifyItemRangeRemoved(0, size)
+        }
 
         progressAdapter.bar?.visibility = View.VISIBLE
 

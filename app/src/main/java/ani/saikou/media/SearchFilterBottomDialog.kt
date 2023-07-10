@@ -61,7 +61,9 @@ class SearchFilterBottomDialog(
             dismiss()
         }
 
-        binding.searchSortBy.setText(activity.result.sort)
+        binding.searchSortBy.setText(activity.result.sort?.let {
+            resources.getStringArray(R.array.sort_by)[Anilist.sortBy.indexOf(it)]
+        })
         binding.searchSortBy.setAdapter(
             ArrayAdapter(
                 binding.root.context,

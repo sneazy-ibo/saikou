@@ -11,13 +11,13 @@ import android.os.Environment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import ani.saikou.FileUrl
+import ani.saikou.R
 import ani.saikou.anime.Episode
+import ani.saikou.currContext
 import ani.saikou.defaultHeaders
 import ani.saikou.loadData
 import ani.saikou.parsers.Book
 import ani.saikou.toast
-import ani.saikou.currContext
-import ani.saikou.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -78,11 +78,14 @@ object Download {
     }
 
     fun download(context: Context, file: FileUrl, fileName: String, folder: String, notif: String? = null) {
-        when (loadData<Int>("settings_download_manager", context, false) ?: 0) {
-            1    -> oneDM(context, file, notif ?: fileName)
-            2    -> adm(context, file, fileName, folder)
-            else -> defaultDownload(context, file, fileName, folder, notif ?: fileName)
-        }
+        if(!file.url.startsWith("http"))
+            toast(context.getString(R.string.invalid_url))
+        else
+            when (loadData<Int>("settings_download_manager", context, false) ?: 0) {
+                1    -> oneDM(context, file, notif ?: fileName)
+                2    -> adm(context, file, fileName, folder)
+                else -> defaultDownload(context, file, fileName, folder, notif ?: fileName)
+            }
     }
 
     private fun defaultDownload(context: Context, file: FileUrl, fileName: String, folder: String, notif: String) {
