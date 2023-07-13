@@ -31,7 +31,7 @@ class AnnaArchive : NovelParser() {
     }
 
     override suspend fun search(query: String): List<ShowResponse> {
-        val q = query.substringAfter("!$")
+        val q = query.substringAfter("!$").replace("-", " ") // (minus) - does not display records containing the words after
         val vols = client.get("$hostUrl/search?ext=epub&q=$q")
             .document.select(".main > div > div")
             .mapNotNull { div ->
@@ -47,14 +47,49 @@ class AnnaArchive : NovelParser() {
             var img = it.selectFirst("img")?.attr("src") ?: ""
             if(img=="") img = defaultImage
             val description = it.selectFirst("div.js-md5-top-box-description")?.text()
-            val links = it.select("a.js-download-link").mapNotNull { a ->
-                val li = a.attr("href")
-                //If it's not an epub, ignore it
-                //if (!li.endsWith(".epub"))
-                //    return@mapNotNull null
-                li
-            }
+            val links = it.select("a.js-download-link")
+                .filter { element ->
+                    !element.text().contains("Fast") &&
+                            !element.attr("href").contains("onion") &&
+                            !element.attr("href").contains("/datasets")
+                }.reversed() //libgen urls are faster
+                .flatMap { a ->
+                    LinkExtractor(a.attr("href")).extractLink() ?: emptyList()
+                }
             Book(name, img, description, links)
         }
     }
+    class LinkExtractor(private val url: String) {
+        suspend fun extractLink(): List<String>? {
+            return when {
+                isLibgenUrl(url) || isLibraryLolUrl(url) -> LibgenExtractor(url)
+                else -> listOf(url)
+            }
+        }
+
+        private fun isLibgenUrl(url: String): Boolean {
+            return url.contains("libgen")
+        }
+
+        private fun isLibraryLolUrl(url: String): Boolean {
+            return url.contains("library.lol")
+        }
+
+        private suspend fun LibgenExtractor(url: String): List<String>? {
+            return when {
+                url.contains("ads.php") -> {
+                    val response = client.get(url)
+                    val links = response.document.select("table#main").first()?.getElementsByAttribute("href")?.first()?.attr("href")
+                    listOf(url.substringBefore("ads.php") + links)
+                }
+                else -> {
+                    val response = client.get(url)
+                    val links = response.document.selectFirst("div#download")?.select("a")?.mapNotNull { it.attr("href") }
+                    links?.takeWhile { !it.contains("localhost") }
+                }
+            }
+        }
+
+    }
+
 }
