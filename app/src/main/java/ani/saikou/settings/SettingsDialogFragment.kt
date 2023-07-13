@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import ani.saikou.*
 import ani.saikou.anilist.Anilist
+import ani.saikou.anime.ImageSearchActivity
 import ani.saikou.databinding.BottomSheetSettingsBinding
 
 
@@ -52,7 +53,10 @@ class SettingsDialogFragment : BottomSheetDialogFragment() {
             openLinkInBrowser("https://anilist.co/settings/lists")
             dismiss()
         }
-
+        binding.imageSearch.setOnClickListener {
+            startActivity(Intent(activity, ImageSearchActivity::class.java))
+            dismiss()
+        }
         binding.settingsDownloads.setSafeOnClickListener {
             try {
                 val arrayOfFiles = ContextCompat.getExternalFilesDirs(requireContext(), null)

@@ -153,6 +153,7 @@
     <string name="sequel">Sequel</string>
 
     <string name="anilist_settings">Anilist Settings</string>
+    <string name="image_search">Image Search</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Settings</string>
     <string name="player_settings">Player Settings</string>
@@ -470,6 +471,7 @@
     <string name="continue_episode">"Continue : Episode "</string>
     <string name="continue_chapter">"Continue : Chapter "</string>
     <string name="episode">"Episode "</string>
+    <string name="episode_num">"Episode %1$s"</string>
     <string name="chapter">"Chapter "</string>
     <string name="just_released">- just got released!</string>
     <string name="checking_subscriptions_title">Checking Subscriptions</string>
@@ -588,5 +590,10 @@
     <string name="filter_format">"Format : %1$s"</string>
     <string name="filter_sort">"Sort : %1$s"</string>
     <string name="filter_exclude">"Not %1$s"</string>
+    <string name="search_by_image">Search by image</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="similarity_text">Similarity: %1$s %%</string>
+    <string name="time_range">From %1$s to %2$s</string>
     <string name="invalid_url">Invalid URL</string>
+
 </resources>
