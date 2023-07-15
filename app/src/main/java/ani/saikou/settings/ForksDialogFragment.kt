@@ -17,6 +17,7 @@ class ForksDialogFragment : BottomSheetDialogFragment() {
         Developer("Saikou TV","https://avatars.githubusercontent.com/u/32782575?s=120&v=4","Nanoc6","https://github.com/Nanoc6/SaikouTV"),
         Developer("Saikou SP (Spanish)","https://avatars.githubusercontent.com/u/80992641?s=120&v=4",".DiegoPYL","https://github.com/Diegopyl1209/saikouSP"),
         Developer("Saikou IT (Italiano)","https://avatars.githubusercontent.com/u/38143733?s=120&v=4","AntonyDP","https://github.com/antonydp/saikou-italiano"),
+        Developer("Saikou IN (Indonesian)","https://avatars.githubusercontent.com/u/69040506?s=120&v=4","Brahmkshatriya","https://github.com/saikou-app/saikou-in"),
         Developer("Saikou VN (Vietnamese)","https://avatars.githubusercontent.com/u/68330291?s=120&v=4","Vu Nguyen","https://github.com/hoangvu12/saikou")
     )
 
