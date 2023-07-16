@@ -14,9 +14,9 @@ import org.jsoup.Jsoup
 import java.net.URLEncoder
 
 @Suppress("BlockingMethodInNonBlockingContext")
-class Zoro : AnimeParser() {
+class Kaido : AnimeParser() {
 
-    override val name = "Zoro"
+    override val name = "Kaido"
     override val saveName = "kaido_to"
     override val hostUrl = "https://kaido.to"
     override val isDubAvailableSeparately = false
@@ -44,8 +44,9 @@ class Zoro : AnimeParser() {
 
         return element.select("div.server-item").asyncMap {
             val serverName = "${it.attr("data-type").uppercase()} - ${it.text()}"
-            val link =
-                client.get("$hostUrl/ajax/episode/sources?id=${it.attr("data-id")}", header).parsed<SourceResponse>().link
+            val link = client.get("$hostUrl/ajax/episode/sources?id=${it.attr("data-id")}", header)
+                .parsed<SourceResponse>()
+                .link
             VideoServer(serverName, FileUrl(link, embedHeaders))
         }
     }
@@ -53,17 +54,16 @@ class Zoro : AnimeParser() {
     override suspend fun getVideoExtractor(server: VideoServer): VideoExtractor? {
         val domain = Uri.parse(server.embed.url).host ?: return null
         val extractor: VideoExtractor? = when {
-            "megacloud" in domain    -> RapidCloud(server)
-            "rapid" in domain    -> RapidCloud(server)
-            "sb" in domain       -> StreamSB(server)
-            "streamta" in domain -> StreamTape(server)
-            else                 -> null
+            "megacloud" in domain -> RapidCloud(server)
+            "rapid" in domain     -> RapidCloud(server)
+            "sb" in domain        -> StreamSB(server)
+            "streamta" in domain  -> StreamTape(server)
+            else -> null
         }
         return extractor
     }
 
     override suspend fun search(query: String): List<ShowResponse> {
-
         var url = URLEncoder.encode(query, "utf-8")
         if (query.startsWith("$!")) {
             val a = query.replace("$!", "").split(" | ")
