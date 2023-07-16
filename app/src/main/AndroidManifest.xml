@@ -41,7 +41,7 @@
             android:name=".settings.SettingsActivity"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".anime.ImageSearchActivity"
+            android:name=".others.imagesearch.ImageSearchActivity"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".media.SearchActivity"

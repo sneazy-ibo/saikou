@@ -65,7 +65,7 @@ class SearchAdapter(private val activity: SearchActivity) : RecyclerView.Adapter
         binding.searchChipRecycler.layoutManager = LinearLayoutManager(binding.root.context, HORIZONTAL, false)
 
         binding.searchFilter.setOnClickListener {
-            SearchFilterBottomDialog.newInstance(activity).show(activity.supportFragmentManager, "dialog")
+            SearchFilterBottomDialog.newInstance().show(activity.supportFragmentManager, "dialog")
         }
 
         fun searchTitle() {

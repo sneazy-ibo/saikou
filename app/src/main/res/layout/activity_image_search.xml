@@ -2,40 +2,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp">
+    android:layout_height="fill_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/imageSearchTitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/imageBack"
-                android:layout_width="64dp"
-                android:layout_height="wrap_content"
-                android:background="@color/nav_bg_inv"
-                android:padding="16dp"
-                app:srcCompat="@drawable/ic_round_arrow_back_ios_new_24"
-                app:tint="@color/bg_opp"
-                tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:textAlignment="textStart"
-                android:text="@string/search_by_image"
-                android:fontFamily="@font/poppins_bold" />
-
-        </LinearLayout>
-
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:drawablePadding="16dp"
+            android:fontFamily="@font/poppins_bold"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/search_by_image"
+            app:drawableStartCompat="@drawable/ic_round_arrow_back_ios_new_24"
+            app:drawableTint="@color/bg_opp" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -44,9 +30,11 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:paddingBottom="100dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="92dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/image_search_recycler" />
+            tools:listitem="@layout/item_search_by_image" />
 
     </LinearLayout>
 
@@ -55,16 +43,15 @@
         android:layout_width="wrap_content"
         android:layout_height="64dp"
         android:layout_gravity="bottom|end"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="20dp"
+        android:layout_margin="16dp"
+        android:elegantTextHeight="true"
         android:fontFamily="@font/poppins_bold"
         android:text="@string/upload_image"
         android:textColor="@color/button_icon"
         app:cornerRadius="16dp"
-        app:icon="@drawable/ic_round_photo_size_select_actual_24"
+        app:icon="@drawable/ic_round_image_search_24"
         app:iconTint="@color/button_icon" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"

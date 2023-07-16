@@ -1,7 +1,5 @@
-package ani.saikou.anime
+package ani.saikou.others.imagesearch
 
-import ImageSearchResultAdapter
-import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,25 +7,18 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ani.saikou.*
 import ani.saikou.App.Companion.context
+import ani.saikou.R
 import ani.saikou.anilist.Anilist
 import ani.saikou.databinding.ActivityImageSearchBinding
 import ani.saikou.media.MediaDetailsActivity
+import ani.saikou.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 
 class ImageSearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivityImageSearchBinding
@@ -41,11 +32,14 @@ class ImageSearchActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         binding.progressBar.visibility = View.VISIBLE
                     }
-                    val result = analyzeImage(contentResolver, imageUri)
+                    val inputStream = contentResolver.openInputStream(imageUri)
+
+                    if(inputStream != null) viewModel.analyzeImage(inputStream)
+                    else toast(getString(R.string.error_loading_image))
+
                     withContext(Dispatchers.Main) {
                         binding.progressBar.visibility = View.GONE
                     }
-                    viewModel.setSearchResult(result)
                 }
             }
         }
@@ -56,10 +50,10 @@ class ImageSearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.uploadImage.setOnClickListener {
-            clearResults()
+            viewModel.clearResults()
             imageSelectionLauncher.launch("image/*")
         }
-        binding.imageBack.setOnClickListener {
+        binding.imageSearchTitle.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 
@@ -77,7 +71,12 @@ class ImageSearchActivity : AppCompatActivity() {
         adapter.setOnItemClickListener(object : ImageSearchResultAdapter.OnItemClickListener {
             override fun onItemClick(searchResult: ImageSearchViewModel.ImageResult) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val media = Anilist.query.getMedia(searchResult.anilist?.id?.toInt() ?: 0, false)
+                    val id = searchResult.anilist?.id?.toInt()
+                    if (id==null){
+                        toast(getString(R.string.no_anilist_id_found))
+                        return@launch
+                    }
+                    val media = Anilist.query.getMedia(id, false)
 
                     withContext(Dispatchers.Main) {
                         media?.let {
@@ -96,73 +95,4 @@ class ImageSearchActivity : AppCompatActivity() {
             recyclerView.layoutManager = LinearLayoutManager(context)
         }
     }
-
-    private suspend fun analyzeImage(contentResolver: ContentResolver, imageUri: Uri): ImageSearchViewModel.SearchResult {
-        val url = "https://api.trace.moe/search?anilistInfo"
-        contentResolver.openInputStream(imageUri)?.use { inputStream ->
-            val requestBody = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart(
-                    "image",
-                    "image.jpg",
-                    inputStream.readBytes().toRequestBody("image/jpeg".toMediaType())
-                )
-                .build()
-
-            val jsonString = client.post(url, requestBody = requestBody).text
-            return Mapper.parse(jsonString)
-        }
-
-        return ImageSearchViewModel.SearchResult()
-    }
-
-    private fun clearResults() {
-        viewModel.setSearchResult(ImageSearchViewModel.SearchResult())
-    }
-}
-
-class ImageSearchViewModel : ViewModel() {
-    val searchResultLiveData: MutableLiveData<SearchResult> = MutableLiveData()
-
-    fun setSearchResult(result: SearchResult) {
-        searchResultLiveData.postValue(result)
-    }
-
-    @Serializable
-    data class SearchResult(
-        val frameCount: Long? = null,
-        val error: String? = null,
-        val result: List<ImageResult>? = null
-    )
-
-    @Serializable
-    data class ImageResult(
-        val anilist: AnilistData? = null,
-        val filename: String? = null,
-        @SerialName("episode") val rawEpisode: JsonElement? = null,
-        val from: Double? = null,
-        val to: Double? = null,
-        val similarity: Double? = null,
-        val video: String? = null,
-        val image: String? = null
-    ) {
-        val episode: String?
-            get() = rawEpisode?.toString()
-    }
-
-    @Serializable
-    data class AnilistData(
-        val id: Long? = null,
-        val idMal: Long? = null,
-        val title: Title? = null,
-        val synonyms: List<String>? = null,
-        val isAdult: Boolean? = null
-    )
-
-    @Serializable
-    data class Title(
-        val native: String? = null,
-        val romaji: String? = null,
-        val english: String? = null
-    )
 }

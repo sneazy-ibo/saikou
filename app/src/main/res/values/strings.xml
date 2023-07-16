@@ -153,7 +153,6 @@
     <string name="sequel">Sequel</string>
 
     <string name="anilist_settings">Anilist Settings</string>
-    <string name="image_search">Image Search</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Settings</string>
     <string name="player_settings">Player Settings</string>
@@ -597,10 +596,12 @@
     <string name="filter_format">"Format : %1$s"</string>
     <string name="filter_sort">"Sort : %1$s"</string>
     <string name="filter_exclude">"Not %1$s"</string>
-    <string name="search_by_image">Search by image</string>
+    <string name="search_by_image">Search by Image</string>
     <string name="upload_image">Upload Image</string>
     <string name="similarity_text">Similarity: %1$s %%</string>
     <string name="time_range">From %1$s to %2$s</string>
     <string name="invalid_url">Invalid URL</string>
+    <string name="no_anilist_id_found">No Anilist ID found</string>
+    <string name="error_loading_image">Error loading image</string>
 
 </resources>
