@@ -14,7 +14,7 @@ import java.io.InputStream
 class ImageSearchViewModel : ViewModel() {
     val searchResultLiveData: MutableLiveData<SearchResult> = MutableLiveData()
 
-    private val url = "https://api.trace.moe/search?anilistInfo"
+    private val url = "https://api.trace.moe/search?cutBorders&anilistInfo"
 
     suspend fun analyzeImage(inputStream: InputStream) {
         val requestBody = MultipartBody.Builder()
