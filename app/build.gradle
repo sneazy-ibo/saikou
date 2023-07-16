@@ -18,7 +18,7 @@ android {
         minSdk 21
         targetSdk 33
         versionCode ((System.currentTimeMillis() / 60000).toInteger())
-        versionName "1.2.4"
+        versionName "1.2.5"
         signingConfig signingConfigs.debug
     }
 

@@ -65,15 +65,17 @@ class AllAnime : AnimeParser() {
         val variables =
             """{"showId":"$showId","translationType":"${if (selectDub) "dub" else "sub"}","episodeString":"$episodeNum"}"""
         return graphqlQuery(variables, videoServerHash)
-            .data?.episode?.sourceUrls?.map { source ->
-                val serverName = source.sourceName
-                val jsonUrl = if (!source.sourceUrl.startsWith("http")) {
-                    val url = source.sourceUrl.decodeHash()
-                    if (!url.startsWith("http"))
-                        FileUrl("$referer${url.replace("clock", "clock.json")}")
-                    else FileUrl(url, mapOf("referer" to referer))
-                } else FileUrl(source.sourceUrl)
-                VideoServer(serverName, jsonUrl, mapOf("type" to source.type))
+            .data?.episode?.sourceUrls?.mapNotNull { source ->
+                tryWith {
+                    val serverName = source.sourceName
+                    val jsonUrl = if (!source.sourceUrl.startsWith("http")) {
+                        val url = source.sourceUrl.decodeHash()
+                        if (!url.startsWith("http"))
+                            FileUrl("$referer${url.replace("clock", "clock.json")}")
+                        else FileUrl(url, mapOf("referer" to referer))
+                    } else FileUrl(source.sourceUrl)
+                    VideoServer(serverName, jsonUrl, mapOf("type" to source.type))
+                }
             } ?: emptyList()
     }
 

@@ -918,7 +918,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             val intent = Intent(this, PlayerSettingsActivity::class.java).apply {
                 putExtra("subtitle", subtitle)
             }
-            finish()
+            exoPlayer.pause()
             startActivity(intent)
         }
 
