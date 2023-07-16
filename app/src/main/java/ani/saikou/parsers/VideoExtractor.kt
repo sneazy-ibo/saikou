@@ -68,7 +68,7 @@ data class VideoServer(
 data class VideoContainer(
     val videos: List<Video>,
     val subtitles: List<Subtitle> = listOf()
-)
+) : Serializable
 
 /**
  * The Class which contains all the information about a Video

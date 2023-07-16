@@ -18,11 +18,11 @@ import ani.saikou.databinding.BottomSheetSearchFilterBinding
 import ani.saikou.databinding.ItemChipBinding
 import com.google.android.material.chip.Chip
 
-class SearchFilterBottomDialog(
-    val activity: SearchActivity
-) : BottomSheetDialogFragment() {
+class SearchFilterBottomDialog() : BottomSheetDialogFragment() {
     private var _binding: BottomSheetSearchFilterBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var activity: SearchActivity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = BottomSheetSearchFilterBinding.inflate(inflater, container, false)
@@ -35,6 +35,8 @@ class SearchFilterBottomDialog(
     private var exTags = mutableListOf<String>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        activity = requireActivity() as SearchActivity
 
         selectedGenres = activity.result.genres ?: mutableListOf()
         exGenres = activity.result.excludedGenres ?: mutableListOf()
@@ -183,7 +185,7 @@ class SearchFilterBottomDialog(
     }
 
     companion object {
-        fun newInstance(activity: SearchActivity) = SearchFilterBottomDialog(activity)
+        fun newInstance() = SearchFilterBottomDialog()
     }
 
 }
