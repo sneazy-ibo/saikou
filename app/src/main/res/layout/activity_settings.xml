@@ -304,6 +304,73 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/settingsDiscordLoginContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/ic_discord"
+                        app:tint="@color/bg_opp"
+                        tools:ignore="ContentDescription" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:minHeight="64dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/settingsDiscordUsername"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="-4dp"
+                            android:fontFamily="@font/poppins_bold"
+                            android:gravity="center"
+                            android:text="@string/username"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/settingsDiscordLogin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="-16dp"
+                            android:layout_marginTop="-16dp"
+                            android:layout_marginBottom="-16dp"
+                            android:fontFamily="@font/poppins_bold"
+                            android:padding="16dp"
+                            android:text="@string/logout"
+                            android:textColor="?attr/colorSecondaryVariant"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/settingsDiscordAvatarContainer"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="4dp"
+                        android:backgroundTint="@color/nav_bg_inv"
+                        app:cardCornerRadius="26dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/settingsDiscordAvatar"
+                            android:layout_width="52dp"
+                            android:layout_height="52dp"
+                            android:scaleType="center"
+                            app:srcCompat="@drawable/ic_round_person_24"
+                            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/settingsAccountHelp"
                     android:layout_width="match_parent"

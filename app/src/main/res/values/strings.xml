@@ -1,6 +1,7 @@
 <resources>
 
     <string name="repo">saikou-app/saikou</string>
+    <string name="preference_file_key" translatable="false">saikouprefs</string>
 
     <string name="app_name">Saikou</string>
     <string name="slogan">The Best Anime &amp; Manga app for Android.</string>
