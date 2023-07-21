@@ -1,20 +1,23 @@
 package ani.saikou.discord
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
+import android.webkit.CookieManager
+import android.webkit.WebResourceRequest
+import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
-import androidx.lifecycle.lifecycleScope
 import ani.saikou.R
+import ani.saikou.printIt
+import ani.saikou.saveData
 import ani.saikou.startMainActivity
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.net.URI
+import ani.saikou.toast
+import ani.saikou.tryWith
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
+import java.io.FilenameFilter
 
 class Login : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
@@ -22,69 +25,75 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_discord)
 
-        lifecycleScope.launch {
+        val token = extractToken()
+        if(token!=null) login(token)
+        else{
             val webView = findViewById<WebView>(R.id.discordWebview)
-
-            webView.settings.apply {
-                javaScriptEnabled = true
-                databaseEnabled = true
-                domStorageEnabled = true
+            webView.apply {
+                settings.javaScriptEnabled = true
+                settings.databaseEnabled = true
+                settings.domStorageEnabled = true
+                clearCache(true)
+                clearFormData()
+                clearHistory()
+                clearSslPreferences()
             }
-
-            var token: String? = null
-            var isLoggedIn = false
+            WebStorage.getInstance().deleteAllData()
+            CookieManager.getInstance().removeAllCookies(null)
+            CookieManager.getInstance().flush()
 
             webView.webViewClient = object : WebViewClient() {
-                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                    if (url == null || URI(url).path != "/app" || !url.contains("/channels/")) return;
-
-                    webView.evaluateJavascript("""
-                            (function() {
-                                const iframe = document.createElement("iframe");
-        
-                                document.head.append(iframe);
-                                const localStorage = Object.getOwnPropertyDescriptor(iframe.contentWindow, "localStorage");
-        
-                                iframe.remove();
-                                const token = localStorage.get.call(window).getItem("token");
-                                return token.substr(1, token.length-2);
-                            })()
-                        """.trimIndent()) {
-                        if (it == "null") token = null
-                        else {
-                            token = it.substring(1, it.length-1)
-                            isLoggedIn = true;
-                        }
+                override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                    val str = request.url.toString()
+                    if (str.endsWith("/app")) {
+                        webView.stopLoading()
+                        handleToken()
+                        return false
                     }
+                    return super.shouldOverrideUrlLoading(view, request)
                 }
             }
-
             webView.loadUrl("https://discord.com/login")
+        }
+    }
 
-            var loop = 0
-            val totalTime = 60 * 1000L // 60 seconds
+    private fun handleToken() {
+        finish()
+        val token = extractToken()
+        if(token!=null) login(token)
+        else toast(getString(R.string.discord_try_again))
+    }
+    private fun login(token: String) {
+        DiscordRPC.saveToken(this, token)
+        startMainActivity(this@Login)
+    }
 
-            val delayTime = 100L
-
-            while ((loop < (totalTime / delayTime)) && (token == null)) {
-                delay(delayTime)
-                if (isLoggedIn) loop += 1
-            }
-
-            webView.destroy()
-            Log.d("DiscordLogin", "Discord token: $token")
-
-            if (loop >= totalTime / delayTime)
-                Log.d("DiscordLogin", "Webview timeout after ${totalTime / 1000}s")
-            else {
-                val sharedPref = this@Login.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-                sharedPref.edit {
-                    putString("discord_token", token)
-                    commit()
+    private fun extractToken(): String? {
+        return tryWith {
+            class DiscordFilenameFilter : FilenameFilter {
+                override fun accept(dir: File?, str: String): Boolean {
+                    return str.endsWith(".log")
                 }
-
-                startMainActivity(this@Login)
             }
+
+            val listFiles =
+                File(filesDir.parentFile, "app_webview/Default/Local Storage/leveldb")
+                    .listFiles(DiscordFilenameFilter())
+                    ?: return@tryWith null
+            listFiles.printIt("List Files : ")
+            if (listFiles.isEmpty()) return@tryWith null
+
+            val bufferedReader = BufferedReader(FileReader(listFiles[0]))
+            val token = bufferedReader.readLines()
+                .also { saveData("01uhh.txt", it) }
+                .find { it.contains("token") }
+                ?.let {
+                    it.printIt("Line : ")
+                    val substring = it.substring(it.indexOf("token") + 5)
+                    val substring2 = substring.substring(substring.indexOf("\"") + 1)
+                    substring2.substring(0, substring2.indexOf("\""))
+                }
+            token
         }
     }
 }

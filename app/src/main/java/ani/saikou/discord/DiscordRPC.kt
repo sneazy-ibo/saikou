@@ -1,58 +1,65 @@
 package ani.saikou.discord
 
 import android.content.Context
-import android.util.Log
 import androidx.core.content.edit
+import ani.saikou.Mapper
 import ani.saikou.R
 import ani.saikou.toast
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonNull
-import com.google.gson.reflect.TypeToken
-import okhttp3.*
+import ani.saikou.tryWith
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import java.io.File
-import java.lang.Exception
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 class DiscordRPC(private val token: String) {
     companion object {
+        private const val TOKEN = "discord_token"
         fun getToken(context: Context): String? {
             val sharedPref = context.getSharedPreferences(
-                context.run { getString(R.string.preference_file_key) },
+                context.getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE
             )
-            return sharedPref.getString("discord_token", null)
+            return sharedPref.getString(TOKEN, null)
+        }
+
+        fun saveToken(context: Context, token: String) {
+            val sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE
+            )
+            sharedPref.edit {
+                putString(TOKEN, token)
+                commit()
+            }
         }
 
         fun removeToken(context: Context) {
-            val sharedPref =
-                context.getSharedPreferences(context.run { getString(R.string.preference_file_key) }, Context.MODE_PRIVATE)
+            val sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE
+            )
             sharedPref.edit {
-                remove("discord_token")
+                remove(TOKEN)
                 commit()
             }
 
-            var successful: Boolean
-            try {
-                val dir   = File(context.filesDir?.parentFile, "app_webview")
-                val dir2  = File(context.filesDir?.parentFile, "cache")
-                val dir3  = File(context.filesDir?.parentFile, "shared_prefs")
-                val dir4  = File(context.filesDir?.parentFile, "app_textures")
-                val file6 = File(context.filesDir, "user")
-                successful = dir.deleteRecursively()
-
-                if (file6.exists() && !file6.delete()) successful = false
-                if (!dir2.deleteRecursively()) successful = false
-                if (!dir3.deleteRecursively()) successful = false
-                if (!dir4.deleteRecursively()) successful = false
-
-                if (successful)
-                    toast("Successfully logged out!")
-                else
-                    toast("Failed to fully logout.\nPlease clear cache and data in the settings.")
-
-            } catch (_: Exception) {
-                toast("Failed to Logout!\nPlease clear cache and data in the settings.")
+            tryWith(true) {
+                val dir = File(context.filesDir?.parentFile, "app_webview")
+                if (dir.deleteRecursively())
+                    toast(context.getString(R.string.discord_logout_success))
             }
         }
     }
@@ -68,12 +75,12 @@ class DiscordRPC(private val token: String) {
     private var startTimestamps: Long? = null
     private var stopTimestamps: Long? = null
     private var type = 0
-    private val rpc = mutableMapOf<String, Any>()
+    private val rpc = buildJsonObject {  }
     private var webSocket: WebSocket? = null
-    private val gson: Gson = GsonBuilder().setPrettyPrinting().serializeNulls().create()
-
+    private val json = Mapper.json
+    
     private var heartbeatRunnable: Runnable? = null
-    private var heartbeatThread: Thread? = null
+    private lateinit var heartbeatThread: Thread
     private var heartbeatInterval = 0
     private var seq = 0
 
@@ -94,7 +101,7 @@ class DiscordRPC(private val token: String) {
     }
 
     fun closeRPC() {
-        heartbeatThread?.interrupt()
+        heartbeatThread.interrupt()
         webSocket?.close(1000, "Closing connection")
     }
 
@@ -202,55 +209,23 @@ class DiscordRPC(private val token: String) {
     }
 
     fun build() {
-        val presence = mutableMapOf<String, Any?>()
-        val activity = mutableMapOf<String, Any?>().apply {
-            put("name", activityName)
-            put("details", details)
-            put("state", state)
-            put("type", type)
-
-            val timestamps = mutableMapOf<String, Any?>().apply {
-                put("start", startTimestamps)
-                put("stop", stopTimestamps)
-            }
-            put("timestamps", timestamps)
-
-            val assets = mutableMapOf<String, Any?>().apply {
-                put("large_image", largeImage)
-                put("small_image", smallImage)
-                put("large_text", largeText)
-                put("small_text", smallText)
-            }
-            put("assets", assets)
-
-            if (buttons.isNotEmpty()) {
-                put("buttons", buttons)
-            }
-        }
-        presence["activities"] = arrayOf(activity)
-        presence["afk"] = true
-        presence["since"] = startTimestamps
-        presence["status"] = status
-        rpc["op"] = 3
-        rpc["d"] = presence
         createWebSocketClient()
     }
 
-    fun sendData() {
-        val presence = mutableMapOf<String, Any?>()
-        val activity = mutableMapOf<String, Any?>().apply {
+    private fun createRPC() : JsonObject {
+        val activity = buildJsonObject {
             put("name", activityName)
             put("details", details)
             put("state", state)
             put("type", type)
 
-            val timestamps = mutableMapOf<String, Any?>().apply {
+            val timestamps = buildJsonObject {
                 put("start", startTimestamps)
                 put("stop", stopTimestamps)
             }
             put("timestamps", timestamps)
 
-            val assets = mutableMapOf<String, Any?>().apply {
+            val assets = buildJsonObject {
                 put("large_image", largeImage)
                 put("small_image", smallImage)
                 put("large_text", largeText)
@@ -259,35 +234,44 @@ class DiscordRPC(private val token: String) {
             put("assets", assets)
 
             if (buttons.isNotEmpty()) {
-                put("buttons", buttons)
+                put("buttons", buttons.toJsonArray())
             }
         }
-        presence["activities"] = arrayOf(activity)
-        presence["afk"] = true
-        presence["since"] = startTimestamps
-        presence["status"] = status
-        rpc["op"] = 3
-        rpc["d"] = presence
-        webSocket?.send(gson.toJson(rpc))
+        val presence = buildJsonObject {
+            put("activities", buildJsonArray {
+                add(activity)
+            })
+            put("afk", true)
+            put("since", startTimestamps)
+            put("status", status)
+        }
+        return buildJsonObject {
+            put("op", 3)
+            put("d", presence)
+        }
+    }
+
+    fun sendData() {
+        webSocket?.send(createRPC().toString())
     }
 
     fun sendIdentify() {
-        val prop = mutableMapOf<String, Any>().apply {
+        val prop = buildJsonObject {
             put("\$os", "windows")
             put("\$browser", "Chrome")
             put("\$device", "disco")
         }
-        val data = mutableMapOf<String, Any>().apply {
+        val data = buildJsonObject {
             put("token", token)
             put("properties", prop)
             put("compress", false)
             put("intents", 0)
         }
-        val identify = mutableMapOf<String, Any>().apply {
+        val identify = buildJsonObject {
             put("op", 2)
             put("d", data)
         }
-        webSocket?.send(gson.toJson(identify))
+        webSocket?.send(identify.toString())
     }
 
     private fun createWebSocketClient() {
@@ -303,55 +287,48 @@ class DiscordRPC(private val token: String) {
 
         webSocket = okHttpClient.newWebSocket(request, object : WebSocketListener() {
             override fun onMessage(webSocket: WebSocket, text: String) {
-                val map = gson.fromJson<Map<String, Any>>(
-                    text,
-                    object : TypeToken<Map<String, Any>>() {}.type
-                )
-                val seq = map["s"] as? Double
-                this@DiscordRPC.seq = seq?.toInt() ?: 0
+                val map = json.decodeFromString<JsonObject>(text)
+                val seq = map["s"]?.jsonPrimitive?.intOrNull
+                this@DiscordRPC.seq = seq ?: 0
 
-                when ((map["op"] as Double?)!!.toInt()) {
-                    0  -> if (map["t"] as String? == "READY") {
-                        sessionId = (map["d"] as Map<*, *>?)!!["session_id"].toString()
-                        val user = (map["d"] as Map<*, *>?)!!["user"] as? Map<*, *>?
-                        DiscordRPCService.userName = "${user?.get("username")}#${user?.get("discriminator")}"
-
-                        if (user?.get("avatar") != null && user["avatar"] != JsonNull.INSTANCE) {
+                when (map["op"]?.jsonPrimitive?.intOrNull) {
+                    0  -> if (map["t"]?.jsonPrimitive?.content == "READY") {
+                        sessionId = map["d"]?.jsonObject?.get("session_id")?.jsonPrimitive?.content
+                        val user = map["d"]?.jsonObject?.get("user")?.jsonObject
+                        DiscordRPCService.userName = "${user?.get("username")?.jsonPrimitive?.content}"
+                        val avatar = user?.get("avatar")?.jsonPrimitive?.content
+                        if (avatar != null) {
                             DiscordRPCService.userAvatar =
-                                "https://cdn.discordapp.com/avatars/${user["id"]}/${user["avatar"]}.png"
+                                "https://cdn.discordapp.com/avatars/${user["id"]?.jsonPrimitive?.content}/${user["avatar"]}.png"
                         }
-
-                        webSocket.send(gson.toJson(rpc))
+                        sendData()
                     }
 
-                    10 -> if (!reconnectSession) {
-                        val data = map["d"] as Map<*, *>?
-                        heartbeatInterval = (data!!["heartbeat_interval"] as Double?)!!.toInt()
-                        heartbeatThread = Thread(heartbeatRunnable)
-                        heartbeatThread!!.start()
-                        sendIdentify()
-                    } else {
-                        val data = map["d"] as Map<*, *>?
-                        heartbeatInterval = (data!!["heartbeat_interval"] as Double?)!!.toInt()
-                        heartbeatThread = Thread(heartbeatRunnable)
-                        heartbeatThread!!.start()
-                        reconnectSession = false
-                        webSocket.send("{\"op\": 6,\"d\":{\"token\":\"$token\",\"session_id\":\"$sessionId\",\"seq\":$seq}}")
+                    10 -> {
+                        val data = map["d"]?.jsonObject!!
+                        heartbeatInterval = data["heartbeat_interval"]!!.jsonPrimitive.int
+                        heartbeatThread = Thread(heartbeatRunnable).apply { start() }
+                        if (!reconnectSession)
+                            sendIdentify()
+                        else {
+                            reconnectSession = false
+                            webSocket.send("{\"op\": 6,\"d\":{\"token\":\"$token\",\"session_id\":\"$sessionId\",\"seq\":$seq}}")
+                        }
                     }
 
                     1  -> {
                         if (!Thread.interrupted()) {
-                            heartbeatThread!!.interrupt()
+                            heartbeatThread.interrupt()
                         }
-                        webSocket.send("{\"op\":1, \"d\":" + (if (seq == 0.0) "null" else seq.toString()) + "}")
+                        webSocket.send("{\"op\":1, \"d\":" + (if (seq == 0) "null" else seq.toString()) + "}")
                     }
 
                     11 -> {
                         if (!Thread.interrupted()) {
-                            heartbeatThread!!.interrupt()
+                            heartbeatThread.interrupt()
                         }
                         heartbeatThread = Thread(heartbeatRunnable)
-                        heartbeatThread!!.start()
+                        heartbeatThread.start()
                     }
 
                     7  -> {
@@ -359,10 +336,9 @@ class DiscordRPC(private val token: String) {
                         webSocket.close(400, "Reconnect")
                     }
 
-                    9  -> if (!heartbeatThread!!.isInterrupted) {
-                        heartbeatThread!!.interrupt()
-                        heartbeatThread = Thread(heartbeatRunnable)
-                        heartbeatThread!!.start()
+                    9  -> if (!heartbeatThread.isInterrupted) {
+                        heartbeatThread.interrupt()
+                        heartbeatThread = Thread(heartbeatRunnable).apply { start() }
                         sendIdentify()
                     }
                 }
@@ -372,7 +348,7 @@ class DiscordRPC(private val token: String) {
                 super.onClosed(webSocket, code, reason)
                 if (code == 4000) {
                     reconnectSession = true
-                    heartbeatThread?.interrupt()
+                    heartbeatThread.interrupt()
                     val newThread = Thread {
                         try {
                             Thread.sleep(200)
@@ -399,4 +375,8 @@ class DiscordRPC(private val token: String) {
     private fun reconnect() {
         createWebSocketClient()
     }
+}
+
+private fun List<String>.toJsonArray() = buildJsonArray { 
+    forEach { add(it) }
 }

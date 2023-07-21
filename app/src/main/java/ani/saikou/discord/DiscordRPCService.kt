@@ -7,7 +7,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import ani.saikou.R
 import ani.saikou.toast
 
@@ -67,7 +66,7 @@ class DiscordRPCService : Service() {
         )
 
         val builder = Notification.Builder(this, CHANNEL)
-            .setSmallIcon(R.drawable.ic_splash)
+            .setSmallIcon(R.drawable.monochrome)
             .setUsesChronometer(true)
             .setContentText("Discord RPC running")
 

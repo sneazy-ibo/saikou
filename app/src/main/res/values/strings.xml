@@ -604,5 +604,7 @@
     <string name="invalid_url">Invalid URL</string>
     <string name="no_anilist_id_found">No Anilist ID found</string>
     <string name="error_loading_image">Error loading image</string>
+    <string name="discord_logout_success">Successfully Logged Out</string>
+    <string name="discord_try_again">Try logging-in again</string>
 
 </resources>
