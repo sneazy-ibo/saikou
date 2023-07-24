@@ -49,6 +49,7 @@
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
                     android:focusable="false"
+                    android:minHeight="240dp"
                     android:scaleType="fitCenter"
                     tools:ignore="ContentDescription,ImageContrastCheck"
                     tools:src="@tools:sample/backgrounds/scenic[0]" />
