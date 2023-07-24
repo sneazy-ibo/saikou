@@ -1008,9 +1008,9 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         if (settings.timeStampsEnabled)
             updateTimeStamp()
 
-        DiscordRPCService.rpc!!
-            .setWatchingPresence(media.name, media.anime!!.selectedEpisode, media.anime!!.totalEpisodes)
-            .sendData()
+        DiscordRPCService.rpc
+            ?.setWatchingPresence(media.name, media.anime!!.selectedEpisode, media.anime!!.totalEpisodes)
+            ?.sendData()
     }
 
     private fun initPlayer() {
@@ -1438,11 +1438,10 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             releasePlayer()
         }
 
-        DiscordRPCService.rpc!!
-            .setDetails("(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧")
-            .setState("°˖✧◝(⁰▿⁰)◜✧˖°")
-            .setStartTimestamps(java.lang.System.currentTimeMillis())
-            .sendData()
+        DiscordRPCService.rpc?.setDetails("(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧")
+            ?.setState("°˖✧◝(⁰▿⁰)◜✧˖°")
+            ?.setStartTimestamps(java.lang.System.currentTimeMillis())
+            ?.sendData()
 
         super.onDestroy()
         finishAndRemoveTask()
