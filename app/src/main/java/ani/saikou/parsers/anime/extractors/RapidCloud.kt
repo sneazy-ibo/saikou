@@ -5,6 +5,7 @@ import android.net.Uri
 import ani.saikou.*
 import ani.saikou.parsers.*
 import kotlinx.serialization.Serializable
+import org.json.JSONArray
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.util.*
@@ -24,18 +25,28 @@ class RapidCloud(override val server: VideoServer) : VideoExtractor() {
         if (decryptKey.isNotEmpty()) {
             val embedURL = Uri.parse(server.embed.url);
             val id = embedURL.path?.substringAfterLast("/");
-            val jsonLink = "https://${embedURL.host}/ajax/embed-6/getSources?id=${id}"
+            val jsonLink = "https://${embedURL.host}/ajax/embed-6-v2/getSources?id=${id}"
             val response = client.get(jsonLink)
 
             val sourceObject = if (response.text.contains("encrypted")) {
                 val encryptedMap = response.parsedSafe<SourceResponse.Encrypted>()
-                val sources = encryptedMap?.sources
+                var sources = encryptedMap?.sources
 
-                if (sources == null || encryptedMap.encrypted == false)
+                if (sources == null || encryptedMap?.encrypted == false)
                     response.parsedSafe()
                 else {
-                    val decrypted = decryptMapped<List<SourceResponse.Track>>(sources, decryptKey)
-                    SourceResponse(sources = decrypted, tracks = encryptedMap.tracks)
+                    var sourcesArray = sources.split("").toMutableList()
+                    var key = "";
+                    for (index in decryptKey) {
+                        for(i in (index[0] + 1) until (index[1] + 1)){
+                            key += sourcesArray[i];
+                            sourcesArray[i] = "";
+                        }
+                    }
+                    
+                    sources = sourcesArray.joinToString("");
+                    val decrypted = decryptMapped<List<SourceResponse.Track>>(sources, key)
+                    SourceResponse(sources = decrypted, tracks = encryptedMap?.tracks)
                 }
             }
             else response.parsedSafe()
@@ -56,8 +67,15 @@ class RapidCloud(override val server: VideoServer) : VideoExtractor() {
     }
 
     companion object {
-        private suspend fun decryptKey(): String {
-            return client.get("https://raw.githubusercontent.com/enimax-anime/key/e0/key.txt").text
+        private suspend fun decryptKey(): Array<Array<Int>> {
+            val keyJSON = JSONArray(client.get("https://raw.githubusercontent.com/enimax-anime/key/e0/key.txt").text);
+            val key = Array(keyJSON.length()) { i ->
+                val innerArray = keyJSON.getJSONArray(i)
+                Array(innerArray.length()) { j ->
+                    innerArray.getInt(j)
+                }
+            }
+            return key;
         }
 
         private fun md5(input: ByteArray): ByteArray {
