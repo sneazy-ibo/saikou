@@ -58,25 +58,23 @@ class NineAnime : AnimeParser() {
     class Extractor(override val server: VideoServer) : VideoExtractor() {
 
         @Serializable
-        data class Response (
-            val data: Data? = null,
-            val rawURL: String? = null
+        data class Data(
+            val result: Media? = null
         ) {
             @Serializable
-            data class Data(
-                val media: Media? = null
+            data class Media(
+                val sources: List<Source>? = null
             ) {
                 @Serializable
-                data class Media(
-                    val sources: List<Source>? = null
-                ) {
-                    @Serializable
-                    data class Source(
-                        val file: String? = null
-                    )
-                }
+                data class Source(
+                    val file: String? = null
+                )
             }
         }
+        @Serializable
+        data class Response (
+            val rawURL: String? = null
+        );
 
         override suspend fun extract(): VideoContainer {
             val slug = URL(server.embed.url).path.substringAfter("e/")
@@ -87,7 +85,7 @@ class NineAnime : AnimeParser() {
             var videos: List<Video> = emptyList()
             if(apiUrl != null) {
                 val referer = if (isMcloud) "https://mcloud.to/" else "https://9anime.to/"
-                videos =  client.get(apiUrl, referer = referer).parsed<Response>().data?.media?.sources?.mapNotNull { s ->
+                videos =  client.get(apiUrl, referer = referer).parsed<Data>()?.result?.sources?.mapNotNull { s ->
                     s.file?.let { Video(null,VideoType.M3U8,it) }
                 } ?: emptyList()
             }
