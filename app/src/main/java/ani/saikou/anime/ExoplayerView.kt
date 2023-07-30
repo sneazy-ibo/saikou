@@ -60,7 +60,6 @@ import ani.saikou.*
 import ani.saikou.R
 import ani.saikou.anilist.Anilist
 import ani.saikou.databinding.ActivityExoplayerBinding
-import ani.saikou.discord.DiscordRPCService
 import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
 import ani.saikou.others.AniSkip
@@ -1008,9 +1007,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         if (settings.timeStampsEnabled)
             updateTimeStamp()
 
-        DiscordRPCService.rpc
-            ?.setWatchingPresence(media.name, media.anime!!.selectedEpisode, media.anime!!.totalEpisodes)
-            ?.sendData()
     }
 
     private fun initPlayer() {
@@ -1437,11 +1433,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             updateAniProgress()
             releasePlayer()
         }
-
-        DiscordRPCService.rpc?.setDetails("(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧")
-            ?.setState("°˖✧◝(⁰▿⁰)◜✧˖°")
-            ?.setStartTimestamps(java.lang.System.currentTimeMillis())
-            ?.sendData()
 
         super.onDestroy()
         finishAndRemoveTask()

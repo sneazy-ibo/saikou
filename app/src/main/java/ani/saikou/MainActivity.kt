@@ -28,8 +28,6 @@ import ani.saikou.anilist.Anilist
 import ani.saikou.anilist.AnilistHomeViewModel
 import ani.saikou.databinding.ActivityMainBinding
 import ani.saikou.databinding.SplashScreenBinding
-import ani.saikou.discord.DiscordRPC
-import ani.saikou.discord.DiscordRPCService
 import ani.saikou.media.MediaDetailsActivity
 import ani.saikou.others.CustomBottomDialog
 import ani.saikou.settings.UserInterfaceSettings
@@ -207,25 +205,7 @@ class MainActivity : AppCompatActivity() {
                     }.show(supportFragmentManager, "dialog")
                 }
             }
-
-            if (DiscordRPC.getToken(this) !== null) {
-                val intent = Intent(this, DiscordRPCService::class.java)
-                Thread {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(intent)
-                    } else {
-                        startService(intent)
-                    }
-                }.start()
-            }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        val intent = Intent(this, DiscordRPCService::class.java)
-        stopService(intent)
     }
 
     //ViewPager

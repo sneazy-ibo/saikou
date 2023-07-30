@@ -304,7 +304,7 @@ class HomeFragment : Fragment() {
                     uiSettings = loadData<UserInterfaceSettings>("ui_settings") ?: UserInterfaceSettings()
                     withContext(Dispatchers.IO) {
                         //Get userData First
-                        getUserId {
+                        getUserId(requireContext()) {
                             load()
                         }
                         model.loaded = true

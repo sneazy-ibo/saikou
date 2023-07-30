@@ -219,7 +219,7 @@ class MangaFragment : Fragment() {
             if (it) {
                 scope.launch {
                     withContext(Dispatchers.IO) {
-                        getUserId{
+                        getUserId(requireContext()) {
                             load()
                         }
                         model.loaded = true

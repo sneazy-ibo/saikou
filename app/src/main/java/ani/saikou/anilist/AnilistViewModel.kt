@@ -1,31 +1,44 @@
 package ani.saikou.anilist
 
+import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ani.saikou.R
-import ani.saikou.currContext
+import ani.saikou.discord.Discord
 import ani.saikou.loadData
 import ani.saikou.mal.MAL
 import ani.saikou.media.Media
 import ani.saikou.others.AppUpdater
 import ani.saikou.snackString
 import ani.saikou.tryWithSuspend
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-
-suspend fun getUserId(update: Runnable) {
-    if (Anilist.userid == null && Anilist.token != null) {
-        if (Anilist.query.getUserData()) {
-            tryWithSuspend{
-                if(MAL.token!=null && !MAL.query.getUserData())
-                    snackString(currContext()?.getString(R.string.error_loading_mal_user_data))
-            }
-            update.run()
+suspend fun getUserId(context: Context, block: () -> Unit) {
+    CoroutineScope(Dispatchers.IO).launch {
+        if (Discord.userid == null && Discord.token != null) {
+            if (!Discord.getUserData())
+                snackString(context.getString(R.string.error_loading_discord_user_data))
         }
-        else
-            snackString(currContext()?.getString(R.string.error_loading_anilist_user_data))
-    } else update.run()
+    }
+
+    val anilist = if (Anilist.userid == null && Anilist.token != null) {
+        if (Anilist.query.getUserData()) {
+            tryWithSuspend {
+                if (MAL.token != null && !MAL.query.getUserData())
+                    snackString(context.getString(R.string.error_loading_mal_user_data))
+            }
+            true
+        } else {
+            snackString(context.getString(R.string.error_loading_anilist_user_data))
+            false
+        }
+    } else true
+
+    if(anilist) block.invoke()
 }
 
 class AnilistHomeViewModel : ViewModel() {
@@ -64,6 +77,7 @@ class AnilistHomeViewModel : ViewModel() {
     suspend fun loadMain(context: FragmentActivity) {
         Anilist.getSavedToken(context)
         MAL.getSavedToken(context)
+        Discord.getSavedToken(context)
         if (loadData<Boolean>("check_update") != false) AppUpdater.check(context)
         genres.postValue(Anilist.query.getGenresAndTags(context))
     }

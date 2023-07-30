@@ -25,7 +25,6 @@ import androidx.viewpager2.widget.ViewPager2
 import ani.saikou.*
 import ani.saikou.anilist.Anilist
 import ani.saikou.databinding.ActivityMangaReaderBinding
-import ani.saikou.discord.DiscordRPCService
 import ani.saikou.manga.MangaChapter
 import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
@@ -102,11 +101,6 @@ class MangaReaderActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        DiscordRPCService.rpc
-            ?.setDetails("(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧")
-            ?.setState("°˖✧◝(⁰▿⁰)◜✧˖°")
-            ?.setStartTimestamps(System.currentTimeMillis())
-            ?.sendData()
         super.onDestroy()
     }
 
@@ -214,10 +208,6 @@ class MangaReaderActivity : AppCompatActivity() {
         binding.mangaReaderChapterSelect.setSelection(currentChapterIndex)
         binding.mangaReaderChapterSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                DiscordRPCService.rpc
-                    ?.setReadingPresence(media.name, media.manga!!.selectedChapter, media.manga!!.totalChapters)
-                    ?.sendData()
-
                 if (position != currentChapterIndex) change(position)
             }
 

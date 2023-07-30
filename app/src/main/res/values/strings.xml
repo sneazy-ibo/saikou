@@ -606,5 +606,6 @@
     <string name="error_loading_image">Error loading image</string>
     <string name="discord_logout_success">Successfully Logged Out</string>
     <string name="discord_try_again">Try logging-in again</string>
+    <string name="error_loading_discord_user_data">Error loading Discord User Data</string>
 
 </resources>

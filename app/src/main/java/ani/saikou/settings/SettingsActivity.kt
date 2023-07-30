@@ -20,9 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import ani.saikou.*
 import ani.saikou.anilist.Anilist
 import ani.saikou.databinding.ActivitySettingsBinding
-import ani.saikou.discord.DiscordRPC
-import ani.saikou.discord.DiscordRPCService
-import ani.saikou.discord.Login
+import ani.saikou.discord.Discord
 import ani.saikou.mal.MAL
 import ani.saikou.others.AppUpdater
 import ani.saikou.others.CustomBottomDialog
@@ -33,7 +31,6 @@ import ani.saikou.subcriptions.Notifications.Companion.openSettings
 import ani.saikou.subcriptions.Subscription.Companion.defaultTime
 import ani.saikou.subcriptions.Subscription.Companion.startSubscription
 import ani.saikou.subcriptions.Subscription.Companion.timeMinutes
-import com.bumptech.glide.Glide
 import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import kotlinx.coroutines.Dispatchers
@@ -478,29 +475,24 @@ OS Version: $CODENAME $RELEASE ($SDK_INT)
                 binding.settingsMALUsername.visibility = View.GONE
             }
 
-            if (DiscordRPC.getToken(this) !== null) {
-                if (DiscordRPCService.userAvatar !== null) {
-                    Glide.with(this)
-                        .load(DiscordRPCService.userAvatar)
-                        .into(binding.settingsDiscordAvatar)
+            if (Discord.token != null) {
+                if (Discord.avatar != null) {
+                    binding.settingsDiscordAvatar.loadImage(Discord.avatar)
                 }
                 binding.settingsDiscordUsername.visibility = View.VISIBLE
-                binding.settingsDiscordUsername.setText(DiscordRPCService.userName)
-                binding.settingsDiscordLogin.setText("Logout")
+                binding.settingsDiscordUsername.text = Discord.userid
+                binding.settingsDiscordLogin.setText(R.string.logout)
                 binding.settingsDiscordLogin.setOnClickListener {
-                    val intent = Intent(this, DiscordRPCService::class.java)
-                    stopService(intent)
-                    DiscordRPC.removeToken(this)
+                    Discord.removeSavedToken(this)
                     restartMainActivity.isEnabled = true
                     reload()
                 }
             } else {
                 binding.settingsDiscordAvatar.setImageResource(R.drawable.ic_round_person_24)
                 binding.settingsDiscordUsername.visibility = View.GONE
-                binding.settingsDiscordLogin.setText("Login")
+                binding.settingsDiscordLogin.setText(R.string.login)
                 binding.settingsDiscordLogin.setOnClickListener {
-                    val intent = Intent(this, Login::class.java)
-                    startActivity(intent)
+                    Discord.loginIntent(this)
                 }
             }
         }
