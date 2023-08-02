@@ -9,11 +9,11 @@ import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import java.net.URL
 
-class NineAnime : AnimeParser() {
+class AniWave : AnimeParser() {
 
-    override val name = "9anime"
-    override val saveName = "9anime_ph"
-    override val hostUrl = "https://9anime.ph"
+    override val name = "AniWave"
+    override val saveName = "aniwave_to"
+    override val hostUrl = "https://aniwave.to"
     override val malSyncBackupName = "9anime"
     override val isDubAvailableSeparately = true
 
