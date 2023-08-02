@@ -12,10 +12,10 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import ani.saikou.*
-import ani.saikou.anilist.Anilist
-import ani.saikou.anilist.api.FuzzyDate
+import ani.saikou.connections.anilist.Anilist
+import ani.saikou.connections.anilist.api.FuzzyDate
 import ani.saikou.databinding.BottomSheetMediaListBinding
-import ani.saikou.mal.MAL
+import ani.saikou.connections.mal.MAL
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

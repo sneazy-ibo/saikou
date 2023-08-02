@@ -1,7 +1,7 @@
 package ani.saikou.others
 
 import ani.saikou.FileUrl
-import ani.saikou.anime.Episode
+import ani.saikou.media.anime.Episode
 import ani.saikou.client
 import ani.saikou.logger
 import ani.saikou.media.Media

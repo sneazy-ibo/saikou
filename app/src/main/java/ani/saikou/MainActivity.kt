@@ -24,10 +24,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import ani.saikou.anilist.Anilist
-import ani.saikou.anilist.AnilistHomeViewModel
+import ani.saikou.connections.anilist.Anilist
+import ani.saikou.connections.anilist.AnilistHomeViewModel
 import ani.saikou.databinding.ActivityMainBinding
 import ani.saikou.databinding.SplashScreenBinding
+import ani.saikou.home.AnimeFragment
+import ani.saikou.home.HomeFragment
+import ani.saikou.home.LoginFragment
+import ani.saikou.home.MangaFragment
+import ani.saikou.home.NoInternet
 import ani.saikou.media.MediaDetailsActivity
 import ani.saikou.others.CustomBottomDialog
 import ani.saikou.settings.UserInterfaceSettings

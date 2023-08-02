@@ -11,9 +11,9 @@ import android.widget.ArrayAdapter
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import ani.saikou.*
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
 import ani.saikou.databinding.BottomSheetMediaListSmallBinding
-import ani.saikou.mal.MAL
+import ani.saikou.connections.mal.MAL
 import ani.saikou.others.getSerialized
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

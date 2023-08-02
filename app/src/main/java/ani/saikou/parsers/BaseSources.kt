@@ -1,8 +1,8 @@
 package ani.saikou.parsers
 
 import ani.saikou.Lazier
-import ani.saikou.anime.Episode
-import ani.saikou.manga.MangaChapter
+import ani.saikou.media.anime.Episode
+import ani.saikou.media.manga.MangaChapter
 import ani.saikou.media.Media
 import ani.saikou.tryWithSuspend
 

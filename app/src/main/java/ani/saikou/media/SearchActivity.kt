@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.*
-import ani.saikou.anilist.Anilist
-import ani.saikou.anilist.AnilistSearch
-import ani.saikou.anilist.SearchResults
+import ani.saikou.connections.anilist.Anilist
+import ani.saikou.connections.anilist.AnilistSearch
+import ani.saikou.connections.anilist.SearchResults
 import ani.saikou.databinding.ActivitySearchBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

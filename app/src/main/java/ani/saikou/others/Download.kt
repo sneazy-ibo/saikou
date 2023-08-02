@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import ani.saikou.FileUrl
 import ani.saikou.R
-import ani.saikou.anime.Episode
+import ani.saikou.media.anime.Episode
 import ani.saikou.currContext
 import ani.saikou.defaultHeaders
 import ani.saikou.loadData

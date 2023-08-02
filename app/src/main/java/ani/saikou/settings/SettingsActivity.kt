@@ -18,10 +18,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import ani.saikou.*
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
 import ani.saikou.databinding.ActivitySettingsBinding
-import ani.saikou.discord.Discord
-import ani.saikou.mal.MAL
+import ani.saikou.connections.discord.Discord
+import ani.saikou.connections.mal.MAL
 import ani.saikou.others.AppUpdater
 import ani.saikou.others.CustomBottomDialog
 import ani.saikou.parsers.AnimeSources

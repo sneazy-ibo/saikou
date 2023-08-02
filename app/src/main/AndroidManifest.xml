@@ -50,22 +50,22 @@
         <activity
             android:name=".media.CalendarActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".user.ListActivity" />
+        <activity android:name="ani.saikou.media.user.ListActivity" />
         <activity
-            android:name=".manga.mangareader.MangaReaderActivity"
+            android:name="ani.saikou.media.manga.mangareader.MangaReaderActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/manga"
             android:launchMode="singleTask" />
-        <activity android:name=".GenreActivity" />
+        <activity android:name=".media.GenreActivity" />
         <activity
             android:name=".media.MediaDetailsActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.Saikou.NeverCutout" />
         <activity android:name=".media.CharacterDetailsActivity" />
-        <activity android:name=".NoInternet" />
+        <activity android:name=".home.NoInternet" />
         <activity
-            android:name=".anime.ExoplayerView"
+            android:name="ani.saikou.media.anime.ExoplayerView"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|navigation"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -74,7 +74,7 @@
             android:supportsPictureInPicture="true"
             tools:targetApi="n" />
         <activity
-            android:name=".anilist.Login"
+            android:name="ani.saikou.connections.anilist.Login"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -91,7 +91,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".mal.Login"
+            android:name="ani.saikou.connections.mal.Login"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -108,7 +108,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".discord.Login"
+        <activity android:name="ani.saikou.connections.discord.Login"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -127,7 +127,7 @@
         </activity>
 
         <activity
-            android:name=".anilist.UrlMedia"
+            android:name="ani.saikou.connections.anilist.UrlMedia"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:excludeFromRecents="true"
             android:exported="true"

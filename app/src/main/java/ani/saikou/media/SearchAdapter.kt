@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
 import ani.saikou.databinding.ItemChipBinding
 import ani.saikou.databinding.ItemSearchHeaderBinding
 import ani.saikou.saveData

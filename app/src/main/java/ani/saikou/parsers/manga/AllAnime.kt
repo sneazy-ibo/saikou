@@ -1,7 +1,7 @@
 package ani.saikou.parsers.manga
 
 import ani.saikou.FileUrl
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
 import ani.saikou.client
 import ani.saikou.parsers.MangaChapter
 import ani.saikou.parsers.MangaImage

@@ -22,8 +22,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import ani.saikou.*
-import ani.saikou.anilist.Anilist
-import ani.saikou.anilist.GenresViewModel
+import ani.saikou.connections.anilist.Anilist
+import ani.saikou.connections.anilist.GenresViewModel
 import ani.saikou.databinding.*
 import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin

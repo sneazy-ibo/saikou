@@ -30,14 +30,14 @@ import ani.saikou.GesturesListener
 import ani.saikou.R
 import ani.saikou.Refresh
 import ani.saikou.ZoomOutPageTransformer
-import ani.saikou.anilist.Anilist
-import ani.saikou.anime.AnimeWatchFragment
+import ani.saikou.connections.anilist.Anilist
+import ani.saikou.media.anime.AnimeWatchFragment
 import ani.saikou.copyToClipboard
 import ani.saikou.databinding.ActivityMediaBinding
 import ani.saikou.initActivity
 import ani.saikou.loadData
 import ani.saikou.loadImage
-import ani.saikou.manga.MangaReadFragment
+import ani.saikou.media.manga.MangaReadFragment
 import ani.saikou.navBarHeight
 import ani.saikou.novel.NovelReadFragment
 import ani.saikou.openLinkInBrowser

@@ -211,7 +211,6 @@ suspend fun webViewInterface(webViewDialog: WebViewBottomDialog): Map<String, St
     return map
 }
 
-@Suppress("BlockingMethodInNonBlockingContext")
 suspend fun webViewInterface(type: String, url: FileUrl): Map<String, String>? {
     val webViewDialog: WebViewBottomDialog = when (type) {
         "Cloudflare" -> CloudFlare.newInstance(url)

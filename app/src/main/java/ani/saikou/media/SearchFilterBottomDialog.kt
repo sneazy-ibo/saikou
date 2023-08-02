@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import ani.saikou.BottomSheetDialogFragment
 import ani.saikou.R
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
 import ani.saikou.databinding.BottomSheetSearchFilterBinding
 import ani.saikou.databinding.ItemChipBinding
 import com.google.android.material.chip.Chip

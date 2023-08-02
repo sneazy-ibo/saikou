@@ -3,7 +3,7 @@ package ani.saikou.media
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
 import java.text.DateFormat
 import java.util.*
 

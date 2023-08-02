@@ -37,11 +37,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import ani.saikou.BuildConfig.APPLICATION_ID
-import ani.saikou.anilist.Anilist
-import ani.saikou.anilist.Genre
-import ani.saikou.anilist.api.FuzzyDate
+import ani.saikou.connections.anilist.Genre
+import ani.saikou.connections.anilist.api.FuzzyDate
 import ani.saikou.databinding.ItemCountDownBinding
-import ani.saikou.mal.MAL
 import ani.saikou.media.Media
 import ani.saikou.parsers.ShowResponse
 import ani.saikou.settings.UserInterfaceSettings
@@ -580,32 +578,6 @@ fun saveImage(image: Bitmap, path: String, imageFileName: String): File? {
 private fun scanFile(path: String, context: Context) {
     MediaScannerConnection.scanFile(context, arrayOf(path), null) { p, _ ->
         logger("Finished scanning $p")
-    }
-}
-
-fun updateAnilistProgress(media: Media, number: String) {
-    if (Anilist.userid != null) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val a = number.toFloatOrNull()?.roundToInt()
-            if (a != media.userProgress) {
-                Anilist.mutation.editList(
-                    media.id,
-                    a,
-                    status = if (media.userStatus == "REPEATING") media.userStatus else "CURRENT"
-                )
-                MAL.query.editList(
-                    media.idMAL,
-                    media.anime != null,
-                    a, null,
-                    if (media.userStatus == "REPEATING") media.userStatus!! else "CURRENT"
-                )
-                toast(currContext()?.getString(R.string.setting_progress, a))
-            }
-            media.userProgress = a
-            Refresh.all()
-        }
-    } else {
-        toast(currContext()?.getString(R.string.login_anilist_account))
     }
 }
 

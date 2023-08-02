@@ -2,7 +2,7 @@ package ani.saikou.parsers.anime
 
 import android.net.Uri
 import ani.saikou.*
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
 import ani.saikou.parsers.*
 import ani.saikou.parsers.anime.extractors.DoodStream
 import ani.saikou.parsers.anime.extractors.GogoCDN

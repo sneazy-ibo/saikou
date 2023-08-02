@@ -13,9 +13,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import ani.saikou.BottomSheetDialogFragment
-import ani.saikou.anime.AnimeSourceAdapter
+import ani.saikou.media.anime.AnimeSourceAdapter
 import ani.saikou.databinding.BottomSheetSourceSearchBinding
-import ani.saikou.manga.MangaSourceAdapter
+import ani.saikou.media.manga.MangaSourceAdapter
 import ani.saikou.navBarHeight
 import ani.saikou.parsers.AnimeSources
 import ani.saikou.parsers.HAnimeSources

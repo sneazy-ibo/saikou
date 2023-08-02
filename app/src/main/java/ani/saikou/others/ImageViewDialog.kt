@@ -11,8 +11,8 @@ import ani.saikou.BottomSheetDialogFragment
 import ani.saikou.FileUrl
 import ani.saikou.R
 import ani.saikou.databinding.BottomSheetImageBinding
-import ani.saikou.manga.mangareader.BaseImageAdapter.Companion.loadBitmap
-import ani.saikou.manga.mangareader.BaseImageAdapter.Companion.mergeBitmap
+import ani.saikou.media.manga.mangareader.BaseImageAdapter.Companion.loadBitmap
+import ani.saikou.media.manga.mangareader.BaseImageAdapter.Companion.mergeBitmap
 import ani.saikou.openLinkInBrowser
 import ani.saikou.saveImageToDownloads
 import ani.saikou.setSafeOnClickListener

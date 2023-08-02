@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import ani.saikou.R
 import ani.saikou.Refresh
 import ani.saikou.databinding.ActivityListBinding
-import ani.saikou.user.ListViewPagerAdapter
+import ani.saikou.media.user.ListViewPagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers

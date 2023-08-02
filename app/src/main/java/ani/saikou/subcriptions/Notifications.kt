@@ -12,7 +12,7 @@ import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import ani.saikou.FileUrl
 import ani.saikou.R
-import ani.saikou.anilist.UrlMedia
+import ani.saikou.connections.anilist.UrlMedia
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import kotlinx.coroutines.Dispatchers

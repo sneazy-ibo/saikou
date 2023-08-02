@@ -523,7 +523,7 @@
 
             </LinearLayout>
 
-            <view class="ani.saikou.anime.ExoplayerView$ExtendedTimeBar"
+            <view class="ani.saikou.media.anime.ExoplayerView$ExtendedTimeBar"
                 android:id="@id/exo_progress"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"

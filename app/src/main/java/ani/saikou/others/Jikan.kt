@@ -1,6 +1,6 @@
 package ani.saikou.others
 
-import ani.saikou.anime.Episode
+import ani.saikou.media.anime.Episode
 import ani.saikou.client
 import ani.saikou.tryWithSuspend
 import kotlinx.serialization.SerialName

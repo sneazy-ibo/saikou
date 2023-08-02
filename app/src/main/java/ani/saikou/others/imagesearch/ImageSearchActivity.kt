@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.App.Companion.context
 import ani.saikou.R
-import ani.saikou.anilist.Anilist
+import ani.saikou.connections.anilist.Anilist
 import ani.saikou.databinding.ActivityImageSearchBinding
 import ani.saikou.media.MediaDetailsActivity
 import ani.saikou.toast
