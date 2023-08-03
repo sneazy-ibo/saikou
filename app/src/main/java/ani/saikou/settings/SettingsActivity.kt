@@ -19,9 +19,9 @@ import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import ani.saikou.*
 import ani.saikou.connections.anilist.Anilist
-import ani.saikou.databinding.ActivitySettingsBinding
 import ani.saikou.connections.discord.Discord
 import ani.saikou.connections.mal.MAL
+import ani.saikou.databinding.ActivitySettingsBinding
 import ani.saikou.others.AppUpdater
 import ani.saikou.others.CustomBottomDialog
 import ani.saikou.parsers.AnimeSources
@@ -492,7 +492,7 @@ OS Version: $CODENAME $RELEASE ($SDK_INT)
                 binding.settingsDiscordUsername.visibility = View.GONE
                 binding.settingsDiscordLogin.setText(R.string.login)
                 binding.settingsDiscordLogin.setOnClickListener {
-                    Discord.loginIntent(this)
+                    Discord.warning(this).show(supportFragmentManager, "dialog")
                 }
             }
         }

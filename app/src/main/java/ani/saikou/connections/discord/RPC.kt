@@ -1,12 +1,14 @@
 package ani.saikou.connections.discord
 
 import ani.saikou.connections.discord.serializers.*
+import ani.saikou.printIt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -20,10 +22,10 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import java.util.concurrent.TimeUnit.*
 import kotlin.coroutines.CoroutineContext
+import ani.saikou.client as app
 
 @Suppress("MemberVisibilityCanBePrivate")
 open class RPC(val token: String, val coroutineContext: CoroutineContext) {
-
 
     private val json = Json {
         encodeDefaults = true
@@ -44,6 +46,7 @@ open class RPC(val token: String, val coroutineContext: CoroutineContext) {
     private var webSocket = client.newWebSocket(request, Listener())
 
     var applicationId: String? = null
+    var type: Type? = null
     var activityName: String? = null
     var details: String? = null
     var state: String? = null
@@ -52,7 +55,6 @@ open class RPC(val token: String, val coroutineContext: CoroutineContext) {
     var status: String? = null
     var startTimestamp: Long? = null
     var stopTimestamp: Long? = null
-    var type: Type? = null
 
     enum class Type {
         PLAYING, STREAMING, LISTENING, WATCHING, COMPETING
@@ -62,7 +64,7 @@ open class RPC(val token: String, val coroutineContext: CoroutineContext) {
 
     data class Link(val label: String, val url: String)
 
-    private fun createPresence(): String {
+    private suspend fun createPresence(): String {
         return json.encodeToString(Presence.Response(
             3,
             Presence(
@@ -76,9 +78,9 @@ open class RPC(val token: String, val coroutineContext: CoroutineContext) {
                             Activity.Timestamps(startTimestamp, stopTimestamp)
                         else null,
                         assets = Activity.Assets(
-                            largeImage = largeImage?.url,
+                            largeImage = largeImage?.url?.discordUrl(),
                             largeText = largeImage?.label,
-                            smallImage = smallImage?.url,
+                            smallImage = smallImage?.url?.discordUrl(),
                             smallText = smallImage?.label
                         ),
                         buttons = buttons.map { it.label },
@@ -92,7 +94,16 @@ open class RPC(val token: String, val coroutineContext: CoroutineContext) {
                 since = startTimestamp,
                 status = status
             )
-        ))
+        )).printIt("Presence : ")
+    }
+
+    @Serializable
+    data class KizzyApi(val id: String)
+    val api = "https://kizzy-api.vercel.app/image?url="
+    private suspend fun String.discordUrl(): String? {
+        if (startsWith("mp:")) return this
+        val json = app.get("$api$this").parsedSafe<KizzyApi>()
+        return json?.id
     }
 
     private fun sendIdentify() {
@@ -122,7 +133,9 @@ open class RPC(val token: String, val coroutineContext: CoroutineContext) {
 
     fun send() {
         val send = {
-            webSocket.send(createPresence())
+            CoroutineScope(coroutineContext).launch {
+                webSocket.send(createPresence())
+            }
         }
         if (!started) whenStarted = {
             send.invoke()
@@ -223,3 +236,5 @@ open class RPC(val token: String, val coroutineContext: CoroutineContext) {
     }
 
 }
+
+

@@ -59,6 +59,8 @@ import androidx.media3.ui.CaptionStyleCompat.*
 import ani.saikou.*
 import ani.saikou.R
 import ani.saikou.connections.anilist.Anilist
+import ani.saikou.connections.discord.Discord
+import ani.saikou.connections.discord.RPC
 import ani.saikou.connections.updateProgress
 import ani.saikou.databinding.ActivityExoplayerBinding
 import ani.saikou.media.Media
@@ -171,6 +173,8 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     private var isTimeStampsLoaded = false
 
     var rotation = 0
+
+    private var rpc: RPC? = null
 
     override fun onAttachedToWindow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -871,6 +875,19 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 playbackPosition = loadData("${media.id}_${it.number}", this) ?: 0
                 initPlayer()
                 preloading = false
+                rpc = Discord.defaultRPC()
+                rpc?.send {
+                    type = RPC.Type.WATCHING
+                    activityName = media.userPreferredName
+                    details =  it.title ?: getString(R.string.episode_num, it.number)
+                    state = "Episode : ${it.number}/${media.anime?.totalEpisodes ?: "??"}"
+                    media.cover?.let { cover ->
+                        largeImage = RPC.Link(media.userPreferredName, cover)
+                    }
+                    media.shareLink?.let { link ->
+                        buttons.add(0, RPC.Link(getString(R.string.view_anime), link))
+                    }
+                }
                 updateProgress()
             }
         }
@@ -1037,6 +1054,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                         else -> ext.subtitles.getOrNull(episode.selectedSubtitle!!)
                     }
                 }
+
                 "None" -> ext.subtitles.let { null }
                 else   -> ext.subtitles.find { it.language == subLang }
             }
@@ -1185,6 +1203,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         exoPlayer.release()
         VideoCache.release()
         mediaSession?.release()
+        rpc?.close()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1371,6 +1390,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 isPlayerPlaying = true
                 sourceClick()
             }
+
             else
             -> toast("Player Error ${error.errorCode} (${error.errorCodeName}) : ${error.message}")
         }
@@ -1427,7 +1447,9 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
         CoroutineScope(Dispatchers.IO).launch {
-            extractor?.onVideoStopped(video)
+            tryWithSuspend(true) {
+                extractor?.onVideoStopped(video)
+            }
         }
 
         if (isInitialized) {
@@ -1513,7 +1535,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         }
         if (isInitialized) {
             saveData("${media.id}_${episode.number}", exoPlayer.currentPosition, this)
-            if(wasPlaying) exoPlayer.play()
+            if (wasPlaying) exoPlayer.play()
         }
     }
 

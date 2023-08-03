@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import ani.saikou.BottomSheetDialogFragment
 import ani.saikou.databinding.BottomSheetCustomBinding
 
-class CustomBottomDialog : BottomSheetDialogFragment() {
+open class CustomBottomDialog : BottomSheetDialogFragment() {
     private var _binding: BottomSheetCustomBinding? = null
     private val binding get() = _binding!!
 

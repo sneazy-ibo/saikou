@@ -24,11 +24,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import ani.saikou.*
 import ani.saikou.connections.anilist.Anilist
+import ani.saikou.connections.discord.Discord
+import ani.saikou.connections.discord.RPC
 import ani.saikou.connections.updateProgress
 import ani.saikou.databinding.ActivityMangaReaderBinding
-import ani.saikou.media.manga.MangaChapter
 import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
+import ani.saikou.media.manga.MangaChapter
 import ani.saikou.others.ImageViewDialog
 import ani.saikou.others.getSerialized
 import ani.saikou.parsers.HMangaSources
@@ -78,6 +80,8 @@ class MangaReaderActivity : AppCompatActivity() {
     var sliding = false
     var isAnimating = false
 
+    private var rpc : RPC? = null
+
     override fun onAttachedToWindow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !settings.showSystemBars) {
             val displayCutout = window.decorView.rootWindowInsets.displayCutout
@@ -102,6 +106,7 @@ class MangaReaderActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        rpc?.close()
         super.onDestroy()
     }
 
@@ -236,17 +241,31 @@ class MangaReaderActivity : AppCompatActivity() {
             else snackString(getString(R.string.first_chapter))
         }
 
-        model.getMangaChapter().observe(this) {
-            if (it != null) {
-                chapter = it
+        model.getMangaChapter().observe(this) { chap ->
+            if (chap != null) {
+                chapter = chap
                 media.manga!!.selectedChapter = chapter.number
                 media.selected = model.loadSelected(media)
-                saveData("${media.id}_current_chp", it.number, this)
-                currentChapterIndex = chaptersArr.indexOf(it.number)
+                saveData("${media.id}_current_chp", chap.number, this)
+                currentChapterIndex = chaptersArr.indexOf(chap.number)
                 binding.mangaReaderChapterSelect.setSelection(currentChapterIndex)
                 binding.mangaReaderNextChap.text = chaptersTitleArr.getOrNull(currentChapterIndex + 1) ?: ""
                 binding.mangaReaderPrevChap.text = chaptersTitleArr.getOrNull(currentChapterIndex - 1) ?: ""
                 applySettings()
+                rpc?.close()
+                rpc = Discord.defaultRPC()
+                rpc?.send {
+                    type = RPC.Type.WATCHING
+                    activityName = media.userPreferredName
+                    details =  chap.title?.takeIf { it.isNotEmpty() } ?: getString(R.string.chapter_num, chap.number)
+                    state = "Chapter : ${chap.number}/${media.manga?.totalChapters ?: "??"}"
+                    media.cover?.let { cover ->
+                        largeImage = RPC.Link(media.userPreferredName, cover)
+                    }
+                    media.shareLink?.let { link ->
+                        buttons.add(0, RPC.Link(getString(R.string.view_manga), link))
+                    }
+                }
             }
         }
 
@@ -622,7 +641,7 @@ class MangaReaderActivity : AppCompatActivity() {
         }
     }
 
-    var loading = false
+    private var loading = false
     fun updatePageNumber(page: Long) {
         if (currentChapterPage != page) {
             currentChapterPage = page
