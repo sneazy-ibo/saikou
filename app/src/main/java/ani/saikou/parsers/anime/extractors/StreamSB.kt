@@ -5,7 +5,6 @@ import ani.saikou.client
 import ani.saikou.defaultHeaders
 import ani.saikou.findBetween
 import ani.saikou.parsers.*
-import ani.saikou.printIt
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.math.floor
@@ -14,7 +13,7 @@ import kotlin.random.Random
 class StreamSB(override val server: VideoServer) : VideoExtractor() {
     override suspend fun extract(): VideoContainer {
         val videos = mutableListOf<Video>()
-        val id = server.embed.url.let { it.findBetween("/e/", ".html") ?: it.findBetween("/embed-", ".html") ?: it.split("/e/")[1] }.printIt("id : ")
+        val id = server.embed.url.let { it.findBetween("/e/", ".html") ?: it.findBetween("/embed-", ".html") ?: it.split("/e/")[1] }
         val host = server.embed.url.findBetween("https://", "/")
         val jsonLink =
             "https://$host/375664356a494546326c4b797c7c6e756577776778623171737/${encode(id)}"

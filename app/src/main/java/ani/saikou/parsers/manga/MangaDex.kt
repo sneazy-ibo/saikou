@@ -5,7 +5,6 @@ import ani.saikou.parsers.MangaChapter
 import ani.saikou.parsers.MangaImage
 import ani.saikou.parsers.MangaParser
 import ani.saikou.parsers.ShowResponse
-import ani.saikou.printIt
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -29,7 +28,6 @@ class MangaDex : MangaParser() {
         (0..totalChapters step 200).reversed().toList().map { index ->
             val data = client
                 .get("$host/manga/$mangaLink/feed?limit=200&order[volume]=desc&order[chapter]=desc&offset=$index")
-                .printIt("uh : ")
                 .parsedSafe<MangaResponse>()?.data?.reversed()
 
             data?.forEach {

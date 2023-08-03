@@ -1,7 +1,6 @@
 package ani.saikou.connections.discord
 
 import ani.saikou.connections.discord.serializers.*
-import ani.saikou.printIt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.cancel
@@ -94,7 +93,7 @@ open class RPC(val token: String, val coroutineContext: CoroutineContext) {
                 since = startTimestamp,
                 status = status
             )
-        )).printIt("Presence : ")
+        ))
     }
 
     @Serializable

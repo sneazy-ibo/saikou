@@ -1,10 +1,19 @@
 package ani.saikou.parsers.anime
 
-import ani.saikou.*
-import ani.saikou.parsers.*
+import ani.saikou.FileUrl
+import ani.saikou.client
+import ani.saikou.parsers.AnimeParser
+import ani.saikou.parsers.Episode
+import ani.saikou.parsers.ShowResponse
+import ani.saikou.parsers.Video
+import ani.saikou.parsers.VideoContainer
+import ani.saikou.parsers.VideoExtractor
+import ani.saikou.parsers.VideoServer
+import ani.saikou.parsers.VideoType
 import ani.saikou.parsers.anime.extractors.FileMoon
 import ani.saikou.parsers.anime.extractors.Mp4Upload
 import ani.saikou.parsers.anime.extractors.StreamTape
+import ani.saikou.tryWithSuspend
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import java.net.URL
@@ -19,7 +28,7 @@ class AniWave : AnimeParser() {
 
     override suspend fun loadEpisodes(animeLink: String, extra: Map<String, String>?): List<Episode> {
         val animeId = client.get(animeLink).document.select("#watch-main").attr("data-id")
-        val body = client.get("$hostUrl/ajax/episode/list/$animeId?vrf=${encodeVrf(animeId)}".printIt("a : ")).parsed<Response>().result
+        val body = client.get("$hostUrl/ajax/episode/list/$animeId?vrf=${encodeVrf(animeId)}").parsed<Response>().result
         return Jsoup.parse(body).body().select("ul > li > a").mapNotNull {
             val id = it.attr("data-ids").split(",")
                 .getOrNull(if (selectDub) 1 else 0) ?: return@mapNotNull null
@@ -74,18 +83,18 @@ class AniWave : AnimeParser() {
         @Serializable
         data class Response (
             val rawURL: String? = null
-        );
+        )
 
         override suspend fun extract(): VideoContainer {
             val slug = URL(server.embed.url).path.substringAfter("e/")
-            val isMcloud = server.name == "MyCloud"
-            val server = if (isMcloud) "Mcloud" else "Vizcloud"
+            val isMyCloud = server.name == "MyCloud"
+            val server = if (isMyCloud) "Mcloud" else "Vizcloud"
             val url = "https://9anime.eltik.net/raw$server?query=$slug&apikey=saikou"
             val apiUrl = client.get(url).parsed<Response>().rawURL
             var videos: List<Video> = emptyList()
             if(apiUrl != null) {
-                val referer = if (isMcloud) "https://mcloud.to/" else "https://9anime.to/"
-                videos =  client.get(apiUrl, referer = referer).parsed<Data>()?.result?.sources?.mapNotNull { s ->
+                val referer = if (isMyCloud) "https://mcloud.to/" else "https://9anime.to/"
+                videos =  client.get(apiUrl, referer = referer).parsed<Data>().result?.sources?.mapNotNull { s ->
                     s.file?.let { Video(null,VideoType.M3U8,it) }
                 } ?: emptyList()
             }

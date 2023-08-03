@@ -8,14 +8,13 @@ import ani.saikou.parsers.VideoContainer
 import ani.saikou.parsers.VideoExtractor
 import ani.saikou.parsers.VideoServer
 import ani.saikou.parsers.VideoType
-import ani.saikou.printIt
 
 class Mp4Upload(override val server: VideoServer) : VideoExtractor() {
     override suspend fun extract(): VideoContainer {
         val link = client.get(server.embed.url).document
             .select("script").html()
             .substringAfter("src: \"").substringBefore("\"")
-        val host = link.substringAfter("https://").substringBefore("/").printIt("Host : ")
+        val host = link.substringAfter("https://").substringBefore("/")
         val file = FileUrl(link, mapOf("host" to host))
         return VideoContainer(
             listOf(Video(null, VideoType.CONTAINER, file, getSize(file)))

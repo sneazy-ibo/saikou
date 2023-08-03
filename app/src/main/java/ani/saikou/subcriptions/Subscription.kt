@@ -1,5 +1,6 @@
 package ani.saikou.subcriptions
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.content.Context
 import androidx.core.app.NotificationCompat
@@ -12,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@SuppressLint("MissingPermission")
 class Subscription {
     companion object {
         const val defaultTime = 8
@@ -27,6 +29,7 @@ class Subscription {
         }
 
         private var currentlyPerforming = false
+
         suspend fun perform(context: Context) {
             if (!currentlyPerforming) tryWithSuspend {
                 currentlyPerforming = true
@@ -46,7 +49,7 @@ class Subscription {
                     notificationManager.notify(progressNotificationId, progressNotification.build())
                     //Seems like if the parent coroutine scope gets cancelled, the notification stays
                     //So adding this as a safeguard? dk if this will be useful
-                    CoroutineScope(Dispatchers.Default).launch {
+                    CoroutineScope(Dispatchers.Main).launch {
                         delay(5 * subscriptions.size * 1000L)
                         notificationManager.cancel(progressNotificationId)
                     }
@@ -64,7 +67,7 @@ class Subscription {
                 }
 
                 subscriptions.toList().map {
-                    val media = it.second.printIt("sub : ")
+                    val media = it.second
                     val text = if (media.isAnime) {
                         val parser = SubscriptionHelper.getAnimeParser(context, media.isAdult, media.id)
                         progress(index[it.first]!!, parser.name, media.name)

@@ -1050,7 +1050,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 null   -> {
                     when (episode.selectedSubtitle) {
                         null -> null
-                        -1   -> ext.subtitles.find { it.language.trim().printIt("sub : ") == "English" || it.language == "en-US" }
+                        -1   -> ext.subtitles.find { it.language.trim() == "English" || it.language == "en-US" }
                         else -> ext.subtitles.getOrNull(episode.selectedSubtitle!!)
                     }
                 }
