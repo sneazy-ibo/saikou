@@ -106,11 +106,16 @@ Saikou is crafted based on simplistic yet state-of-the-art elegance. It is an [A
 
 - Novel Reader
 
+
+## Discord rich presence for home
+        this.details = "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧"
+        this.state = "°˖✧◝(⁰▿⁰)◜✧˖°"
 ## WANT TO CONTRIBUTE?
 
 - All contributions are welcome, from code to documentation to graphics to design suggestions to bug reports. Please use GitHub to its fullest; contribute Pull Requests, contribute tutorials or other content- whatever you have to offer, we can use it!
 
 - You can come hang out with our awesome community and request new features and report any bugs or issue at our discord server too.
+
 
 ### Official Discord Server
  
